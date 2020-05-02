@@ -55,42 +55,42 @@
 </template>
 
 <script>
-import { User } from '~/models/User'
-import { RoleList } from '~/models/Role'
-import { mapGetters } from 'vuex'
+import { User } from "~/models/User";
+import { RoleList } from "~/models/Role";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'UsersEdit',
+  name: "UsersEdit",
   data() {
     return {
       user: new User(),
       roles: RoleList,
       errors: {},
       showPassword: false
-    }
+    };
   },
 
   computed: {
-    ...mapGetters(['isAdmin']),
+    ...mapGetters(["isAdmin"]),
     roleOptions() {
-      return RoleList.map(r => ({ value: r.id, text: r.description }))
+      return RoleList.map(r => ({ value: r.id, text: r.description }));
     }
   },
 
   methods: {
     async save() {
       try {
-        const result = await User.api().post('/user', this.user)
-        this.$router.push({ name: 'beheer-gebruiker' })
+        const result = await User.insert(this.user);
+        this.$router.push({ name: "beheer-gebruiker" });
       } catch (error) {
-        let errors = error.errors || {}
+        let errors = error.errors || {};
 
         if (error.message) {
-          errors.general = error.message
+          errors.general = error.message;
         }
-        this.errors = errors
+        this.errors = errors;
       }
     }
   }
-}
+};
 </script>

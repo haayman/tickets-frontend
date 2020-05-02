@@ -1,125 +1,91 @@
 <template>
-  <div class="py-3">
-    <div class="alert alert-danger" v-if="errors['general']">
-      {{ errors.general }}
-    </div>
-    <form @submit.prevent="save" class="{saving:user.saving}">
-      <div class="form-group">
-        {{ user.username }}
-      </div>
-      <div class="form-group">
-        <div class="alert alert-danger" v-if="errors['name']">
-          {{ errors.name }}
-        </div>
-        <label for="user-name">Naam</label>
-        <input
-          id="user-name"
-          v-model="user.name"
-          type="text"
-          required
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <div class="alert alert-danger" v-if="errors['email']">
-          {{ errors.email }}
-        </div>
-        <label for="user-phone">E-mail</label>
-        <input
-          id="user-phone"
-          v-model="user.email"
-          type="email"
-          required
-          class="form-control"
-        />
-      </div>
-      <!--<div class="form-group">-->
-      <!--<div class="alert alert-danger" v-if="errors['password']">{{ errors.password }}</div>-->
-      <!--<label for="password">Wachtwoord</label>-->
-      <!--<input-->
-      <!--id="password"-->
-      <!--v-model="user.password"-->
-      <!--:type="passwordType"-->
-      <!--class="form-control">-->
+  <v-container>
+    <v-card outlined class="mx-auto" max-width="800">
+      <v-form @submit.prevent="save">
+        <v-card-title>Wijzig gebruiker</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="user.username"
+            type="text"
+            label="Gebruikersnaam"
+            required
+          />
 
-      <!--<label>Toon wachtwoord <input type="checkbox" @click="togglePassword()"/></label>-->
-      <!--</div>-->
+          <v-text-field v-model="user.name" type="text" label="Naam" required />
+          <v-text-field
+            v-model="user.email"
+            type="email"
+            label="E-mail"
+            required
+          />
 
-      <div class="form-group" v-if="isAdmin">
-        <div class="alert alert-danger" v-if="errors['role']">
-          {{ errors.role }}
-        </div>
-        <label
-          >Rol
-          <select class="form-control" v-model="user.role">
-            <option v-for="role in roles" v-bind:value="role.id" :key="role.id">
-              {{ role.description }}
-            </option>
-          </select>
-        </label>
-      </div>
-      <div class="form-group" v-else>
-        <label>Role</label>
-        <input readonly class="readonly" v-bind="user.role" />
-      </div>
-      <button type="submit" class="btn btn-primary">
-        Bijwerken
-      </button>
-      <router-link :to="{ name: 'users-list' }" class="btn btn-secondary">
-        annuleren
-      </router-link>
-    </form>
-  </div>
+          <v-select
+            v-model="user.role"
+            :items="roleOptions"
+            label="Rol"
+            v-if="isAdmin"
+          />
+          <v-text-field v-else v-model="user.role" readonly label="Rol" />
+        </v-card-text>
+
+        <v-card-actions>
+          <v-alert type="error" v-if="errors['general']">
+            {{ errors.general }}
+          </v-alert>
+
+          <v-btn type="submit" color="primary">
+            Opslaan
+          </v-btn>
+          <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary">
+            annuleren
+          </v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-import { User } from '~/models/User'
-import { RoleList } from '~/models/Role'
-import { mapGetters } from 'vuex'
+import { User } from "~/models/User";
+import { RoleList } from "~/models/Role";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'UsersEdit',
+  name: "UsersEdit",
   data() {
     return {
+      user: new User(),
       roles: RoleList,
-      errors: {},
-      passwordType: 'password'
-    }
+      errors: {}
+    };
   },
 
   computed: {
-    ...mapGetters(['isAdmin']),
-    user() {
-      return User.find(this.$route.params.id)
+    ...mapGetters(["isAdmin"]),
+    roleOptions() {
+      return RoleList.map(r => ({ value: r.id, text: r.description }));
     }
   },
 
-  watch: {
-    $route: 'get'
+  async mounted() {
+    const { entities } = await User.api().get(`/user/${this.$route.params.id}`);
+    this.user = entities.user[0];
   },
 
   methods: {
     async save() {
-      this.user
-        .save()
-        .then(() => {
-          this.$router.push({
-            path: '.'
-          })
-        })
-        .catch(error => {
-          let errors = error.errors || {}
+      try {
+        const result = await User.api().put(`/user/${this.user.id}`, this.user);
+        this.$router.push({ name: "beheer-gebruiker" });
+      } catch (error) {
+        let errors = error.errors || {};
 
-          if (error.message) {
-            errors.general = error.message
-          }
-          this.errors = errors
-        })
-    },
-
-    togglePassword() {
-      this.passwordType = this.passwordType == 'password' ? 'text' : 'password'
+        if (error.message) {
+          errors.general = error.message;
+        }
+        this.errors = errors;
+      }
     }
   }
-}
+};
 </script>

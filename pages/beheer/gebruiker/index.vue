@@ -39,48 +39,48 @@
 </template>
 
 <script>
-import { mapGetters, createNamespacedHelpers } from 'vuex'
-import { User } from '@/models/User'
+import { mapGetters, createNamespacedHelpers } from "vuex";
+import { User } from "@/models/User";
 
 export default {
-  name: 'Users',
+  name: "Users",
 
   data() {
     return {
       loading: false,
       options: {},
       headers: [
-        { text: 'account', value: 'username', sortable: false },
-        { text: 'naam', value: 'name', sortable: false },
-        { text: 'rol', value: 'role', sortable: false },
-        { text: 'actions', value: 'name', sortable: false }
+        { text: "account", value: "username", sortable: false },
+        { text: "naam", value: "name", sortable: false },
+        { text: "rol", value: "role", sortable: false },
+        { text: "actions", value: "name", sortable: false }
       ]
-    }
+    };
   },
 
   computed: {
-    ...mapGetters(['isAdmin']),
+    ...mapGetters(["isAdmin"]),
     users() {
-      return User.all()
+      return User.all();
     }
   },
 
   mounted() {
-    this.fetch()
+    this.fetch();
   },
   methods: {
     async fetch() {
-      this.loading = true
-      const { entities } = await User.api().get('/user')
+      this.loading = true;
+      const { entities } = await User.api().get("/user");
       // this.users = entities.user
-      this.loading = false
+      this.loading = false;
     },
     async remove(user) {
       if (confirm(`Weet je zeker dat je ${user.name} wilt verwijderen?`)) {
-        await User.api().delete(`/user/${user.id}`)
-        user.$delete()
+        await User.api().delete(`/user/${user.id}`);
+        user.$delete();
       }
     }
   }
-}
+};
 </script>

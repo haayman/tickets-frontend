@@ -1,31 +1,31 @@
-const colors = require('vuetify/es5/util/colors').default
-require('dotenv').config()
+const colors = require("vuetify/es5/util/colors").default;
+require("dotenv").config();
 
 module.exports = {
-  mode: 'universal',
+  mode: "universal",
 
-  server: { port: 4000, host: '0.0.0.0' },
+  server: { port: 4000, host: "0.0.0.0" },
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.APP_TITLE || '',
+    titleTemplate: "%s - " + process.env.npm_package_name,
+    title: process.env.APP_TITLE || "",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || ''
+        hid: "description",
+        name: "description",
+        content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#fff' },
+  loading: { color: "#fff" },
   /*
    ** Global CSS
    */
@@ -33,42 +33,42 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/vuex-orm-axios'],
+  plugins: ["@/plugins/vuex-orm-axios"],
   /*
    ** Nuxt.js dev-modules
    */
-  buildModules: ['@nuxtjs/vuetify'],
+  buildModules: ["@nuxtjs/vuetify"],
   /*
    ** Nuxt.js modules
    */
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
+    "@nuxtjs/axios",
     // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv',
-    '@nuxtjs/proxy',
-    '@nuxtjs/auth'
+    "@nuxtjs/dotenv",
+    "@nuxtjs/proxy",
+    "@nuxtjs/auth"
   ],
 
   auth: {
     redirect: {
-      login: '/login',
-      logout: '/login',
-      callback: '/login',
-      home: '/'
+      login: "/login",
+      logout: "/login",
+      callback: "/login",
+      home: "/"
     },
     strategies: {
       local: {
         endpoints: {
           login: {
-            url: '/auth/',
-            method: 'post',
-            propertyName: 'token'
+            url: "/auth/",
+            method: "post",
+            propertyName: "token"
           },
           user: {
-            url: '/auth/me',
-            method: 'get',
-            propertyName: false
+            url: "/auth/me",
+            method: "get",
+            propertyName: "user"
           },
           logout: false
         }
@@ -84,16 +84,16 @@ module.exports = {
   // axios: { baseURL: 'http://linux:3000/api/' },
 
   // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
-  proxy: { '/api/': 'http://localhost:3000/' },
+  proxy: { "/api/": "http://localhost:3000/" },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ["~/assets/variables.scss"],
     treeShake: true,
     defaultAssets: {
-      icons: 'fa'
+      icons: "fa"
     },
     theme: {
       dark: false
@@ -104,8 +104,13 @@ module.exports = {
    */
   build: {
     /*
-     ** You can extend webpack config here
+     ** SSR debuging
+     * https://medium.com/js-dojo/debugging-nuxt-js-with-vs-code-60a1a9e75cf6
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
+      }
+    }
   }
-}
+};
