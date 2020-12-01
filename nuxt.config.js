@@ -1,8 +1,10 @@
 const colors = require("vuetify/es5/util/colors").default;
 require("dotenv").config();
+process.env.title = "Frontend";
 
 module.exports = {
   mode: "universal",
+  telemetry: false,
 
   server: { port: 4000, host: "0.0.0.0" },
   /*

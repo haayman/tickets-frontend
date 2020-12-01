@@ -1,14 +1,14 @@
 <template>
   <v-app>
     <Navbar />
-    <v-content>
+    <v-main>
       <nuxt />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-import Navbar from '@/components/NavBar.vue'
+import Navbar from "@/components/NavBar.vue";
 
 // TODO: Remove when Nuxt bug is fixed and apply in nuxt.config.js
 // See: https://github.com/nuxt/nuxt.js/issues/4219
@@ -16,9 +16,9 @@ import Navbar from '@/components/NavBar.vue'
 
 export default {
   components: {
-    Navbar
-  }
-}
+    Navbar,
+  },
+};
 </script>
 
 <style>

@@ -65,21 +65,21 @@
 </template>
 
 <script>
-import { mapGetters, createNamespacedHelpers } from 'vuex'
+import { mapGetters, createNamespacedHelpers } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(['isAdmin', 'isAuthenticated']),
+    ...mapGetters(["isAdmin", "isAuthenticated"]),
     title() {
-      return 'Theater tickets'
+      return "Theater tickets";
     }
   },
   methods: {
     async logout() {
-      await this.$auth.logout()
+      await this.$auth.logout();
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -87,25 +87,6 @@ export default {
   .v-btn--round::before,
   .v-btn--active {
     background-color: transparent;
-  }
-
-  .cart-link {
-    position: relative;
-  }
-
-  .cart-counter {
-    position: absolute;
-    top: -10px;
-    right: 0;
-    width: 16px;
-    height: 16px;
-    padding-left: 1px;
-    font-size: 10px;
-    line-height: 16px;
-    text-align: center;
-    background-color: #be1818;
-    color: #fff;
-    border-radius: 100%;
   }
 }
 </style>
