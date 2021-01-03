@@ -1,13 +1,3 @@
-import VuexORM from "@vuex-orm/core";
-import VuexORMAxios from "@vuex-orm/plugin-axios";
-import VuexORMDatabase from "@/models/index.js";
-import datePlugin from "vuex-orm-plugin-date-attribute";
-
-VuexORM.use(VuexORMAxios); // <- No axios option.
-VuexORM.use(datePlugin);
-
-export const plugins = [VuexORM.install(VuexORMDatabase)];
-
 export const getters = {
   isAuthenticated(state) {
     return state.auth.loggedIn;

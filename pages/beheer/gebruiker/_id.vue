@@ -33,9 +33,7 @@
             {{ errors.general }}
           </v-alert>
 
-          <v-btn type="submit" color="primary">
-            Opslaan
-          </v-btn>
+          <v-btn type="submit" color="primary"> Opslaan </v-btn>
           <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary">
             annuleren
           </v-btn>
@@ -56,26 +54,31 @@ export default {
     return {
       user: new User(),
       roles: RoleList,
-      errors: {}
+      errors: {},
     };
   },
 
   computed: {
     ...mapGetters(["isAdmin"]),
     roleOptions() {
-      return RoleList.map(r => ({ value: r.id, text: r.description }));
-    }
+      return RoleList.map((r) => ({ value: r.id, text: r.description }));
+    },
   },
 
   async mounted() {
-    const { entities } = await User.api().get(`/user/${this.$route.params.id}`);
-    this.user = entities.user[0];
+    const { data: user } = await this.$axios.get(
+      `/user/${this.$route.params.id}`
+    );
+    this.user = user;
   },
 
   methods: {
     async save() {
       try {
-        const result = await User.api().put(`/user/${this.user.id}`, this.user);
+        const { data } = await this.$axios.put(
+          `/user/${this.user.id}`,
+          this.user
+        );
         this.$router.push({ name: "beheer-gebruiker" });
       } catch (error) {
         let errors = error.errors || {};
@@ -85,7 +88,7 @@ export default {
         }
         this.errors = errors;
       }
-    }
-  }
+    },
+  },
 };
 </script>

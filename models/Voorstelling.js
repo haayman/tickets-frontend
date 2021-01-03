@@ -1,26 +1,55 @@
-import { Model } from "@vuex-orm/core";
 import { Uitvoering } from "./Uitvoering";
 import { Prijs } from "./Prijs";
 
-export class Voorstelling extends Model {
-  static entity = "voorstelling";
+export class Voorstelling {
+  constructor({ id, title, description, active, url, locatie, opmerkingen, poster, thumbnail, uitvoeringen, prijzen } = {}) {
+    this._prijzen = [];
+    this._uitvoeringen = [];
 
-  static fields() {
+    if (id) {
+      this.id = id;
+    }
+    this.title = title;
+    this.description = description;
+    this.active = active;
+    this.url = url;
+    this.locatie = locatie;
+    this.opmerkingen = opmerkingen;
+    this.poster = poster;
+    this.thumbnail = thumbnail;
+    this.uitvoeringen = uitvoeringen || [];
+    this.prijzen = prijzen || [];
+
+  }
+
+  get prijzen() {
+    return this._prijzen
+  }
+  set prijzen(prijzen) {
+    this._prijzen = prijzen.map(prijs => new Prijs(prijs));
+  }
+
+  get uitvoeringen() {
+    return this._uitvoeringen
+  }
+  set uitvoeringen(uitvoeringen) {
+    this._uitvoeringen = uitvoeringen.map(uitvoering => new Uitvoering(uitvoering));
+  }
+
+  serialize() {
     return {
-      id: this.attr(null),
-      title: this.string(""),
-      description: this.string(""),
-      active: this.boolean(true),
-      url: this.string("").nullable(),
-      locatie: this.string("").nullable(),
-      url: this.string("").nullable(),
-      locatie: this.string("").nullable(),
-      opmerkingen: this.string("").nullable(),
-      poster: this.string("").nullable(),
-      thumbnail: this.string("").nullable(),
-      uitvoeringen: this.hasMany(Uitvoering, "voorstellingId"),
-      prijzen: this.hasMany(Prijs, "voorstellingId")
-    };
+      ... this.id ? { id: this.id } : {},
+      title: this.title,
+      description: this.description,
+      active: this.active,
+      url: this.url,
+      locatie: this.locatie,
+      opmerkingen: this.opmerkingen,
+      poster: this.poster,
+      thumbnail: this.thumbnail,
+      uitvoeringen: this.uitvoeringen.map(u => u.serialize()),
+      prijzen: this.prijzen
+    }
   }
 
 }

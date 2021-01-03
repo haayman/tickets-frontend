@@ -1,12 +1,12 @@
 <template>
   <v-container v-if="voorstelling">
-    <v-card class="mx-auto">
-      <v-card-title>Voorstelling {{ dirty ? "*" : "" }}</v-card-title>
-      <v-card-text>
-        <v-alert v-if="errors['general']">
-          {{ errors.general }}
-        </v-alert>
-        <v-form @submit.prevent="save" v-if="voorstelling">
+    <v-form @submit.prevent="save" v-if="voorstelling">
+      <v-card class="mx-auto">
+        <v-card-title>Voorstelling</v-card-title>
+        <v-card-text>
+          <v-alert v-if="errors['general']">
+            {{ errors.general }}
+          </v-alert>
           <v-text-field v-model="voorstelling.title" required label="Titel" />
           <v-text-field
             v-model="voorstelling.description"
@@ -36,51 +36,116 @@
             :src="voorstelling.thumbnail"
             class="mh-300 mt-2"
           />
-        </v-form>
-      </v-card-text>
-    </v-card>
-    <v-card class="mx-auto">
-      <v-card-title>Prijzen</v-card-title>
-      <v-card-text>
-        <v-simple-table>
-          <thead>
-            <tr>
-              <th>Omschrijving</th>
-              <th>Prijs</th>
-              <th>Benodigde rol voor uitgifte</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="prijs in voorstelling.prijzen" :key="prijs.id">
-              <td>
-                <v-input v-model="prijs.description" />
-              </td>
-              <td>
-                <v-input
-                  v-model.number="prijs.prijs"
-                  prepend-icon="euro"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                />
-              </td>
-              <td>
-                <v-select v-model="prijs.role" :items="roles"> </v-select>
-              </td>
-              <td>
-                <button
-                  class="btn btn-danger"
-                  @click.prevent="deletePrijs(prijs)"
-                >
-                  Verwijderen
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
+        </v-card-text>
+      </v-card>
+      <v-card class="mx-auto mt-4">
+        <v-card-title>Prijzen</v-card-title>
+        <v-card-text>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th>Omschrijving</th>
+                  <th>Prijs</th>
+                  <th>Benodigde rol voor uitgifte</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="prijs in voorstelling.prijzen" :key="prijs.id">
+                  <td>
+                    <v-text-field v-model="prijs.description" />
+                  </td>
+                  <td>
+                    <v-text-field
+                      v-model.number="prijs.prijs"
+                      prefix="€"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                    />
+                  </td>
+                  <td>
+                    <v-select v-model="prijs.role" :items="roles"> </v-select>
+                  </td>
+                  <td>
+                    <v-btn color="warning" @click.prevent="deletePrijs(prijs)">
+                      Verwijderen
+                    </v-btn>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <v-text-field v-model="prijs.description" />
+                  </td>
+                  <td>
+                    <v-text-field
+                      v-model.number="prijs.prijs"
+                      prefix="€"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                    />
+                  </td>
+                  <td>
+                    <v-select v-model="prijs.role" :items="roles"> </v-select>
+                  </td>
+                  <td>
+                    <v-btn color="primary" @click.prevent="addPrijs()">
+                      Toevoegen
+                    </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+      </v-card>
+      <v-card class="mx-auto mt-4">
+        <v-card-title>Uitvoeringen</v-card-title>
+        <v-card-text>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th>Aantal plaatsen</th>
+                <th>Aanvang</th>
+                <th>Deur open</th>
+                <th>extra tekst</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <uitvoering
+                v-for="uitvoering in voorstelling.uitvoeringen"
+                :uitvoering="uitvoering"
+                :deletable="true"
+                :key="uitvoering.id"
+                @delete="deleteUitvoering"
+              >
+              </uitvoering>
+              <uitvoering
+                :uitvoering="uitvoering"
+                @save="addUitvoering"
+                :deletable="false"
+              />
+            </tbody>
+          </v-simple-table>
+        </v-card-text>
+      </v-card>
+      <v-card class="mx-auto mt-4">
+        <v-alert type="error" v-if="errors['general']">
+          {{ errors.general }}
+        </v-alert>
+        <v-card-text>
+          <v-btn type="submit" color="primary">
+            {{ !voorstelling.id ? "Toevoegen" : "Bijwerken" }}
+          </v-btn>
+          <router-link :to="{ name: 'beheer-voorstelling' }" color="secondary">
+            annuleren
+          </router-link>
+        </v-card-text>
+      </v-card>
+    </v-form>
   </v-container>
 </template>
 
@@ -89,6 +154,7 @@ import { Voorstelling } from "~/models/Voorstelling";
 import { Prijs } from "~/models/Prijs";
 import { Uitvoering } from "~/models/Uitvoering";
 import { RoleList } from "~/models/Role";
+import UitvoeringRow from "../../../components/beheer/voorstelling/Uitvoering";
 
 import { mapGetters } from "vuex";
 import { addDays } from "date-fns";
@@ -97,10 +163,14 @@ export default {
   name: "UsersEdit",
   data() {
     return {
+      voorstelling: null,
       prijs: new Prijs(),
       uitvoering: new Uitvoering(),
       errors: {},
     };
+  },
+  components: {
+    uitvoering: UitvoeringRow,
   },
 
   mounted() {
@@ -128,20 +198,11 @@ export default {
     id() {
       return this.$route.params.id;
     },
-    dirty() {
-      this.voorstelling && this.voorstelling.isDirty;
-    },
     roles() {
       return [
         { text: "Iedereen", value: null },
         ...RoleList.map((role) => ({ text: role.description, value: role.id })),
       ];
-    },
-    voorstelling() {
-      return Voorstelling.query()
-        .with("prijzen")
-        .with("uitvoeringen")
-        .find(this.$route.params.id);
     },
   },
 
@@ -154,7 +215,7 @@ export default {
     },
 
     async getVoorstelling() {
-      const { entities } = await Voorstelling.api().get(
+      const { data: voorstelling } = await this.$axios.get(
         `/voorstelling/${this.id}`,
         {
           params: {
@@ -162,16 +223,27 @@ export default {
           },
         }
       );
+      this.voorstelling = new Voorstelling(voorstelling);
     },
 
     async addPrijs() {
-      this.voorstelling.prijzen.add(this.prijs);
+      this.voorstelling.prijzen.push(this.prijs);
+      this.voorstelling.prijzen = [...this.voorstelling.prijzen].sort(
+        (a, b) => b.prijs - a.prijs
+      );
 
-      this.prijs = new Prijs({});
+      this.prijs = new Prijs();
     },
 
     deletePrijs(prijs) {
-      this.voorstelling.prijzen.remove(prijs);
+      if (
+        !prijs.id ||
+        confirm("Weet je zeker dat je deze prijs wilt verwijderen?")
+      ) {
+        this.voorstelling.prijzen = this.voorstelling.prijzen
+          .filter((p) => p !== prijs)
+          .sort((a, b) => b.prijs - a.prijs);
+      }
     },
 
     copyUitvoering() {
@@ -188,40 +260,50 @@ export default {
     },
 
     async addUitvoering(uitvoering) {
-      this.voorstelling.uitvoeringen.add(uitvoering);
-      this.voorstelling.uitvoeringen.sort("aanvang");
+      this.voorstelling.uitvoeringen.push(uitvoering);
+      this.voorstelling.uitvoeringen = [...this.voorstelling.uitvoeringen].sort(
+        (a, b) => a.aanvang - b.aanvang
+      );
 
       this.copyUitvoering();
     },
 
     deleteUitvoering(uitvoering) {
-      this.voorstelling.uitvoeringen.remove(uitvoering);
+      this.voorstelling.uitvoeringen = this.voorstelling.uitvoeringen
+        .filter((u) => u !== uitvoering)
+        .sort((a, b) => a.aanvang - b.aanvang);
     },
 
     async save() {
       let stayOnPage = !this.voorstelling.id;
-      this.voorstelling
-        .save()
-        .then(() => {
-          if (stayOnPage) {
-            this.$router.push({
-              name: "voorstelling-edit",
-              params: { id: this.voorstelling.id },
-            });
-          } else {
-            this.$router.push({
-              name: "voorstelling-list",
-            });
-          }
-        })
-        .catch((error) => {
-          let errors = error.errors || {};
+      const voorstelling = this.voorstelling;
+      try {
+        if (this.voorstelling.id) {
+          await this.$axios.put(
+            `/voorstelling/${voorstelling.id}`,
+            voorstelling.serialize()
+          );
+        } else {
+          await this.$axios.post(`/voorstelling/`, voorstelling.serialize());
+        }
+        if (stayOnPage) {
+          this.$router.push({
+            name: "beheer-voorstelling-id",
+            params: { id: this.voorstelling.id },
+          });
+        } else {
+          this.$router.push({
+            name: "beheer-voorstelling",
+          });
+        }
+      } catch (error) {
+        let errors = error.errors || {};
 
-          if (error.message) {
-            errors.general = error.message;
-          }
-          this.errors = errors;
-        });
+        if (error.message) {
+          errors.general = error.message;
+        }
+        this.errors = errors;
+      }
     },
   },
 };

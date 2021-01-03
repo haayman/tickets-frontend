@@ -19,7 +19,7 @@
               <nuxt-link
                 :to="{
                   name: 'beheer-voorstelling-id',
-                  params: { id: props.item.id }
+                  params: { id: props.item.id },
                 }"
               >
                 <v-icon>fa-edit</v-icon></nuxt-link
@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import { mapGetters, createNamespacedHelpers } from 'vuex'
-import { Voorstelling } from '@/models/Voorstelling'
+import { mapGetters, createNamespacedHelpers } from "vuex";
+import { Voorstelling } from "@/models/Voorstelling";
 
 export default {
   data() {
@@ -50,41 +50,42 @@ export default {
       loading: false,
       options: {},
       headers: [
-        { text: 'Titel', value: 'title', sortable: false },
-        { text: 'Omschrijving', value: 'description', sortable: false },
-        { text: '', value: 'thumbnail', sortable: false },
-        { text: 'actions', value: 'name', sortable: false }
-      ]
-    }
+        { text: "Titel", value: "title", sortable: false },
+        { text: "Omschrijving", value: "description", sortable: false },
+        { text: "", value: "thumbnail", sortable: false },
+        { text: "actions", value: "name", sortable: false },
+      ],
+      voorstellingen: [],
+    };
   },
 
   computed: {
-    ...mapGetters(['isAdmin']),
-    voorstellingen() {
-      return Voorstelling.all()
-    }
+    ...mapGetters(["isAdmin"]),
   },
   mounted() {
-    this.fetch()
+    this.fetch();
   },
 
   methods: {
     async fetch() {
-      this.loading = true
-      const { entities } = await Voorstelling.api().get('/voorstelling', {
+      this.loading = true;
+      const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
         params: {
-          include: ['prijzen', 'uitvoeringen']
-        }
-      })
-      this.loading = false
+          include: ["prijzen", "uitvoeringen"],
+        },
+      });
+      this.voorstellingen = voorstellingen;
+      this.loading = false;
     },
 
     async remove(voorstelling) {
       if (confirm(`Weet je zeker dat je de voorstelling wilt verwijderen?`)) {
-        await Voorstelling.api().delete(`/voorstelling/${voorstelling.id}`)
-        voorstelling.$delete()
+        await this.$axios.delete(`/voorstelling/${voorstelling.id}`);
+        this.voorstellingen = this.voorstellingen.filter(
+          (v) => v.id !== voorstelling.id
+        );
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

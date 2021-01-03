@@ -1,18 +1,23 @@
-import { Model } from '@vuex-orm/core'
 import { Prijs } from './Prijs'
 
-export class Ticket extends Model {
-  static entity = 'ticket'
+export class Ticket {
+  constructor({ message, aantal, aantalBetaald, aantalTekoop, prijs } = {}) {
+    this.message = message;
+    this.aantal = +aantal;
+    this.aantalBetaald = aantalBetaald;
+    this.aantalTekoop = aantalTekoop;
+    this.prijs = prijs;
 
-  static fields() {
-    return {
-      message: this.string(''),
-      aantal: this.number(0),
-      aantalBetaald: this.number(0),
-      aantalTekoop: this.number(0),
-      prijs: this.hasOne(Prijs)
-    }
+    this._prijs = null;
   }
+
+  get prijs() {
+    return this._prijs;
+  }
+  set prijs(prijs) {
+    this._prijs = new Prijs(prijs);
+  }
+
 
   get betaald() {
     return this.aantalBetaald * this.prijs.prijs

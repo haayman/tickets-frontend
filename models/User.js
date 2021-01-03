@@ -1,31 +1,14 @@
-import { Model } from "@vuex-orm/core";
 import { Role } from "./Role";
 
-export class User extends Model {
-  static entity = "user";
-
-  static fields() {
-    return {
-      id: this.attr(null),
-      username: this.attr(""),
-      name: this.attr(""),
-      role: this.attr(null),
-      email: this.attr(""),
-      password: this.attr(undefined)
-    };
+export class User {
+  constructor({ id, username, name, role, email, password } = {}) {
+    this.id = id;
+    this.username = username;
+    this.name = name;
+    this.email = email;
+    this.role = role || "speler";
+    this.password = password;
   }
-
-  static apiConfig = {
-    actions: {
-      fetchById(id) {
-        return this.get(`/api/user/${id}/`);
-      },
-      fetch: {
-        method: "get",
-        url: "/api/user"
-      }
-    }
-  };
 
   isAdministrator() {
     return this.role === "admin";

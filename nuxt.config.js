@@ -33,10 +33,6 @@ module.exports = {
    */
   css: [],
   /*
-   ** Plugins to load before mounting the App
-   */
-  plugins: ["@/plugins/vuex-orm-axios"],
-  /*
    ** Nuxt.js dev-modules
    */
   buildModules: ["@nuxtjs/vuetify"],

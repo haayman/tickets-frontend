@@ -1,13 +1,10 @@
-import { Model } from '@vuex-orm/core'
-
-export class Prijs extends Model {
-  static entity = 'prijs'
-
-  static fields() {
-    return {
-      id: this.attr(null),
-      description: this.string(''),
-      prijs: this.number(0)
+export class Prijs {
+  constructor({ id, description, prijs, role } = {}) {
+    if (id) {
+      this.id = id;
     }
+    this.description = description || "";
+    this.prijs = +prijs || 0;
+    this.role = role || null;
   }
 }
