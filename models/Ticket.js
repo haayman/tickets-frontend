@@ -1,14 +1,15 @@
 import { Prijs } from './Prijs'
 
 export class Ticket {
-  constructor({ message, aantal, aantalBetaald, aantalTekoop, prijs } = {}) {
+  constructor({ message = null, aantal = 0, aantalBetaald = 0, aantalTekoop = 0, prijs } = {}) {
+    this._prijs = null;
+
     this.message = message;
     this.aantal = +aantal;
     this.aantalBetaald = aantalBetaald;
     this.aantalTekoop = aantalTekoop;
     this.prijs = prijs;
 
-    this._prijs = null;
   }
 
   get prijs() {
@@ -36,5 +37,12 @@ export class Ticket {
       this.aantalTekoop -= Math.min(value, this.aantalTekoop)
     }
     this.aantal = value + this.aantalTekoop
+  }
+
+  serialize() {
+    return {
+      prijs: { id: this.prijs.id },
+      aantal: this.aantal
+    }
   }
 }

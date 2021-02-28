@@ -22,19 +22,16 @@
           </template>
           <v-list>
             <v-list-item nuxt :to="{ path: '/beheer' }">
-              <v-list-item-title>
-                Admin panel
-              </v-list-item-title>
+              <v-list-item-title> Admin panel </v-list-item-title>
             </v-list-item>
             <v-list-item nuxt :to="{ path: '/beheer/voorstelling' }">
-              <v-list-item-title>
-                Voorstellingen
-              </v-list-item-title>
+              <v-list-item-title> Voorstellingen </v-list-item-title>
             </v-list-item>
             <v-list-item nuxt :to="{ path: '/beheer/gebruiker' }">
-              <v-list-item-title>
-                Gebruikers
-              </v-list-item-title>
+              <v-list-item-title> Gebruikers </v-list-item-title>
+            </v-list-item>
+            <v-list-item nuxt :to="{ path: '/beheer/reserveringen' }">
+              <v-list-item-title> Reserveringen </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -47,18 +44,14 @@
           </template>
           <v-list>
             <v-list-item @click="logout">
-              <v-list-item-title>
-                Logout
-              </v-list-item-title>
+              <v-list-item-title> Logout </v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
       </template>
 
       <template v-else>
-        <v-btn :to="{ name: 'login' }" text>
-          Login
-        </v-btn>
+        <v-btn :to="{ name: 'login' }" text> Login </v-btn>
       </template>
     </v-app-bar>
   </nav>
@@ -72,13 +65,13 @@ export default {
     ...mapGetters(["isAdmin", "isAuthenticated"]),
     title() {
       return "Theater tickets";
-    }
+    },
   },
   methods: {
     async logout() {
       await this.$auth.logout();
-    }
-  }
+    },
+  },
 };
 </script>
 

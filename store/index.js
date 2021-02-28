@@ -1,3 +1,5 @@
+import { User } from "@/models/User"
+
 export const getters = {
   isAuthenticated(state) {
     return state.auth.loggedIn;
@@ -22,7 +24,7 @@ export const getters = {
   },
 
   loggedInUser(state) {
-    if (!state.auth) return null;
-    return state.auth.user;
+    const user = state.auth?.user;
+    return user ? new User(user) : null;
   }
 };

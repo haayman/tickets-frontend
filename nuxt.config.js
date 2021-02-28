@@ -32,6 +32,10 @@ module.exports = {
    ** Global CSS
    */
   css: [],
+
+  plugins: [
+    "~plugins/filters.js",
+  ],
   /*
    ** Nuxt.js dev-modules
    */
