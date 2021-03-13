@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { mapGetters, createNamespacedHelpers } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   computed: {

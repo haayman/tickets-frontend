@@ -7,4 +7,9 @@ export class Prijs {
     this.prijs = +prijs || 0;
     this.role = role || null;
   }
+
+  toString() {
+    return this.description;
+  }
+
 }

@@ -199,13 +199,12 @@ import Tickets from "@/components/Tickets";
 import { required, email } from "@/lib/validation";
 
 export default {
-  name: "Reserveren",
   data() {
     return {
+      reservering: null,
       valid: true,
-      reservering: new Reservering(),
       errors: {},
-      voorstelling: null,
+      voorstelling: this.reservering?.voorstelling,
       message: null,
       originalUitvoeringId: null,
       originalAantal: 0,
@@ -227,13 +226,56 @@ export default {
     uitvoeringen: UitvoeringRadio,
     tickets: Tickets,
   },
-  mounted() {
+
+  async mounted() {
     if (!localStorage.getItem("helpShown")) {
       this.hoewerkthet = true;
     }
+    if (this.$route.params.id) {
+      try {
+        const { data } = await this.$axios.get(`/reservering/${this.$route.params.id}`, {
+          params: {
+            include: ["tickets", "payments"],
+          },
+        });
+        this.reservering = new Reservering(data);
+        this.originalUitvoeringId = data.uitvoering.id;
+      } catch (e) {
+        this.$router.replace({ name: "not-found" }, { id: this.$route.params.id });
+      }
+    } else {
+      this.reservering = new Reservering();
+      if (this.$route.query.uitvoeringId) {
+        this.uitvoeringId = +this.$route.query.uitvoeringId;
+      }
+    }
+    const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
+      params: {
+        include: ["prijzen", "uitvoeringen"],
+      },
+    });
+
+    if (!this.voorstelling) {
+      this.voorstelling = new Voorstelling(voorstellingen[0]);
+      console.log(this.voorstelling);
+
+      this.voorstelling.prijzen?.forEach((prijs) => {
+        if (!this.reservering.tickets.find((t) => t.prijs.id == prijs.id)) {
+          this.reservering.tickets.push(
+            new Ticket({
+              prijs: prijs,
+              aantal: 0,
+            }),
+          );
+        }
+      });
+    }
+
+    this.originalAantal = this.aantalKaarten;
   },
   computed: {
     ...mapGetters(["loggedInUser"]),
+
     colspanTotal: function () {
       return this.reservering.id ? 2 : 1;
     },
@@ -307,10 +349,6 @@ export default {
     },
   },
   watch: {
-    $route: {
-      handler: "get",
-      immediate: true,
-    },
     hoewerkthet(toggle) {
       if (toggle) {
         localStorage.setItem("helpShown", true);
@@ -321,52 +359,6 @@ export default {
   methods: {
     setTotaalBedrag(bedrag) {
       this.totaalBedrag = bedrag;
-    },
-
-    async get() {
-      //   this.$nuxt.$loading.start("bezig met laden");
-
-      if (this.$route.params.id) {
-        const id = this.$route.params.id;
-        try {
-          const { data: reservering } = await this.$axios.get(`/reservering/${id}`, {
-            params: {
-              include: ["tickets", "payments"],
-            },
-          });
-        } catch (e) {
-          this.$router.replace({ name: "not-found" }, { id: this.$route.params });
-        }
-        this.reservering = new Reservering(reservering);
-        this.originalUitvoeringId = reservering.uitvoering.id;
-      } else {
-        this.reservering = new Reservering();
-        if (this.$route.query.uitvoeringId) {
-          this.uitvoeringId = +this.$route.query.uitvoeringId;
-        }
-      }
-
-      const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
-        params: {
-          include: ["prijzen", "uitvoeringen"],
-        },
-      });
-      this.voorstelling = new Voorstelling(voorstellingen[0]);
-      console.log(this.voorstelling);
-
-      this.voorstelling.prijzen?.forEach((prijs) => {
-        if (!this.reservering.tickets.find((t) => t.prijs.id == prijs.id)) {
-          this.reservering.tickets.push(
-            new Ticket({
-              prijs: prijs,
-              aantal: 0,
-            }),
-          );
-        }
-      });
-
-      this.originalAantal = this.aantalKaarten;
-      //   this.$nuxt.$loading.finish("bezig met laden");
     },
 
     async onSubmit() {
@@ -383,7 +375,7 @@ export default {
 
             if (error.response) {
               // error is afkomstig van de server
-              let data = error.response.getData();
+              let data = error.response.data?.data;
               if (data && data.message) {
                 errors.general = data.message;
               } else if (error.message) {

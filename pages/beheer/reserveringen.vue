@@ -1,8 +1,6 @@
 <template>
-  <div>
-    <div class="card mb-3" v-if="uitvoeringen">
-      <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoeringId="uitvoeringId"></uitvoeringen>
-    </div>
+  <v-card v-if="uitvoeringen">
+    <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoeringId="uitvoeringId"></uitvoeringen>
 
     <reserveringen-list
       :loading="loading"
@@ -13,7 +11,7 @@
     <reserveringen-list :loading="loading" :reserveringen="wachtlijst" :uitvoeringId="uitvoeringId"
       >Wachtlijst</reserveringen-list
     >
-  </div>
+  </v-card>
 </template>
 <script>
 import { Uitvoering } from "@/models/Uitvoering";
@@ -38,7 +36,8 @@ export default {
   watch: {
     $route: {
       handler() {
-        this.uitvoeringId = this.$route.query.uitvoeringId || "";
+        this.uitvoeringId = this.$route.query?.uitvoeringId || "";
+        this.fetch();
       },
       immediate: true,
     },
@@ -52,25 +51,27 @@ export default {
       return this.reserveringen.filter((r) => r.wachtlijst);
     },
   },
-  async fetch() {
-    this.loading = true;
-    let params = {
-      params: {
-        include: ["tickets"],
-        order: "-createdAt",
-      },
-    };
-    if (this.uitvoeringId) {
-      params.params.uitvoeringId = this.uitvoeringId;
-      params.params.order = "naam";
-    }
-    const { data: reserveringen } = await this.$axios.get("/reservering", params);
-    this.reserveringen = reserveringen.map((r) => new Reservering(r));
+  methods: {
+    async fetch() {
+      this.loading = true;
+      let params = {
+        params: {
+          include: ["tickets"],
+          order: "-createdAt",
+        },
+      };
+      if (this.uitvoeringId) {
+        params.params.uitvoeringId = this.uitvoeringId;
+        params.params.order = "naam";
+      }
+      const { data: reserveringen } = await this.$axios.get("/reservering", params);
+      this.reserveringen = reserveringen.map((r) => new Reservering(r));
 
-    const { data: uitvoeringen } = await this.$axios.get("/uitvoering");
-    this.uitvoeringen = uitvoeringen.map((u) => new Uitvoering(u));
+      const { data: uitvoeringen } = await this.$axios.get("/uitvoering");
+      this.uitvoeringen = uitvoeringen.map((u) => new Uitvoering(u));
 
-    this.loading = false;
+      this.loading = false;
+    },
   },
 };
 </script>

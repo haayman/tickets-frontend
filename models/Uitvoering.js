@@ -21,8 +21,7 @@ export class Uitvoering {
   }
 
   toString() {
-    //return `'${this.voorstelling.title}' ${formatter(this.aanvang, "dddd D MMMM H:mm", { locale: nl })} ${this.extra_text} `;
-    return `${formatter(this.aanvang, 'Pp', {
+    return `${formatter(this.aanvang, 'PPPPp', {
       locale: nl
     })} ${this.extra_text} `
   }

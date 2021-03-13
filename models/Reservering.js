@@ -8,11 +8,7 @@ export class Reservering {
     naam, email, wachtlijst, opmerking, opmerking_gebruiker,
     ingenomen, betaald, uitvoering, tickets, payments, logs } = {}) {
 
-    this._uitvoering = null;
-    this._tickets = [];
-    this._payments = [];
-    this._logs = [];
-
+    this.id = id || null;
     this.naam = naam;
     this.email = email;
     this.wachtlijst = !!wachtlijst;
@@ -20,42 +16,13 @@ export class Reservering {
     this.opmerking_gebruiker = opmerking_gebruiker;
     this.ingenomen = ingenomen;
     this.betaald = !!betaald;
-    this.uitvoering = uitvoering;
     this.uitvoeringId = uitvoering?.id;
 
-    this.tickets = tickets;
-    this.payments = payments;
-    this.logs = logs;
+    this.uitvoering = new Uitvoering(uitvoering);
+    this.tickets = tickets?.map(t => new Ticket(t)) || [];
+    this.payments = payments?.map(p => new Payment(p)) || [];
+    this.logs = logs?.map(l => new Log(l)) || [];
 
-  }
-
-  get uitvoering() {
-    return this._uitvoering;
-  }
-  set uitvoering(uitvoering) {
-    if (uitvoering) {
-      this._uitvoering = new Uitvoering(uitvoering);
-      this.uitvoeringId = uitvoering?.id;
-    }
-  }
-
-  get tickets() {
-    return this._tickets;
-  }
-  set tickets(tickets) {
-    this._tickets = tickets?.map(ticket => new Ticket(ticket)) || [];
-  }
-  get payments() {
-    return this._payments;
-  }
-  set payments(payments) {
-    this._payments = payments?.map(payment => new Payment(payment)) || [];
-  }
-  get logs() {
-    return this._logs;
-  }
-  set logs(logs) {
-    this._logs = logs?.map(log => new Log(log)) || [];
   }
 
   async save($axios) {

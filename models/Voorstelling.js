@@ -3,9 +3,6 @@ import { Prijs } from "./Prijs";
 
 export class Voorstelling {
   constructor({ id, title, description, active, url, locatie, opmerkingen, poster, thumbnail, uitvoeringen, prijzen } = {}) {
-    this._prijzen = [];
-    this._uitvoeringen = [];
-
     if (id) {
       this.id = id;
     }
@@ -17,23 +14,9 @@ export class Voorstelling {
     this.opmerkingen = opmerkingen;
     this.poster = poster;
     this.thumbnail = thumbnail;
-    this.uitvoeringen = uitvoeringen || [];
-    this.prijzen = prijzen || [];
+    this.uitvoeringen = uitvoeringen?.map(u => new Uitvoering(u)) || [];
+    this.prijzen = prijzen?.map(p => new Prijs(p)) || [];
 
-  }
-
-  get prijzen() {
-    return this._prijzen
-  }
-  set prijzen(prijzen) {
-    this._prijzen = prijzen.map(prijs => new Prijs(prijs));
-  }
-
-  get uitvoeringen() {
-    return this._uitvoeringen
-  }
-  set uitvoeringen(uitvoeringen) {
-    this._uitvoeringen = uitvoeringen.map(uitvoering => new Uitvoering(uitvoering));
   }
 
   serialize() {

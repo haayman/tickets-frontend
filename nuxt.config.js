@@ -3,10 +3,11 @@ require("dotenv").config();
 process.env.title = "Frontend";
 
 module.exports = {
-  mode: "universal",
   telemetry: false,
 
   server: { port: 4000, host: "0.0.0.0" },
+
+  components: true, // autoload components
   /*
    ** Headers of the page
    */
