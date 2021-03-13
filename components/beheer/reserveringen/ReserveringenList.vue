@@ -171,7 +171,7 @@ export default {
     },
 
     gotoReservation(reservering) {
-      this.$router.push({ name: "reserveren", params: { id: reservering.id } });
+      this.$router.push({ name: "reserveren-id", params: { id: reservering.id } });
     },
 
     ignore() {
