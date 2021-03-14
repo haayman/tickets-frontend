@@ -61,7 +61,9 @@
           <transition name="fade">
             <v-alert type="warning" dense v-if="wachtrijNodig">
               <h4 class="alert-heading">Let op!</h4>
-              Er zijn onvoldoende plaatsen beschikbaar. Je komt op de wachtlijst<br />
+              Er zijn onvoldoende plaatsen beschikbaar. Je komt op de wachtlijst
+              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle ></v-icon>
+              <br />
               <v-checkbox
                 v-model="reservering.wachtlijst"
                 :rules="rules.wachtlijst"
@@ -211,6 +213,7 @@ export default {
       originalAantal: 0,
       wachtrijHelp: false,
       hoewerkthet: false,
+      loading: false,
       rules: {
         form: [() => this.aantalKaarten > 0 || "Geen kaarten geselecteerd"],
         naam: [required],
@@ -312,7 +315,7 @@ export default {
           } else {
             return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
           }
-        } else if (bedrag > 0) {
+        } else if (bedrag > 0 && !this.wachtrijNodig) {
           return "Er is bijbetaling nodig";
         }
       }
@@ -324,11 +327,11 @@ export default {
       if (this.uitvoering) {
         if (this.uitvoeringId !== this.originalUitvoeringId) {
           retval =
-            this.aantalKaarten > this.uitvoering.vrijePlaatsen() + (this.uitvoering.tekoop || 0);
+            this.aantalKaarten > this.uitvoering.vrije_plaatsen + (this.uitvoering.tekoop || 0);
         } else {
           retval =
             this.aantalKaarten - this.originalAantal >
-            this.uitvoering.vrijePlaatsen() + (this.uitvoering.tekoop || 0);
+            this.uitvoering.vrije_plaatsen + (this.uitvoering.tekoop || 0);
         }
       }
       return retval;
@@ -415,7 +418,7 @@ export default {
             },
           });
 
-          if (reservering.wachtlijst || !reservering.openstaandBedrag) {
+          if (reservering.wachtlijst || !(reservering.openstaandBedrag > 0)) {
             clearInterval(timer);
             //   this.$nuxt.$loading.finish("opslaan");
             if (this.loggedInUser) {
