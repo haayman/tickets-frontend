@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="reserveringen.length" outlined class="mx-auto" max-width="800">
+  <v-card v-if="reserveringen.length" class="mx-auto">
     <v-card-title>
       <!-- 'Gereserveerd' of 'Wachtlijst' -->
       <slot>Titel</slot>

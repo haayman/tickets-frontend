@@ -1,23 +1,13 @@
 <template>
   <v-container>
-    <v-card outlined class="mx-auto" max-width="800">
+    <v-card class="mx-auto">
       <v-form @submit.prevent="save">
         <v-card-title>Nieuwe gebruiker</v-card-title>
         <v-card-text>
-          <v-text-field
-            v-model="user.username"
-            type="text"
-            label="Gebruikersnaam"
-            required
-          />
+          <v-text-field v-model="user.username" type="text" label="Gebruikersnaam" required />
 
           <v-text-field v-model="user.name" type="text" label="Naam" required />
-          <v-text-field
-            v-model="user.email"
-            type="email"
-            label="E-mail"
-            required
-          />
+          <v-text-field v-model="user.email" type="email" label="E-mail" required />
 
           <v-text-field
             v-model="user.password"
@@ -28,12 +18,7 @@
             @click:append="() => (showPassword = !showPassword)"
           />
 
-          <v-select
-            v-model="user.role"
-            :items="roleOptions"
-            label="Rol"
-            v-if="isAdmin"
-          />
+          <v-select v-model="user.role" :items="roleOptions" label="Rol" v-if="isAdmin" />
           <v-text-field v-else v-model="user.role" readonly label="Rol" />
         </v-card-text>
 
@@ -43,9 +28,7 @@
           </v-alert>
 
           <v-btn type="submit" color="primary"> Opslaan </v-btn>
-          <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary">
-            annuleren
-          </v-btn>
+          <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary"> annuleren </v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

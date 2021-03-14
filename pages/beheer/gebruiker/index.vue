@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card class="mx-auto" max-width="800">
+    <v-card class="mx-auto">
       <v-card-title>Gebruikers</v-card-title>
       <v-data-table
         v-if="users.length"
@@ -20,9 +20,7 @@
               </div>
             </td>
             <td>
-              <nuxt-link :to="{ path: props.item.id }" append>
-                <v-icon>fa-edit</v-icon></nuxt-link
-              >
+              <nuxt-link :to="{ path: props.item.id }" append> <v-icon>fa-edit</v-icon></nuxt-link>
               <a href="#delete" @click.prevent="remove(props.item)">
                 <v-icon>fa-trash</v-icon>
               </a>
@@ -31,9 +29,7 @@
         </template>
       </v-data-table>
       <v-card-actions>
-        <v-btn :to="{ name: 'beheer-gebruiker-create' }" color="primary"
-          >Gebruiker toevoegen</v-btn
-        >
+        <v-btn :to="{ name: 'beheer-gebruiker-create' }" color="primary">Gebruiker toevoegen</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

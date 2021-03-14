@@ -1,17 +1,23 @@
 <template>
-  <v-card v-if="uitvoeringen">
-    <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoeringId="uitvoeringId"></uitvoeringen>
-
+  <div>
+    <v-card v-if="uitvoeringen">
+      <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoeringId="uitvoeringId"></uitvoeringen>
+    </v-card>
     <reserveringen-list
+      class="mt-3"
       :loading="loading"
       :reserveringen="gereserveerd"
       :uitvoeringId="uitvoeringId"
       >Gereserveerd</reserveringen-list
     >
-    <reserveringen-list :loading="loading" :reserveringen="wachtlijst" :uitvoeringId="uitvoeringId"
+    <reserveringen-list
+      class="mt-3"
+      :loading="loading"
+      :reserveringen="wachtlijst"
+      :uitvoeringId="uitvoeringId"
       >Wachtlijst</reserveringen-list
     >
-  </v-card>
+  </div>
 </template>
 <script>
 import { Uitvoering } from "@/models/Uitvoering";

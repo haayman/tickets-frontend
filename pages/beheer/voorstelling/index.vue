@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card class="mx-auto" max-width="800">
+    <v-card class="mx-auto">
       <v-card-title>Voorstellingen</v-card-title>
       <v-data-table
         :loading="loading"
@@ -81,9 +81,7 @@ export default {
     async remove(voorstelling) {
       if (confirm(`Weet je zeker dat je de voorstelling wilt verwijderen?`)) {
         await this.$axios.delete(`/voorstelling/${voorstelling.id}`);
-        this.voorstellingen = this.voorstellingen.filter(
-          (v) => v.id !== voorstelling.id
-        );
+        this.voorstellingen = this.voorstellingen.filter((v) => v.id !== voorstelling.id);
       }
     },
   },

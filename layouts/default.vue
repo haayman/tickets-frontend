@@ -33,4 +33,8 @@ export default {
 .page-leave-to {
   opacity: 0;
 }
+
+.v-main .container {
+  max-width: 1000px;
+}
 </style>
