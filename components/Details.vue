@@ -1,10 +1,6 @@
 <template>
   <div>
-    <component
-      v-if="headerComponent && reservering"
-      :is="headerComponent"
-      :reservering="reservering"
-    ></component>
+    <slot v-if="reservering" :reservering="reservering"></slot>
 
     <!-- alleen bezoekers voorstelling tonen -->
     <voorstelling v-if="!loggedInUser"></voorstelling>
@@ -96,9 +92,6 @@
 <script>
 import { Reservering } from "../models/Reservering";
 import { mapGetters } from "vuex";
-const payments = () => import(/* webpackChunkName: "PaymentsVue" */ "./Payments.vue");
-const logs = () => import(/* webpackChunkName: "LogsVue" */ "./Logs.vue");
-const Voorstelling = () => import(/* webpackChunkName: "VoorstellingVue" */ "./Voorstelling.vue");
 
 export default {
   props: {
@@ -150,12 +143,6 @@ export default {
         this.activeUser.isKassa()
       );
     },
-  },
-
-  components: {
-    payments: payments,
-    Voorstelling,
-    logs,
   },
 
   methods: {

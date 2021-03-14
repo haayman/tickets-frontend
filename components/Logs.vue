@@ -4,20 +4,18 @@
     <v-card-text>
       <!-- <button class="btn btn-primary" @click="showLog=!showLog">{{showLog?'Verberg':'Toon'}} Log</button> -->
       <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th>tijdstip</th>
-              <th>melding</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="log in sortedLogs" :key="log.id">
-              <td>{{ log.createdAt | formatDate("EEEE dd MMM HH:mm") }}</td>
-              <td>{{ log.message }}</td>
-            </tr>
-          </tbody>
-        </template>
+        <thead>
+          <tr>
+            <th>tijdstip</th>
+            <th>melding</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="log in sortedLogs" :key="log.id">
+            <td>{{ log.createdAt | formatDate("EEEE dd MMM HH:mm") }}</td>
+            <td>{{ log.message }}</td>
+          </tr>
+        </tbody>
       </v-simple-table>
     </v-card-text>
   </v-card>
