@@ -15,13 +15,7 @@
           {{ reservering.ingenomen | formatDate("Pp") }}
         </v-alert>
 
-        <v-form
-          @submit.prevent="onSubmit"
-          v-model="valid"
-          v-if="!reservering.loading"
-          ref="form"
-          :rules="rules.form"
-        >
+        <v-form @submit.prevent="onSubmit" v-model="valid" ref="form" :rules="rules.form">
           <v-alert dense type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
 
           <v-text-field
@@ -77,22 +71,28 @@
           </transition>
 
           <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
-          <v-textarea v-model="reservering.opmerking" v-if="loggedInUser" label="reactie" />
+          <v-textarea v-model="reservering.opmerking" v-if="loggedInUser" label="Reactie" />
 
           <v-alert type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
 
-          <v-btn color="primary" type="submit" :disabled="reservering.ingenomen">{{
-            submitText
-          }}</v-btn>
-
-          <v-btn
-            v-if="reservering.id"
-            color="danger"
-            @click.prevent="annuleren"
-            :disabled="reservering.ingenomen"
-          >
-            Alle kaarten annuleren
-          </v-btn>
+          <v-row>
+            <v-btn
+              color="primary"
+              type="submit"
+              :loading="loading"
+              :disabled="reservering.ingenomen"
+              >{{ submitText }}</v-btn
+            >
+            <v-spacer />
+            <v-btn
+              v-if="reservering.id"
+              color="secondary"
+              @click.prevent="annuleren"
+              :disabled="reservering.ingenomen"
+            >
+              Alle kaarten annuleren
+            </v-btn>
+          </v-row>
         </v-form>
       </v-card-text>
     </v-card>
@@ -358,6 +358,13 @@ export default {
         localStorage.setItem("helpShown", true);
       }
     },
+    loading(toggle, oldValue) {
+      if (toggle && !oldValue) {
+        this.$nuxt.$loading.start("opslaan");
+      } else if (!toggle && newValue) {
+        this.$nuxt.$loading.finish("opslaan");
+      }
+    },
   },
 
   methods: {
@@ -366,7 +373,7 @@ export default {
     },
 
     async onSubmit() {
-      //   this.$nuxt.$loading.start("opslaan");
+      this.loading = true;
       if (this.$refs.form.validate()) {
         this.reservering
           .save(this.$axios)
@@ -374,7 +381,7 @@ export default {
             this.getNextPage();
           })
           .catch((error) => {
-            //   this.$nuxt.$loading.finish("opslaan");
+            this.loading = false;
             let errors = error.errors || {};
 
             if (error.response) {
@@ -420,7 +427,7 @@ export default {
 
           if (reservering.wachtlijst || !(reservering.openstaandBedrag > 0)) {
             clearInterval(timer);
-            //   this.$nuxt.$loading.finish("opslaan");
+            this.loading = false;
             if (this.loggedInUser) {
               this.$router.push({ name: "beheer-reserveringen" });
             } else {
