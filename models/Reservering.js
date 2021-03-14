@@ -6,17 +6,18 @@ import { Log } from './Log'
 export class Reservering {
   constructor({ id,
     naam, email, wachtlijst, opmerking, opmerking_gebruiker,
-    ingenomen, betaald, uitvoering, tickets, payments, logs } = {}) {
+    ingenomen, betaald, uitvoering, tickets, payments, logs, teruggeefbaar } = {}) {
 
     this.id = id || null;
     this.naam = naam;
     this.email = email;
     this.wachtlijst = !!wachtlijst;
-    this.opmerking = opmerking;
-    this.opmerking_gebruiker = opmerking_gebruiker;
+    this.opmerking = opmerking || "";
+    this.opmerking_gebruiker = opmerking_gebruiker || "";
     this.ingenomen = ingenomen;
     this.betaald = !!betaald;
     this.uitvoeringId = uitvoering?.id;
+    this.teruggeefbaar = !!teruggeefbaar;
 
     this.uitvoering = new Uitvoering(uitvoering);
     this.tickets = tickets?.map(t => new Ticket(t)) || [];

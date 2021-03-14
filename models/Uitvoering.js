@@ -12,10 +12,6 @@ export class Uitvoering {
     this.gereserveerd = +gereserveerd;
   }
 
-  vrijePlaatsen() {
-    return this.vrije_plaatsen + (this.gereserveerd || 0)
-  }
-
   get verkoopbaar() {
     return this.aanvang > new Date()
   }
