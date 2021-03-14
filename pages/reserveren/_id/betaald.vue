@@ -5,11 +5,12 @@
         <v-card-title>Ticket is betaald</v-card-title>
         <v-card-text>
           Het ticket is betaald.<br />
-          Er is een e-mail met het ticket verstuurd naar {{ slotProps.reservering.email }}
-
-          Niet ontvangen?
-          <a href="#" @click.prevent="resend(slotProps.reservering.id)">Klik hier</a> om opnieuw op
-          te laten sturen
+          Er is een e-mail met het ticket verstuurd naar
+          <strong>{{ slotProps.reservering.email }}</strong>
+        </v-card-text>
+        <v-card-text>
+          <h3 class="mb-3">Niet ontvangen?</h3>
+          <v-btn @click="resend(slotProps.reservering.id)">Opnieuw versturen</v-btn>
         </v-card-text>
       </v-card>
     </template>
