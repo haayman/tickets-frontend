@@ -1,9 +1,16 @@
 <script>
+import { mapGetters } from "vuex";
 export default {
-  auth: false,
+  computed: {
+    ...mapGetters(["isAuthenticated"]),
+  },
+
   beforeCreate() {
-    this.$router.push({ name: "reserveren" });
-    // this.$router.push({ name: "beheer-reserveringen-list" });
+    if (!this.isAuthenticated) {
+      this.$router.push({ name: "reserveren" });
+    } else {
+      this.$router.push({ name: "beheer-reserveringen" });
+    }
   },
   render() {
     return null;
