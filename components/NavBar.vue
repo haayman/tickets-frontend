@@ -1,58 +1,24 @@
 <template>
   <nav>
     <v-app-bar app flat>
-      <v-toolbar-title>
-        <nuxt-link :to="{ name: 'index' }" class="v-toolbar__brand">
-          {{ title }}
-        </nuxt-link>
-      </v-toolbar-title>
+      <v-container class="py-0 fill-height">
+        <v-toolbar-title>
+          <nuxt-link :to="{ name: 'index' }" class="v-toolbar__brand">
+            {{ title }}
+          </nuxt-link>
+        </v-toolbar-title>
 
-      <v-spacer />
+        <v-spacer />
 
-      <template v-if="isAuthenticated">
-        <v-btn icon :to="{ name: 'index' }">
-          <v-icon>fa-map</v-icon>
+        <v-btn v-for="link in links" :key="link.title" text :to="{ path: link.link }">
+          {{ link.title }}
         </v-btn>
 
-        <v-menu transition="slide-y-transition" left bottom offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn id="btn-admin" icon exact v-on="on">
-              <v-icon>fa-tachometer-alt</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item nuxt :to="{ path: '/beheer' }">
-              <v-list-item-title> Admin panel </v-list-item-title>
-            </v-list-item>
-            <v-list-item nuxt :to="{ path: '/beheer/voorstelling' }">
-              <v-list-item-title> Voorstellingen </v-list-item-title>
-            </v-list-item>
-            <v-list-item nuxt :to="{ path: '/beheer/gebruiker' }">
-              <v-list-item-title> Gebruikers </v-list-item-title>
-            </v-list-item>
-            <v-list-item nuxt :to="{ path: '/beheer/reserveringen' }">
-              <v-list-item-title> Reserveringen </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-spacer />
 
-        <v-menu transition="slide-y-transition" left bottom offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn id="btn-account" icon exact v-on="on">
-              <v-icon>fa-user-circle</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item @click="logout">
-              <v-list-item-title> Logout </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template>
-
-      <template v-else>
-        <v-btn :to="{ name: 'login' }" text> Login </v-btn>
-      </template>
+        <v-btn v-if="isAuthenticated" @click="logout" text>Log uit</v-btn>
+        <v-btn v-else :to="{ name: 'login' }" text>Leden login</v-btn>
+      </v-container>
     </v-app-bar>
   </nav>
 </template>
@@ -62,9 +28,48 @@ import { mapGetters } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters(["isAdmin", "isAuthenticated"]),
+    ...mapGetters(["isAdmin", "isAuthenticated", "isKassa", "isSpeler"]),
     title() {
       return "Theater tickets";
+    },
+    links() {
+      const links = [
+        {
+          title: "Bestellen",
+          link: "/reserveren/",
+        },
+      ];
+      if (this.isKassa) {
+        links.push({
+          title: "Kassa",
+          link: "/kassa/",
+        });
+      }
+      if (this.isSpeler) {
+        links.push({
+          title: "Reserveringen",
+          link: "/beheer/reserveringen/",
+        });
+        links.push({
+          title: "Logs",
+          link: "/beheer/logs/",
+        });
+      }
+      if (this.isAdmin) {
+        links.push({
+          title: "Voorstelling",
+          link: "/beheer/voorstelling/",
+        });
+        links.push({
+          title: "Gebruikers",
+          link: "/beheer/gebruiker",
+        });
+        links.push({
+          title: "Verstuur e-mail",
+          link: "/beheer/mail",
+        });
+      }
+      return links;
     },
   },
   methods: {
