@@ -69,7 +69,7 @@
                   <v-btn
                     v-if="!reservering.ingenomen"
                     color="primary"
-                    :to="{ name: 'reservering', params: { id: reservering.id } }"
+                    :to="{ name: 'reserveren-id', params: { id: reservering.id } }"
                     >Wijzigen</v-btn
                   >
                 </td>
