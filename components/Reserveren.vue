@@ -1,6 +1,6 @@
 <template>
   <div>
-    <voorstelling></voorstelling>
+    <voorstelling v-if="!loggedInUser"></voorstelling>
 
     <v-card class="mt-3" v-if="reservering">
       <v-card-title
