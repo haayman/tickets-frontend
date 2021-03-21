@@ -2,7 +2,7 @@
   <div class="container">
     <v-row
       v-for="log in logs"
-      @click="goto(log.reserveringId)"
+      @click="goto(log)"
       :key="log.id"
       :style="log.reserveringId ? 'cursor: pointer' : ''"
     >
@@ -12,6 +12,17 @@
       </v-col>
       <v-col md="4" v-else>(geannuleerd)</v-col>
       <v-col md="4">{{ log.message }}</v-col>
+      <v-col md="1">
+        <a
+          v-if="log.reserveringId"
+          :href="href(log)"
+          @click.stop=""
+          target="_blank"
+          title="Open in nieuw window"
+        >
+          <v-icon>fa-external-link-alt</v-icon>
+        </a>
+      </v-col>
     </v-row>
     <infinite-loading @infinite="infiniteHandler">
       <div slot="spinner">Laden...</div>
@@ -34,13 +45,25 @@ export default {
     };
   },
   methods: {
-    goto(id) {
-      if (id) {
-        this.$router.push({
-          name: "reserveren-id-details",
-          params: { id },
-        });
+    goto(row) {
+      let link;
+      if ((link = this.link(row))) {
+        this.$router.push(link);
       }
+    },
+    link(row) {
+      if (row.reserveringId) {
+        return {
+          name: "reserveren-id-details",
+          params: { id: row.reserveringId },
+        };
+      } else {
+        return "";
+      }
+    },
+    href(row) {
+      const routeData = this.$router.resolve(this.link(row));
+      return routeData.href;
     },
     async infiniteHandler($state) {
       const { data } = await this.$axios.get(`/log/`, {
