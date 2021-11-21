@@ -8,34 +8,14 @@
             {{ errors.general }}
           </v-alert>
           <v-text-field v-model="voorstelling.title" required label="Titel" />
-          <v-text-field
-            v-model="voorstelling.description"
-            required
-            label="Omschrijving"
-          />
+          <v-text-field v-model="voorstelling.description" required label="Omschrijving" />
           <v-text-field v-model="voorstelling.url" label="URL" type="url" />
           <v-text-field v-model="voorstelling.locatie" label="Locatie" />
           <v-textarea v-model="voorstelling.opmerkingen" label="Opmerkingen" />
-          <v-text-field
-            v-model="voorstelling.poster"
-            label="Poster"
-            type="url"
-          />
-          <img
-            v-if="voorstelling.poster"
-            :src="voorstelling.poster"
-            class="mh-300 mt-2"
-          />
-          <v-text-field
-            v-model="voorstelling.thumbnail"
-            label="Thumbnail"
-            type="url"
-          />
-          <img
-            v-if="voorstelling.thumbnail"
-            :src="voorstelling.thumbnail"
-            class="mh-300 mt-2"
-          />
+          <v-text-field v-model="voorstelling.poster" label="Poster" type="url" />
+          <img v-if="voorstelling.poster" :src="voorstelling.poster" class="mh-300 mt-2" />
+          <v-text-field v-model="voorstelling.thumbnail" label="Thumbnail" type="url" />
+          <img v-if="voorstelling.thumbnail" :src="voorstelling.thumbnail" class="mh-300 mt-2" />
         </v-card-text>
       </v-card>
       <v-card class="mx-auto mt-4">
@@ -69,9 +49,7 @@
                     <v-select v-model="prijs.role" :items="roles"> </v-select>
                   </td>
                   <td>
-                    <v-btn color="warning" @click.prevent="deletePrijs(prijs)">
-                      Verwijderen
-                    </v-btn>
+                    <v-btn color="warning" @click.prevent="deletePrijs(prijs)"> Verwijderen </v-btn>
                   </td>
                 </tr>
                 <tr>
@@ -91,9 +69,7 @@
                     <v-select v-model="prijs.role" :items="roles"> </v-select>
                   </td>
                   <td>
-                    <v-btn color="primary" @click.prevent="addPrijs()">
-                      Toevoegen
-                    </v-btn>
+                    <v-btn color="primary" @click.prevent="addPrijs()"> Toevoegen </v-btn>
                   </td>
                 </tr>
               </tbody>
@@ -123,11 +99,7 @@
                 @delete="deleteUitvoering"
               >
               </uitvoering>
-              <uitvoering
-                :uitvoering="uitvoering"
-                @save="addUitvoering"
-                :deletable="false"
-              />
+              <uitvoering :uitvoering="uitvoering" @save="addUitvoering" :deletable="false" />
             </tbody>
           </v-simple-table>
         </v-card-text>
@@ -183,11 +155,7 @@ export default {
       return;
     }
 
-    if (
-      confirm(
-        "Nog niet opgeslagen\n. Weet je zeker dat je de pagina wilt verlaten?"
-      )
-    ) {
+    if (confirm("Nog niet opgeslagen\n. Weet je zeker dat je de pagina wilt verlaten?")) {
       next();
     } else {
       next(false);
@@ -215,31 +183,23 @@ export default {
     },
 
     async getVoorstelling() {
-      const { data: voorstelling } = await this.$axios.get(
-        `/voorstelling/${this.id}`,
-        {
-          params: {
-            include: ["prijzen", "uitvoeringen"],
-          },
-        }
-      );
+      const { data: voorstelling } = await this.$axios.get(`/voorstelling/${this.id}`, {
+        params: {
+          include: ["prijzen", "uitvoeringen"],
+        },
+      });
       this.voorstelling = new Voorstelling(voorstelling);
     },
 
     async addPrijs() {
       this.voorstelling.prijzen.push(this.prijs);
-      this.voorstelling.prijzen = [...this.voorstelling.prijzen].sort(
-        (a, b) => b.prijs - a.prijs
-      );
+      this.voorstelling.prijzen = [...this.voorstelling.prijzen].sort((a, b) => b.prijs - a.prijs);
 
       this.prijs = new Prijs();
     },
 
     deletePrijs(prijs) {
-      if (
-        !prijs.id ||
-        confirm("Weet je zeker dat je deze prijs wilt verwijderen?")
-      ) {
+      if (!prijs.id || confirm("Weet je zeker dat je deze prijs wilt verwijderen?")) {
         this.voorstelling.prijzen = this.voorstelling.prijzen
           .filter((p) => p !== prijs)
           .sort((a, b) => b.prijs - a.prijs);
@@ -262,7 +222,7 @@ export default {
     async addUitvoering(uitvoering) {
       this.voorstelling.uitvoeringen.push(uitvoering);
       this.voorstelling.uitvoeringen = [...this.voorstelling.uitvoeringen].sort(
-        (a, b) => a.aanvang - b.aanvang
+        (a, b) => a.aanvang - b.aanvang,
       );
 
       this.copyUitvoering();
@@ -279,10 +239,7 @@ export default {
       const voorstelling = this.voorstelling;
       try {
         if (this.voorstelling.id) {
-          await this.$axios.put(
-            `/voorstelling/${voorstelling.id}`,
-            voorstelling.serialize()
-          );
+          await this.$axios.put(`/voorstelling/${voorstelling.id}`, voorstelling.serialize());
         } else {
           await this.$axios.post(`/voorstelling/`, voorstelling.serialize());
         }

@@ -22,9 +22,7 @@
     <td><input class="form-control" v-model="uitvoering.extra_text" /></td>
 
     <td>
-      <v-btn v-if="deletable" color="warning" @click.prevent="remove">
-        Verwijderen
-      </v-btn>
+      <v-btn v-if="deletable" color="warning" @click.prevent="remove"> Verwijderen </v-btn>
       <v-btn v-else color="primary" @click.prevent="save"> Toevoegen </v-btn>
     </td>
   </tr>
