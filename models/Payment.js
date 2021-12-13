@@ -7,7 +7,7 @@ export class Payment {
     this.amountRefunded = +this.amountRefunded;
     this.isPaid = !!this.isPaid;
     this.refundable = !!this.refundable;
-    this.createdAt = this.createdAt ? new Date(this.createdAt) : null;
+    this.created_at = this.created_at ? new Date(this.created_at) : null;
     this.paidAt = this.paidAt ? new Date(this.paidAt) : null;
     this.failedAt = this.failedAt ? new Date(this.failedAt) : null;
     this.refunds = this.refunds || []

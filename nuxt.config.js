@@ -83,7 +83,7 @@ module.exports = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: { proxy: true },
+  axios: { proxy: true, debug: true },
   // axios: { baseURL: 'http://linux:3000/api/' },
 
   // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
@@ -99,7 +99,7 @@ module.exports = {
       icons: "fa"
     },
     theme: {
-      dark: false
+      dark: true
     }
   },
   /*

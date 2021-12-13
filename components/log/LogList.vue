@@ -4,9 +4,9 @@
       v-for="log in logs"
       @click="goto(log)"
       :key="log.id"
-      :style="log.reserveringId ? 'cursor: pointer' : ''"
+      :style="log.reservering ? 'cursor: pointer' : ''"
     >
-      <v-col md="2">{{ log.createdAt | formatDate("dd-MM-yyyy H:mm") }}</v-col>
+      <v-col md="2">{{ log.created_at | formatDate("dd-MM-yyyy H:mm") }}</v-col>
       <v-col md="4" v-if="log.reservering">
         {{ log.reservering.naam }} {{ log.reservering.email }}
       </v-col>
@@ -14,7 +14,7 @@
       <v-col md="4">{{ log.message }}</v-col>
       <v-col md="1">
         <a
-          v-if="log.reserveringId"
+          v-if="log.reservering"
           :href="href(log)"
           @click.stop=""
           target="_blank"
@@ -52,10 +52,10 @@ export default {
       }
     },
     link(row) {
-      if (row.reserveringId) {
+      if (row.reservering) {
         return {
           name: "reserveren-id-details",
-          params: { id: row.reserveringId },
+          params: { id: row.reservering },
         };
       } else {
         return "";

@@ -37,8 +37,8 @@
           <uitvoeringen
             v-if="voorstelling"
             :uitvoeringen="voorstelling.uitvoeringen"
-            v-model="uitvoeringId"
-            :rules="rules.uitvoeringId"
+            v-model="uitvoering_id"
+            :rules="rules.uitvoering_id"
           >
           </uitvoeringen>
           <div class="invalid-feedback" v-if="errors.uitvoering">{{ errors.uitvoering }}</div>
@@ -219,7 +219,7 @@ export default {
         naam: [required],
         email: [required, email],
         wachtlijst: [required],
-        uitvoeringId: [required],
+        uitvoering_id: [required],
       },
     };
   },
@@ -249,8 +249,8 @@ export default {
       }
     } else {
       this.reservering = new Reservering();
-      if (this.$route.query.uitvoeringId) {
-        this.uitvoeringId = +this.$route.query.uitvoeringId;
+      if (this.$route.query.uitvoering_id) {
+        this.uitvoering_id = +this.$route.query.uitvoering_id;
       }
     }
     const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
@@ -325,7 +325,7 @@ export default {
     wachtrijNodig: function () {
       let retval = false;
       if (this.uitvoering) {
-        if (this.uitvoeringId !== this.originalUitvoeringId) {
+        if (this.uitvoering_id !== this.originalUitvoeringId) {
           retval =
             this.aantalKaarten > this.uitvoering.vrije_plaatsen + (this.uitvoering.tekoop || 0);
         } else {
@@ -338,16 +338,16 @@ export default {
     },
 
     uitvoering: function () {
-      return this.voorstelling?.uitvoeringen.find((u) => u.id == this.reservering.uitvoeringId);
+      return this.voorstelling?.uitvoeringen.find((u) => u.id == this.reservering.uitvoering_id);
     },
 
-    uitvoeringId: {
+    uitvoering_id: {
       get: function () {
         const uitvoering = this.reservering.uitvoering;
         return uitvoering && uitvoering.id ? uitvoering.id : uitvoering;
       },
       set(id) {
-        this.reservering.uitvoeringId = id;
+        this.reservering.uitvoering_id = id;
         this.reservering.uitvoering = this.uitvoering;
       },
     },

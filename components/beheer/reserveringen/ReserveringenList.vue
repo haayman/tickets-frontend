@@ -55,8 +55,8 @@
         {{ item.uitvoering ? item.uitvoering.toString() : "" }}
       </template>
 
-      <template #[`item.createdAt`]="{ item }">
-        {{ item.createdAt | formatDate }}
+      <template #[`item.created_at`]="{ item }">
+        {{ item.created_at | formatDate }}
       </template>
     </v-data-table>
   </v-card>
@@ -67,10 +67,10 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Reserveringen",
-  props: ["reserveringen", "uitvoeringId"],
+  props: ["reserveringen", "uitvoering_id"],
   data() {
     return {
-      sortColumn: "createdAt",
+      sortColumn: "created_at",
       ascending: false,
       filter: "",
       isAdmin: true, // @TODO
@@ -109,7 +109,7 @@ export default {
           text: "E-mail",
           value: "email",
         },
-        ...(!this.uitvoeringId
+        ...(!this.uitvoering_id
           ? [
               {
                 text: "Voorstelling",
@@ -120,7 +120,7 @@ export default {
           : []),
         {
           text: "Tijdstip",
-          value: "createdAt",
+          value: "created_at",
         },
         {
           text: "Kaarten",

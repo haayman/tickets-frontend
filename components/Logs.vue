@@ -12,7 +12,7 @@
         </thead>
         <tbody>
           <tr v-for="log in sortedLogs" :key="log.id">
-            <td>{{ log.createdAt | formatDate("EEEE dd MMM HH:mm") }}</td>
+            <td>{{ log.created_at | formatDate("EEEE dd MMM HH:mm") }}</td>
             <td>{{ log.message }}</td>
           </tr>
         </tbody>

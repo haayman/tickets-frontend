@@ -63,7 +63,7 @@ export default {
       let params = {
         params: {
           include: ["tickets"],
-          order: "-createdAt",
+          order: "-created_at",
         },
       };
       if (this.uitvoeringId) {

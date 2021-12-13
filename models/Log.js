@@ -1,11 +1,11 @@
 export class Log {
-  constructor({ id, message, createdAt }) {
+  constructor({ id, message, created_at }) {
     this.id = id;
     this.message = message;
-    this.createdAt = new Date(createdAt)
+    this.created_at = new Date(created_at)
   }
 
   toString() {
-    return `${this.createdAt} ${this.message})`
+    return `${this.created_at} ${this.message})`
   }
 }

@@ -16,7 +16,7 @@
           :class="classes(uitvoering.id)"
           :to="{
             name: 'beheer-reserveringen',
-            query: { uitvoeringId: uitvoering.id },
+            query: { uitvoering_id: uitvoering.id },
           }"
         >
           <td>{{ uitvoering.aanvang | formatDate("Pp") }}</td>
@@ -35,7 +35,7 @@ import UitvoeringStatus from "@/components/UitvoeringStatus.vue";
 
 export default {
   name: "UitvoeringenList",
-  props: ["uitvoeringen", "uitvoeringId"],
+  props: ["uitvoeringen", "uitvoering_id"],
   components: {
     UitvoeringStatus,
   },
@@ -61,8 +61,8 @@ export default {
   },
 
   methods: {
-    classes: function (uitvoeringId) {
-      if (uitvoeringId && this.uitvoeringId == uitvoeringId) {
+    classes: function (uitvoering_id) {
+      if (uitvoering_id && this.uitvoering_id == uitvoering_id) {
         return ["table-active"];
       } else {
         return ["noprint"];
