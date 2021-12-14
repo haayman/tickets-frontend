@@ -55,7 +55,7 @@ export default {
       if (row.reservering) {
         return {
           name: "reserveren-id-details",
-          params: { id: row.reservering },
+          params: { id: row.reservering.id },
         };
       } else {
         return "";
