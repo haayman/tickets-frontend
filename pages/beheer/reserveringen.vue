@@ -1,20 +1,20 @@
 <template>
   <div>
     <v-card v-if="uitvoeringen">
-      <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoeringId="uitvoeringId"></uitvoeringen>
+      <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoering_id="uitvoering_id"></uitvoeringen>
     </v-card>
     <reserveringen-list
       class="mt-3"
       :loading="loading"
       :reserveringen="gereserveerd"
-      :uitvoeringId="uitvoeringId"
+      :uitvoering_id="uitvoering_id"
       >Gereserveerd</reserveringen-list
     >
     <reserveringen-list
       class="mt-3"
       :loading="loading"
       :reserveringen="wachtlijst"
-      :uitvoeringId="uitvoeringId"
+      :uitvoering_id="uitvoering_id"
       >Wachtlijst</reserveringen-list
     >
   </div>
@@ -33,7 +33,7 @@ export default {
   },
   data() {
     return {
-      uitvoeringId: "",
+      uitvoering_id: "",
       loading: false,
       uitvoeringen: null,
       reserveringen: [],
@@ -42,7 +42,7 @@ export default {
   watch: {
     $route: {
       handler() {
-        this.uitvoeringId = this.$route.query?.uitvoeringId || "";
+        this.uitvoering_id = this.$route.query?.uitvoering_id || "";
         this.fetch();
       },
       immediate: true,
@@ -66,8 +66,8 @@ export default {
           order: "-created_at",
         },
       };
-      if (this.uitvoeringId) {
-        params.params.uitvoeringId = this.uitvoeringId;
+      if (this.uitvoering_id) {
+        params.params.uitvoering_id = this.uitvoering_id;
         params.params.order = "naam";
       }
       const { data: reserveringen } = await this.$axios.get("/reservering", params);
