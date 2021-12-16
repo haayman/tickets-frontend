@@ -28,20 +28,20 @@
         <v-text-field v-model="filter" label="zoek" class="mx-4"></v-text-field>
       </template>
 
-      <!-- <template v-slot:[`item.actions`]="{ item }">
-          <span>
-            <v-icon small v-if="reservering.ingenomen"> far fa-check-square ></v-icon>
-            <v-icon v-if="isAdmin" @click.prevent="resend(item)" title="ticket opnieuw versturen"
-              >far fa-ticket-alt</v-icon
-            >
-            <v-icon
-              v-if="isAdmin && item.openstaandBedrag > 0"
-              @click.prevent="reminder(item)"
-              title="betalingsverzoek versturen"
-              >far fa-credit-card</v-icon
-            >
-          </span>
-        </template> -->
+      <template v-slot:[`item.actions`]="{ item }">
+        <span>
+          <v-icon small v-if="item.ingenomen">fa-check-square ></v-icon>
+          <v-icon v-if="isAdmin" @click.prevent="resend(item)" title="ticket opnieuw versturen"
+            >fa-ticket-alt</v-icon
+          >
+          <v-icon
+            v-if="isAdmin && item.openstaandBedrag > 0"
+            @click.prevent="reminder(item)"
+            title="betalingsverzoek versturen"
+            >fa-credit-card</v-icon
+          >
+        </span>
+      </template>
 
       <template v-slot:[`item.tickets`]="{ item }">
         <td class="d-flex flex-column">
@@ -73,11 +73,10 @@ export default {
       sortColumn: "created_at",
       ascending: false,
       filter: "",
-      isAdmin: true, // @TODO
     };
   },
   computed: {
-    // ...mapGetters(["isAdmin"]),
+    ...mapGetters(["isAdmin"]),
     hasOpmerkingen: function () {
       return this.reserveringen.find((r) => r.opmerking_gebruiker);
     },
