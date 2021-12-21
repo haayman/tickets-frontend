@@ -327,11 +327,11 @@ export default {
       if (this.uitvoering) {
         if (this.uitvoering_id !== this.originalUitvoeringId) {
           retval =
-            this.aantalKaarten > this.uitvoering.vrije_plaatsen + (this.uitvoering.tekoop || 0);
+            this.aantalKaarten > this.uitvoering.vrije_plaatsen + (this.uitvoering.te_koop || 0);
         } else {
           retval =
             this.aantalKaarten - this.originalAantal >
-            this.uitvoering.vrije_plaatsen + (this.uitvoering.tekoop || 0);
+            this.uitvoering.vrije_plaatsen + (this.uitvoering.te_koop || 0);
         }
       }
       return retval;
