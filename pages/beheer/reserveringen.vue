@@ -11,6 +11,7 @@
       >Gereserveerd</reserveringen-list
     >
     <reserveringen-list
+      v-if="wachtlijst.length"
       class="mt-3"
       :loading="loading"
       :reserveringen="wachtlijst"
