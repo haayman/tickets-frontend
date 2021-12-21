@@ -75,4 +75,8 @@ export default {
 tr {
   cursor: pointer;
 }
+
+.table-active {
+  background-color: #333;
+}
 </style>
