@@ -13,8 +13,8 @@
       />
       <v-select v-else v-model.number="aantal" required :items="availableOptions" />
     </td>
-    <td v-if="aantalTeKoop">
-      {{ ticket.aantalTeKoop }}
+    <td v-if="aantalTekoop">
+      {{ ticket.aantalTekoop }}
     </td>
     <td v-if="reservering.id" class="text-center">{{ ticket.betaald | formatMoney }}</td>
     <td class="money text-center">
@@ -28,7 +28,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "Reserveren",
 
-  props: ["ticket", "reservering", "aantalTeKoop"],
+  props: ["ticket", "reservering", "aantalTekoop"],
   data() {
     return {
       originalAantal: this.ticket.aantal - this.ticket.aantalTekoop,

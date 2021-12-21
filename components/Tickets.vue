@@ -6,7 +6,7 @@
           <th>omschrijving</th>
           <th>prijs</th>
           <th>aantal</th>
-          <th v-if="aantalTeKoop">aantal te koop</th>
+          <th v-if="aantalTekoop">aantal te koop</th>
           <th class="text-center" v-if="reservering.id">betaald</th>
           <th class="text-center">{{ reservering.id ? "bijbetalen" : "bedrag" }}</th>
         </tr>
@@ -16,7 +16,7 @@
           v-for="ticket in reservering.tickets"
           :ticket="ticket"
           :reservering="reservering"
-          :aantalTeKoop="aantalTeKoop"
+          :aantalTekoop="aantalTekoop"
           :key="ticket.prijs.id"
         >
         </ticket>
@@ -25,7 +25,7 @@
           <td>
             {{ aantalKaarten }}
           </td>
-          <td v-if="aantalTeKoop">{{ aantalTeKoop }}</td>
+          <td v-if="aantalTekoop">{{ aantalTekoop }}</td>
           <td v-if="reservering.id"></td>
           <td class="money text-center">
             {{ totaalBedrag | formatMoney }}
@@ -48,7 +48,7 @@ export default {
     aantalKaarten: function () {
       return this.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0);
     },
-    aantalTeKoop: function () {
+    aantalTekoop: function () {
       return this.reservering.tickets.reduce((aantal, t) => aantal + +t.aantalTekoop, 0);
     },
 

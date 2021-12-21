@@ -6,7 +6,7 @@ import { Log } from './Log'
 export class Reservering {
   constructor({ id,
     naam, email, wachtlijst, opmerking, opmerking_gebruiker,
-    ingenomen, betaald, uitvoering, tickets, payments, logs, teruggeefbaar, created_at, status } = {}) {
+    ingenomen, betaald, uitvoering, tickets, payments, logs, teruggeefbaar, created_at, status, openstaandBedrag } = {}) {
 
     this.id = id || null;
     this.naam = naam;
@@ -20,6 +20,7 @@ export class Reservering {
     this.teruggeefbaar = !!teruggeefbaar;
     this.created_at = new Date(created_at);
     this.status = status;
+    this.openstaandBedrag = openstaandBedrag;
 
     this.uitvoering = new Uitvoering(uitvoering);
     this.tickets = tickets?.map(t => new Ticket(t)) || [];

@@ -63,7 +63,7 @@ export default {
       this.loading = true;
       let params = {
         params: {
-          include: ["tickets"],
+          include: ["tickets", "payments"],
           order: "-created_at",
         },
       };
