@@ -24,19 +24,15 @@
       locale="nl - NL"
       @click:row="gotoReservation"
     >
-      <template v-slot:top>
-        <v-text-field v-model="filter" label="zoek" class="mx-4"></v-text-field>
-      </template>
-
       <template v-slot:[`item.actions`]="{ item }">
         <span>
           <v-icon small v-if="item.ingenomen">fa-check-square ></v-icon>
-          <v-icon v-if="isAdmin" @click.prevent="resend(item)" title="ticket opnieuw versturen"
+          <v-icon v-if="isAdmin" @click.stop="resend(item)" title="ticket opnieuw versturen"
             >fa-ticket-alt</v-icon
           >
           <v-icon
             v-if="isAdmin && item.openstaandBedrag > 0"
-            @click.prevent="reminder(item)"
+            @click.stop="reminder(item)"
             title="betalingsverzoek versturen"
             >fa-credit-card</v-icon
           >
