@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <Navbar />
+    <notifications position="top left" />
     <v-main>
       <v-container>
         <nuxt />

@@ -36,6 +36,8 @@ module.exports = {
 
   plugins: [
     "~plugins/filters.js",
+    { src: '~/plugins/notifications-ssr', ssr: true },
+    { src: '~/plugins/notifications-client', ssr: false }
   ],
   /*
    ** Nuxt.js dev-modules
