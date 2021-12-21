@@ -28,7 +28,7 @@
     "date-fns": "^2.16.1",
     "nodemon": "^2.0.7",
     "nuxt": "^2.15.2",
-    "validator": "^13.5.2",
+    "validator": "^13.7.0",
     "vue-infinite-loading": "^2.4.5",
     "vue-password": "^3.0.0",
     "vuex": "^3.6.0",
