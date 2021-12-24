@@ -89,7 +89,7 @@ module.exports = {
   // axios: { baseURL: 'http://linux:3000/api/' },
 
   // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
-  proxy: { "/api/": "http://localhost:3000/" },
+  proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -116,6 +116,6 @@ module.exports = {
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
       }
-    }
+    },
   }
 };
