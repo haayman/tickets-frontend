@@ -432,7 +432,7 @@ export default {
               this.$router.push({ name: "beheer-reserveringen" });
             } else {
               this.$router.push({
-                name: "reservering-details",
+                name: "reserveren-id-details",
                 params: { id },
               });
             }
