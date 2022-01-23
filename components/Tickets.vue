@@ -8,7 +8,7 @@
           <th>aantal</th>
           <th v-if="aantalTekoop">aantal te koop</th>
           <th class="text-center" v-if="reservering.id">betaald</th>
-          <th class="text-center">{{ reservering.id ? "bijbetalen" : "bedrag" }}</th>
+          <th class="text-center">{{ saldoTekst }}</th>
         </tr>
       </thead>
       <tbody>
@@ -18,6 +18,7 @@
           :reservering="reservering"
           :aantalTekoop="aantalTekoop"
           :key="ticket.prijs.id"
+          :factor="factor"
         >
         </ticket>
         <tr class="total">
@@ -28,7 +29,7 @@
           <td v-if="aantalTekoop">{{ aantalTekoop }}</td>
           <td v-if="reservering.id"></td>
           <td class="money text-center">
-            {{ totaalBedrag | formatMoney }}
+            {{ (factor * totaalBedrag) | formatMoney }}
           </td>
         </tr>
       </tbody>
@@ -58,6 +59,21 @@ export default {
 
     totaalBedrag: function () {
       return this.reservering.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0);
+    },
+
+    saldoTekst() {
+      if (!this.reservering.id) {
+        return "bedrag";
+      }
+      return this.totaalBedrag < 0 ? "teruggave" : "bijbetalen";
+    },
+
+    factor() {
+      if (this.saldoTekst === "teruggave") {
+        return -1;
+      } else {
+        return 1;
+      }
     },
   },
 };

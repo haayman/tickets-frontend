@@ -18,7 +18,7 @@
     </td>
     <td v-if="reservering.id" class="text-center">{{ ticket.betaald | formatMoney }}</td>
     <td class="money text-center">
-      {{ ticket.tebetalen | formatMoney }}
+      {{ (factor * ticket.tebetalen) | formatMoney }}
     </td>
   </tr>
 </template>
@@ -28,7 +28,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "Reserveren",
 
-  props: ["ticket", "reservering", "aantalTekoop"],
+  props: ["ticket", "reservering", "aantalTekoop", "factor"],
   data() {
     return {
       originalAantal: this.ticket.aantal - this.ticket.aantalTekoop,
