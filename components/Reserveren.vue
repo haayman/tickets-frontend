@@ -56,13 +56,20 @@
             <v-alert type="warning" dense v-if="wachtrijNodig">
               <h4 class="alert-heading">Let op!</h4>
               Er zijn onvoldoende plaatsen beschikbaar. Je komt op de wachtlijst
-              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle ></v-icon>
+              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle</v-icon>
               <br />
               <v-checkbox
                 v-model="reservering.wachtlijst"
                 :rules="rules.wachtlijst"
                 label="Akkoord"
               />
+            </v-alert>
+          </transition>
+
+          <transition name="fade">
+            <v-alert type="info" dense v-if="wachtlijst">
+              Je staat op de wachtlijst
+              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle</v-icon>
             </v-alert>
           </transition>
 
@@ -284,7 +291,7 @@ export default {
       return this.reservering.id ? 2 : 1;
     },
     submitText: function () {
-      if (this.betaling && !this.wachtrijNodig) {
+      if (this.betaling && !this.wachtrijNodig && !this.wachtlijst) {
         return "Betalen";
       } else {
         return "Opslaan";
@@ -307,7 +314,7 @@ export default {
     },
 
     bijbetalingStatus: function () {
-      if (this.reservering.id) {
+      if (this.reservering.id && !this.wachtlijst) {
         let bedrag = this.totaalBedrag;
         if (bedrag < 0) {
           if (this.reservering.teruggeefbaar) {
@@ -323,6 +330,7 @@ export default {
     },
 
     wachtrijNodig: function () {
+      if (this.wachtlijst) return false;
       let retval = false;
       if (this.uitvoering) {
         if (this.uitvoering_id !== this.originalUitvoeringId) {
@@ -335,6 +343,14 @@ export default {
         }
       }
       return retval;
+    },
+
+    wachtlijst() {
+      return (
+        this.reservering.id &&
+        this.reservering.wachtlijst &&
+        this.uitvoering_id == this.originalUitvoeringId
+      );
     },
 
     uitvoering: function () {
@@ -373,8 +389,8 @@ export default {
     },
 
     async onSubmit() {
-      this.loading = true;
       if (this.$refs.form.validate()) {
+        this.loading = true;
         this.reservering
           .save(this.$axios)
           .then(() => {
@@ -405,9 +421,14 @@ export default {
             this.$router.push({
               name: "beheer-reserveringen",
             });
+          } else if (this.reservering.teruggeefbaar) {
+            this.$router.push({
+              name: "geannuleerd",
+            });
           } else {
             this.$router.push({
-              name: "reservering-geannuleerd",
+              name: "reserveren-id-details",
+              params: { id: this.reservering.id },
             });
           }
         });

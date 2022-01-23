@@ -76,7 +76,7 @@
       </v-card-text>
     </v-card>
 
-    <qr v-if="reservering && showQr" :reservering="reservering" />
+    <qr v-if="reservering && !reservering.wachtlijst && showQr" :reservering="reservering" />
 
     <payments
       class="mt-3"
