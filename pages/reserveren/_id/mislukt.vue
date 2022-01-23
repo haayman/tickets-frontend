@@ -1,11 +1,10 @@
 <template>
-  <Details>
+  <Details :show-qr="false">
     <template v-slot:default="slotProps">
       <v-card class="mt-3">
         <v-card-title>Betaling is mislukt</v-card-title>
         <v-card-text>
           De betaling is mislukt.<br />
-          Status: {{ slotProps.reservering.betaalstatus }}<br />
           Klik
           <nuxt-link
             :to="{ name: 'reserveren-id-betalen', params: { id: slotProps.reservering.id } }"

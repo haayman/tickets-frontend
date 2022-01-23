@@ -76,6 +76,8 @@
       </v-card-text>
     </v-card>
 
+    <qr v-if="reservering && showQr" :reservering="reservering" />
+
     <payments
       class="mt-3"
       :payments="reservering.payments"
@@ -103,6 +105,10 @@ export default {
     },
     showLogs: {
       default: false,
+    },
+    showQr: {
+      type: Boolean,
+      default: true,
     },
     title: {
       default: "Reservering",
