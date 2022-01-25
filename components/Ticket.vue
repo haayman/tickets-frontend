@@ -60,7 +60,7 @@ export default {
     },
     availableOptions() {
       // genereer een array van [0..originalAantal]
-      return [...Array(this.originalAantal).keys()];
+      return [...Array(this.originalAantal + 1).keys()];
     },
   },
   methods: {
