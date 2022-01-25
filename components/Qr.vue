@@ -16,7 +16,11 @@ export default {
   },
   computed: {
     url() {
-      return `/api/reservering/${this.reservering.id}/qr`;
+      if (this.reservering) {
+        return `/api/reservering/${this.reservering.id}/qr`;
+      } else {
+        return null;
+      }
     },
   },
 };
