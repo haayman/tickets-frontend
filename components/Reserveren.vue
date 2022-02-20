@@ -222,7 +222,10 @@ export default {
       hoewerkthet: false,
       loading: false,
       rules: {
-        form: [() => this.aantalKaarten > 0 || "Geen kaarten geselecteerd"],
+        form: [
+          () => this.aantalKaarten > 0 || "Geen kaarten geselecteerd",
+          () => this.teveelKaarten || "Teveel kaarten",
+        ],
         naam: [required],
         email: [required, email],
         wachtlijst: [required],
@@ -327,6 +330,13 @@ export default {
         }
       }
       return "";
+    },
+
+    /**
+     * berekent of de bestelling groter is dan het aantal beschikbare kaarten
+     */
+    teveelKaarten() {
+      return this.aantalKaarten > this.uitvoering.aantalKaarten;
     },
 
     wachtrijNodig: function () {
