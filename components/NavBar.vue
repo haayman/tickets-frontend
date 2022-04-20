@@ -37,12 +37,13 @@ export default {
       return this.loggedInUser?.name || "";
     },
     links() {
-      const links = [
-        {
+      const links = [];
+      if (this.isAuthenticated) {
+        links.push({
           title: "Bestellen",
           link: "/reserveren/",
-        },
-      ];
+        });
+      }
       if (this.isKassa) {
         links.push({
           title: "Kassa",
