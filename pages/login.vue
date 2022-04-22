@@ -1,9 +1,8 @@
 <template>
   <v-container>
     <v-card class="mx-auto" max-width="400" outlined>
+      <v-card-title>Login</v-card-title>
       <v-card-text>
-        <h2 class="display-1 mb-5">Login</h2>
-
         <v-alert v-if="error" type="error">
           {{ error }}
         </v-alert>
@@ -23,7 +22,18 @@
           />
 
           <v-btn type="submit" depressed color="success">Log In</v-btn>
+          <v-btn color="secondary" @click="forgotten = !forgotten">Wachtwoord vergeten</v-btn>
         </v-form>
+      </v-card-text>
+    </v-card>
+    <v-card v-if="forgotten" class="mx-auto mt-2" max-width="400" outlined>
+      <v-card-title>Wachtwoord vergeten</v-card-title>
+      <v-card-text>
+        <v-form @submit.prevent="sendForgotten">
+          <v-text-field v-model="username" required label="gebruikersnaam" />
+          <v-btn color="primary" type="submit">Stuur link</v-btn>
+        </v-form>
+        <v-alert v-if="forgottenSent">Controleer je e-mail</v-alert>
       </v-card-text>
     </v-card>
   </v-container>
@@ -33,33 +43,48 @@
 export default {
   data() {
     return {
-      username: '',
-      password: '',
-      error: null
-    }
+      username: "",
+      password: "",
+      error: null,
+      forgotten: false,
+      forgottenSent: false,
+    };
   },
 
   methods: {
     async login() {
-      this.error = null
+      this.error = null;
 
       try {
-        await this.$auth.loginWith('local', {
+        await this.$auth.loginWith("local", {
           data: {
             username: this.username,
-            password: this.password
-          }
-        })
+            password: this.password,
+          },
+        });
 
-        this.$router.push('/')
+        this.$router.push("/");
       } catch (e) {
         if (e.response !== undefined) {
-          this.error = e.response.data.message
+          this.error = e.response.data.message;
         } else {
-          this.error = `Server problem: ${e}`
+          this.error = `Server problem: ${e}`;
         }
       }
-    }
-  }
-}
+    },
+    sendForgotten() {
+      this.error = false;
+      this.$axios
+        .post("/user/forgotten", {
+          username: this.username,
+        })
+        .then((request) => {
+          this.forgottenSent = true;
+        })
+        .catch((e) => {
+          this.error = e.response.statusText || e.message;
+        });
+    },
+  },
+};
 </script>
