@@ -1,9 +1,9 @@
 <template>
-  <v-card class="mx-auto" max-width="400" outlined>
-    <v-card-title>Wachtwoord instellen</v-card-title>
-    <v-card-text>
-      <v-alert color="error" v-if="errors['general']">{{ errors.general }}</v-alert>
-      <v-form @submit.prevent="save" class="{saving:user.saving}">
+  <v-form @submit.prevent="save" class="{saving:user.saving}">
+    <v-card class="mx-auto" max-width="400" outlined>
+      <v-card-title>Wachtwoord instellen</v-card-title>
+      <v-card-text>
+        <v-alert color="error" v-if="errors['general']">{{ errors.general }}</v-alert>
         <v-text-field v-model="user.username" label="Gebruikersnaam" readonly />
         <v-text-field v-model="user.name" label="Naam" readonly />
         <v-text-field v-model="user.email" label="E-mail" readonly />
@@ -35,14 +35,14 @@
         <v-alert v-if="saved">
           Wachtwoord opgeslagen. <nuxt-link to="/login">log in</nuxt-link> in om verder te gaan
         </v-alert>
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn class="mt-3" v-if="!saved" type="submit" :disabled="score < 3" color="primary">
-        Opslaan
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn class="mt-3" v-if="!saved" type="submit" :disabled="score < 3" color="primary">
+          Opslaan
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-form>
 </template>
 
 <script>
