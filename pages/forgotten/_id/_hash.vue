@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>Wachtwoord herstellen</v-card-title>
+  <v-card class="mx-auto" max-width="400" outlined>
+    <v-card-title>Wachtwoord instellen</v-card-title>
     <v-card-text>
       <v-alert color="error" v-if="errors['general']">{{ errors.general }}</v-alert>
       <v-form @submit.prevent="save" class="{saving:user.saving}">
@@ -9,21 +9,24 @@
         <v-text-field v-model="user.email" label="E-mail" readonly />
         <v-alert v-if="errors.password">{{ errors.password }}</v-alert>
         <v-text-field
+          label="Wachwoord"
           v-model="user.password"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :rules="[rules.required, rules.strength]"
           validate-on-blur
           :type="showPassword ? 'text' : 'password'"
-          label="Wachwoord"
+          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="showPassword = !showPassword"
         ></v-text-field>
         <v-progress-linear
           :background-opacity="opacity"
-          :color="color"
-          :value="score"
+          :color="color.color"
+          :value="color.value"
+          :height="8"
+          rounded
         ></v-progress-linear>
-        <div class="mt-3 text-muted font-italic" v-if="suggestions && !saved">
+        <div class="mt-3 text-muted font-italic" v-if="showSuggestions">
           <ul>
+            <li v-if="warning">{{ warning }}</li>
             <li v-if="crackTime">Hacked within {{ crackTime }}</li>
             <li v-for="suggestion in suggestions" :key="suggestion">{{ suggestion }}</li>
           </ul>
@@ -32,16 +35,18 @@
         <v-alert v-if="saved">
           Wachtwoord opgeslagen. <nuxt-link to="/login">log in</nuxt-link> in om verder te gaan
         </v-alert>
-
-        <v-btn v-if="!saved" type="submit" :disabled="score < 3" color="primary"> Bijwerken </v-btn>
       </v-form>
     </v-card-text>
+    <v-card-actions>
+      <v-btn class="mt-3" v-if="!saved" type="submit" :disabled="score < 3" color="primary">
+        Opslaan
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import { User } from "~/models/User";
-import { mapGetters } from "vuex";
 import axios from "axios";
 import parseError from "~/components/parseError";
 
@@ -52,10 +57,10 @@ export default {
       user: {},
       errors: {},
       showPassword: false,
-      hash: this.$route.params.hash,
       saved: false,
       score: 0,
-      suggestions: "",
+      warning: "",
+      suggestions: [],
       crackTime: 0,
       rules: {
         required: (value) => !!value || "Vul een wachtwoord in",
@@ -66,14 +71,16 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["activeUser"]),
     color() {
       const score = this.score;
-      if (score >= 4) return "light-blue";
-      if (score == 3) return "light-green";
-      if (score == 2) return "yellow";
-      if (score == 1) return "orange";
-      return "red";
+      if (score >= 4) return { color: "light-blue", value: 100 };
+      if (score == 3) return { color: "light-green", value: 75 };
+      if (score == 2) return { color: "yellow", value: 50 };
+      if (score == 1) return { color: "orange", value: 20 };
+      return { color: "red", value: 0 };
+    },
+    showSuggestions() {
+      return this.user.password && this.suggestions && !this.saved;
     },
   },
 
@@ -126,9 +133,11 @@ export default {
         const result = await axios
           .post("/api/auth/checkPassword", {
             password: password,
+            userInputs: [...this.user.name, this.user.email, this.user.username],
           })
           .then((response) => response.data);
         this.score = result.score;
+        this.warning = result.feedback?.warning;
         this.suggestions = result.feedback.suggestions;
         this.crackTime = result.crack_times_display?.offline_slow_hashing_1e4_per_second;
       } catch (ex) {

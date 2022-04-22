@@ -21,7 +21,7 @@
             data-test="password"
           />
 
-          <v-btn type="submit" depressed color="success">Log In</v-btn>
+          <v-btn type="submit" depressed color="primary">Log In</v-btn>
           <v-btn color="secondary" @click="forgotten = !forgotten">Wachtwoord vergeten</v-btn>
         </v-form>
       </v-card-text>
