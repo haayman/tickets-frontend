@@ -5,7 +5,7 @@
     <v-card class="mt-3" v-if="reservering">
       <v-card-title
         >Kaarten
-        <v-icon small @click="hoewerkthet = true" class="float-right">
+        <v-icon small @click="hoewerkthet = true" class="float-right ml-3">
           far fa-question-circle ></v-icon
         >
       </v-card-title>
@@ -113,7 +113,7 @@
       {{ message }}
     </v-dialog>
 
-    <v-dialog v-model="wachtrijHelp">
+    <v-dialog v-model="wachtrijHelp" max-width="600px">
       <v-card>
         <v-card-title>Hoe werkt de wachtlijst?</v-card-title>
         <v-card-text>
@@ -148,7 +148,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="hoewerkthet">
+    <v-dialog v-model="hoewerkthet" max-width="600px">
       <v-card>
         <v-card-title>Hoe werkt het?</v-card-title>
         <v-card-text>
@@ -259,8 +259,8 @@ export default {
       }
     } else {
       this.reservering = new Reservering();
-      if (this.$route.query.uitvoering_id) {
-        this.uitvoering_id = +this.$route.query.uitvoering_id;
+      if (this.$route.query.uitvoeringId) {
+        this.uitvoering_id = +this.$route.query.uitvoeringId;
       }
     }
     const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
