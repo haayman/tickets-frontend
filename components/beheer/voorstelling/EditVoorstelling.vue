@@ -15,7 +15,11 @@
           <v-text-field v-model="voorstelling.poster" label="Poster" type="url" />
           <img v-if="voorstelling.poster" :src="voorstelling.poster" class="mh-300 mt-2" />
           <v-text-field v-model="voorstelling.thumbnail" label="Thumbnail" type="url" />
-          <img v-if="voorstelling.thumbnail" :src="voorstelling.thumbnail" class="mh-300 mt-2" />
+          <img
+            v-if="voorstelling.thumbnail"
+            :src="voorstelling.thumbnail"
+            class="mh-300 mt-2 thumbnail"
+          />
         </v-card-text>
       </v-card>
       <v-card class="mx-auto mt-4">
@@ -91,15 +95,15 @@
               </tr>
             </thead>
             <tbody>
-              <uitvoering
+              <EditUitvoering
                 v-for="uitvoering in voorstelling.uitvoeringen"
                 :uitvoering="uitvoering"
                 :deletable="true"
                 :key="uitvoering.id"
                 @delete="deleteUitvoering"
               >
-              </uitvoering>
-              <uitvoering :uitvoering="uitvoering" @save="addUitvoering" :deletable="false" />
+              </EditUitvoering>
+              <EditUitvoering :uitvoering="uitvoering" @save="addUitvoering" :deletable="false" />
             </tbody>
           </v-simple-table>
         </v-card-text>
@@ -125,9 +129,9 @@
 import { Prijs } from "~/models/Prijs";
 import { Uitvoering } from "~/models/Uitvoering";
 import { RoleList } from "~/models/Role";
-import UitvoeringRow from "./Uitvoering";
 
 import { addDays } from "date-fns";
+import EditUitvoering from "./EditUitvoering.vue";
 
 export default {
   name: "VoorstellingEdit",
@@ -145,7 +149,9 @@ export default {
     };
   },
   components: {
-    uitvoering: UitvoeringRow,
+    EditUitvoering,
+    EditUitvoering,
+    EditUitvoering,
   },
 
   beforeRouteLeave(to, from, next) {
@@ -252,3 +258,8 @@ export default {
   },
 };
 </script>
+<style>
+.thumbnail {
+  max-height: 100px;
+}
+</style>
