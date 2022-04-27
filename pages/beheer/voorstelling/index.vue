@@ -13,7 +13,7 @@
             <td>{{ props.item.title }}</td>
             <td>{{ props.item.description }}</td>
             <td>
-              <img v-if="props.item.thumbnail" :src="props.item.thumbnail" />
+              <img v-if="props.item.thumbnail" :src="props.item.thumbnail" class="thumbnail" />
             </td>
             <td>
               <nuxt-link
@@ -87,3 +87,8 @@ export default {
   },
 };
 </script>
+<style>
+.thumbnail {
+  max-height: 100px;
+}
+</style>
