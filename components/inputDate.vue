@@ -1,5 +1,5 @@
 <template>
-  <input
+  <v-text-field
     :type="type"
     class="input-date"
     :value="asString()"
