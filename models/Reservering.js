@@ -1,13 +1,27 @@
-import { Ticket } from './Ticket'
-import { Uitvoering } from './Uitvoering'
-import { Payment } from './Payment'
-import { Log } from './Log'
+import { Ticket } from "./Ticket";
+import { Uitvoering } from "./Uitvoering";
+import { Payment } from "./Payment";
+import { Log } from "./Log";
 
 export class Reservering {
-  constructor({ id,
-    naam, email, wachtlijst, opmerking, opmerking_gebruiker,
-    ingenomen, betaald, uitvoering, tickets, payments, logs, teruggeefbaar, created_at, status, openstaandBedrag } = {}) {
-
+  constructor({
+    id,
+    naam,
+    email,
+    wachtlijst,
+    opmerking,
+    opmerking_gebruiker,
+    ingenomen,
+    betaald,
+    uitvoering,
+    tickets,
+    payments,
+    logs,
+    teruggeefbaar,
+    created_at,
+    status,
+    openstaandBedrag,
+  } = {}) {
     this.id = id || null;
     this.naam = naam;
     this.email = email;
@@ -22,11 +36,10 @@ export class Reservering {
     this.status = status;
     this.openstaandBedrag = openstaandBedrag;
 
-    this.uitvoering = new Uitvoering(uitvoering);
-    this.tickets = tickets?.map(t => new Ticket(t)) || [];
-    this.payments = payments?.map(p => new Payment(p)) || [];
-    this.logs = logs?.map(l => new Log(l)) || [];
-
+    if (uitvoering) this.uitvoering = new Uitvoering(uitvoering);
+    this.tickets = tickets?.map((t) => new Ticket(t)) || [];
+    this.payments = payments?.map((p) => new Payment(p)) || [];
+    this.logs = logs?.map((l) => new Log(l)) || [];
   }
 
   async save($axios) {
@@ -46,15 +59,14 @@ export class Reservering {
 
   serialize() {
     return {
-      ... this.id ? { id: this.id } : {},
+      ...(this.id ? { id: this.id } : {}),
       naam: this.naam,
       email: this.email,
       uitvoering: this.uitvoering_id || this.uitvoering.id,
-      tickets: this.tickets.map(t => t.serialize()),
+      tickets: this.tickets.map((t) => t.serialize()),
       opmerking: this.opmerking,
       opmerking_gebruiker: this.opmerking_gebruiker,
-      wachtlijst: this.wachtlijst
-    }
+      wachtlijst: this.wachtlijst,
+    };
   }
-
 }

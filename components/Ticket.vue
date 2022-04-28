@@ -2,14 +2,14 @@
   <tr v-if="shouldBeDisplayed">
     <td>{{ ticket.prijs.description }}</td>
     <td class="money">{{ ticket.prijs.prijs | formatMoney() }}</td>
-    <td>
+    <td class="aantal">
       <v-text-field
         v-if="isAuthorized"
         type="number"
         v-model.number="aantal"
         min="0"
         @focus="selectAll($event)"
-        required
+        :rules="rules"
       />
       <v-select v-else v-model.number="aantal" required :items="availableOptions" />
     </td>
@@ -26,9 +26,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: "Reserveren",
-
-  props: ["ticket", "reservering", "aantalTekoop", "factor"],
+  props: ["ticket", "reservering", "aantalTekoop", "factor", "rules"],
   data() {
     return {
       originalAantal: this.ticket.aantal - this.ticket.aantalTekoop,
@@ -70,3 +68,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.aantal {
+  max-width: 3em;
+}
+</style>
