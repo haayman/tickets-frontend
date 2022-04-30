@@ -30,7 +30,7 @@ export default {
   computed: {
     ...mapGetters(["isAdmin", "isAuthenticated", "isKassa", "isSpeler", "loggedInUser"]),
     title() {
-      return "Theater tickets";
+      return process.env.APP_TITLE || "Theater tickets";
     },
 
     userName() {
@@ -90,6 +90,13 @@ export default {
   .v-btn--round::before,
   .v-btn--active {
     background-color: transparent;
+  }
+}
+.v-tool-bar {
+  &__brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
   }
 }
 </style>
