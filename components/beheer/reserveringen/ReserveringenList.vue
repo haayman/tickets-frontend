@@ -48,7 +48,7 @@
       </template>
 
       <template #[`item.uitvoering`]="{ item }">
-        {{ item.uitvoering ? item.uitvoering.toString() : "" }}
+        {{ item.uitvoering ? formatUitvoering(item.uitvoering) : "" }}
       </template>
 
       <template #[`item.created_at`]="{ item }">
@@ -60,6 +60,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import formatter from "date-fns/format";
+import nl from "date-fns/locale/nl";
 
 export default {
   name: "Reserveringen",
@@ -116,19 +118,22 @@ export default {
         {
           text: "Tijdstip",
           value: "created_at",
+          sortable: false,
         },
         {
           text: "Kaarten",
           value: "tickets",
           classes: "d-flex flex-column",
+          sortable: false,
         },
-        { text: "Status", value: "status" },
+        { text: "Status", value: "status", sortable: false },
 
         ...(this.hasOpmerkingen
           ? [
               {
                 text: "Opmerking",
                 value: "opmerking_gebruiker",
+                sortable: false,
               },
             ]
           : []),
@@ -137,6 +142,7 @@ export default {
               {
                 text: "Aantekeningen",
                 value: "opmerking",
+                sortable: false,
               },
             ]
           : []),
@@ -145,6 +151,9 @@ export default {
     },
   },
   methods: {
+    formatUitvoering(uitvoering) {
+      return formatter(uitvoering.aanvang, "eeee", { locale: nl });
+    },
     remove(reservering) {
       if (confirm("Weet je zeker dat je deze reservering wilt verwijderen")) {
         reservering.delete();
