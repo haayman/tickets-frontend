@@ -19,7 +19,7 @@
             query: { uitvoering_id: uitvoering.id },
           }"
         >
-          <td>{{ uitvoering.aanvang | formatDate("Pp") }}</td>
+          <td>{{ uitvoering.aanvang | formatDate("PPPPp") }}</td>
           <td>{{ uitvoering.gereserveerd }} gereserveerd</td>
           <td>
             <uitvoering-status :uitvoering="uitvoering"></uitvoering-status>
@@ -77,6 +77,6 @@ tr {
 }
 
 .table-active {
-  background-color: #333;
+  background-color: #444;
 }
 </style>
