@@ -86,15 +86,18 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  background-color: #424242;
+}
 .row {
   padding: 2px;
 }
 
 .row:nth-of-type(odd) {
-  background: #ddd;
+  background: #383838;
 }
 
 .row:hover {
-  background: #aaa;
+  background: rgb(105, 105, 105);
 }
 </style>
