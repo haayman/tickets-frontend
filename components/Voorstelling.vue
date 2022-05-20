@@ -17,8 +17,8 @@
             </p>
             <p v-if="voorstelling.opmerkingen" v-html="voorstelling.opmerkingen"></p>
           </v-col>
-          <v-col v-if="voorstelling.poster" md="2">
-            <img :src="voorstelling.poster" class="img-fluid" style="max-height: 200px" />
+          <v-col v-if="voorstelling.poster" md="4">
+            <img :src="voorstelling.poster" class="img-fluid" style="max-height: 100%" />
           </v-col>
         </v-row>
       </v-container>
