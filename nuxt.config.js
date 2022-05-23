@@ -85,8 +85,7 @@ module.exports = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: { proxy: true, debug: true },
-  // axios: { baseURL: 'http://linux:3000/api/' },
+  axios: { proxy: true, debug: false },
 
   // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
   proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
