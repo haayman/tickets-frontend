@@ -49,6 +49,14 @@ export default {
       immediate: true,
     },
   },
+  created() {
+    this.updater = setInterval(() => {
+      this.fetch(false); // geen spinner
+    }, 60000); // elke minuut bijwerken
+  },
+  beforeDestroy() {
+    if (this.updater) clearInterval(this.updater);
+  },
   computed: {
     gereserveerd: function () {
       return this.reserveringen.filter((r) => !r.wachtlijst);
@@ -59,8 +67,8 @@ export default {
     },
   },
   methods: {
-    async fetch() {
-      this.loading = true;
+    async fetch(loading = true) {
+      this.loading = loading;
       let params = {
         params: {
           include: ["tickets", "payments"],
