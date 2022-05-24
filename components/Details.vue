@@ -128,7 +128,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["loggedInUser"]),
+    ...mapGetters(["loggedInUser", "isKassa"]),
     bijbetalingStatus: function () {
       const saldo = this.reservering.saldo;
       if (saldo > 0) {
@@ -142,12 +142,7 @@ export default {
       }
     },
     wordtIngenomen: function () {
-      return (
-        this.reservering.id &&
-        !this.reservering.ingenomen &&
-        this.activeUser &&
-        this.activeUser.isKassa()
-      );
+      return this.reservering.id && !this.reservering.ingenomen && this.isKassa;
     },
   },
 
@@ -167,7 +162,7 @@ export default {
     },
     async innemen() {
       // meld terug dat de kaarten zijn ingenomen
-      const response = await this.$http.put(`/api/reservering/${this.reservering.id}/ingenomen`, {
+      const response = await this.$axios.put(`/reservering/${this.reservering.id}/ingenomen`, {
         ingenomen: new Date(),
       });
       this.reservering.ingenomen = response.data.ingenomen;
