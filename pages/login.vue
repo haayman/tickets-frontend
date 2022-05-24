@@ -13,12 +13,14 @@
             type="text"
             label="gebruikersnaam"
             data-test="username"
+            autocomplete="username"
           />
           <v-text-field
             v-model="password"
             type="password"
             label="wachtwoord"
             data-test="password"
+            autocomplete="current-password"
           />
 
           <v-btn type="submit" depressed color="primary">Log In</v-btn>
