@@ -1,10 +1,5 @@
 <template>
-  <input
-    :type="type"
-    class="input-date"
-    :value="asString()"
-    @change="updateValue($event.target)"
-  />
+  <v-text-field :type="type" class="input-date" :value="asString()" @change="updateValue" />
 </template>
 
 <script>
@@ -22,8 +17,8 @@ export default {
   },
 
   methods: {
-    updateValue: function (target) {
-      this.$emit("input", new Date(target.value));
+    updateValue: function (value) {
+      this.$emit("input", new Date(value));
     },
     asString() {
       try {

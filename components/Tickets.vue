@@ -19,6 +19,7 @@
           :aantalTekoop="aantalTekoop"
           :key="ticket.prijs.id"
           :factor="factor"
+          :rules="rules"
         >
         </ticket>
         <tr class="total">
@@ -41,7 +42,7 @@
 import Ticket from "./Ticket";
 
 export default {
-  props: ["reservering"],
+  props: ["reservering", "rules"],
   components: {
     ticket: Ticket,
   },

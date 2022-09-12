@@ -5,7 +5,7 @@
     <v-card class="mt-3" v-if="reservering">
       <v-card-title
         >Kaarten
-        <v-icon small @click="hoewerkthet = true" class="float-right">
+        <v-icon small @click="hoewerkthet = true" class="float-right ml-3">
           far fa-question-circle ></v-icon
         >
       </v-card-title>
@@ -15,7 +15,7 @@
           {{ reservering.ingenomen | formatDate("Pp") }}
         </v-alert>
 
-        <v-form @submit.prevent="onSubmit" v-model="valid" ref="form" :rules="rules.form">
+        <v-form @submit.prevent="onSubmit" v-model="valid" ref="form">
           <v-alert dense type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
 
           <v-text-field
@@ -34,22 +34,13 @@
             required
           />
 
-          <uitvoeringen
-            v-if="voorstelling"
-            :uitvoeringen="voorstelling.uitvoeringen"
-            v-model="uitvoering_id"
-            :rules="rules.uitvoering_id"
-          >
-          </uitvoeringen>
           <div class="invalid-feedback" v-if="errors.uitvoering">{{ errors.uitvoering }}</div>
+          <v-radio-group v-model="uitvoering_id" :rules="rules.uitvoering_id">
+            <uitvoeringen v-if="voorstelling" :uitvoeringen="voorstelling.uitvoeringen" />
+          </v-radio-group>
 
-          <div class="form-group" v-if="reservering.tickets">
-            <tickets :reservering="reservering"></tickets>
-          </div>
-          <div class="invalid-feedback" v-if="errors.tickets">
-            <span v-for="error in errors.tickets" :key="error">
-              {{ error }}
-            </span>
+          <div v-if="reservering.tickets">
+            <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
           </div>
 
           <transition name="fade">
@@ -117,11 +108,7 @@
       {{ message }}
     </v-dialog>
 
-    <loader v-if="bijbetalingNodig" :loading="loading"
-      >Je wordt doorgestuurd naar de betaalpagina</loader
-    >
-
-    <v-dialog v-model="wachtrijHelp">
+    <v-dialog v-model="wachtrijHelp" max-width="600px">
       <v-card>
         <v-card-title>Hoe werkt de wachtlijst?</v-card-title>
         <v-card-text>
@@ -156,7 +143,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="hoewerkthet">
+    <v-dialog v-model="hoewerkthet" max-width="600px">
       <v-card>
         <v-card-title>Hoe werkt het?</v-card-title>
         <v-card-text>
@@ -230,14 +217,14 @@ export default {
       hoewerkthet: false,
       loading: false,
       rules: {
-        form: [
-          () => this.aantalKaarten > 0 || "Geen kaarten geselecteerd",
-          () => this.teveelKaarten || "Teveel kaarten",
-        ],
         naam: [required],
         email: [required, email],
         wachtlijst: [required],
         uitvoering_id: [required],
+        aantal: [
+          () => this.aantalKaarten > 0 || "Geen kaarten geselecteerd",
+          () => !this.teveelKaarten || "Teveel kaarten",
+        ],
       },
     };
   },
@@ -267,8 +254,8 @@ export default {
       }
     } else {
       this.reservering = new Reservering();
-      if (this.$route.query.uitvoering_id) {
-        this.uitvoering_id = +this.$route.query.uitvoering_id;
+      if (this.$route.query.uitvoeringId) {
+        this.uitvoering_id = +this.$route.query.uitvoeringId;
       }
     }
     const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
@@ -309,15 +296,15 @@ export default {
       }
     },
     aantalKaarten: function () {
-      return this.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0);
+      return this.reservering?.tickets?.reduce((aantal, t) => aantal + +t.aantal, 0);
     },
 
     subTotaal: function () {
-      return this.reservering.prijs.prijs * (this.aantalKaarten - this.reservering.aantalBetaald);
+      return this.reservering.prijs?.prijs * (this.aantalKaarten - this.reservering.aantalBetaald);
     },
 
     totaalBedrag: function () {
-      return this.reservering?.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0);
+      return this.reservering.tickets?.reduce((totaal, t) => totaal + t.tebetalen, 0);
     },
 
     betaling: function () {
@@ -348,7 +335,8 @@ export default {
      * berekent of de bestelling groter is dan het aantal beschikbare kaarten
      */
     teveelKaarten() {
-      return this.aantalKaarten > this.uitvoering.aantalKaarten;
+      if (!this.uitvoering) return false;
+      return this.aantalKaarten > this.uitvoering.aantal_plaatsen;
     },
 
     wachtrijNodig: function () {
@@ -403,6 +391,9 @@ export default {
         this.$nuxt.$loading.finish("opslaan");
       }
     },
+    aantalKaarten() {
+      this.$refs.form?.resetValidation();
+    },
   },
 
   methods: {
@@ -410,8 +401,20 @@ export default {
       this.totaalBedrag = bedrag;
     },
 
+    validate() {
+      let valid = this.$refs.form.validate();
+      if (!valid) {
+        this.$nextTick(() => {
+          const el = this.$el.querySelector(".v-messages.error--text:first-of-type");
+          this.$vuetify.goTo(el);
+          return;
+        });
+      }
+      return valid;
+    },
+
     async onSubmit() {
-      if (this.$refs.form.validate()) {
+      if (this.validate()) {
         this.loading = true;
         this.reservering
           .save(this.$axios)

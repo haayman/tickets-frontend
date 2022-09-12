@@ -5,7 +5,6 @@
         <tr>
           <th>Voorstelling</th>
           <th></th>
-          <!-- <th class="text-center">Wachtlijst</th> -->
         </tr>
       </thead>
       <tbody>
@@ -15,19 +14,11 @@
           @click="radioButtonValue = uitvoering.id"
         >
           <td>
-            <label class="mb-0">
-              <input
-                type="radio"
-                required
-                name="uitvoering"
-                v-model="radioButtonValue"
-                :value="uitvoering.id"
-                :disabled="!uitvoering.verkoopbaar"
-                :rules="rules"
-              />
-              {{ uitvoering.aanvang | formatDate("EEEE d MMMM HH:mm") }}
-              {{ uitvoering.extra_text }}
-            </label>
+            <v-radio
+              :value="uitvoering.id"
+              :disabled="!uitvoering.verkoopbaar"
+              :label="`${formatDate(uitvoering.aanvang)} ${uitvoering.extra_text}`"
+            />
           </td>
           <td>
             <uitvoering-status :uitvoering="uitvoering"></uitvoering-status>
@@ -41,7 +32,7 @@
 <script>
 import UitvoeringStatus from "./UitvoeringStatus";
 import { Uitvoering } from "@/models/Uitvoering";
-import { required } from "@/lib/validation";
+import { formatDate } from "@/plugins/filters";
 
 export default {
   name: "UitvoeringRadio",
@@ -51,7 +42,6 @@ export default {
     return {
       updater: null,
       uitvoeringen: [],
-      rules: [required],
     };
   },
   computed: {
@@ -80,6 +70,9 @@ export default {
     async checkReserveringen() {
       const { data: uitvoeringen } = await this.$axios.get("/uitvoering");
       this.uitvoeringen = uitvoeringen.map((u) => new Uitvoering(u));
+    },
+    formatDate(date) {
+      return formatDate(date, "EEEE d MMMM HH:mm");
     },
   },
 };
