@@ -57,13 +57,7 @@ export default {
           link: "/reserveren/",
         });
       }
-      // if (this.isKassa) {
-      //   links.push({
-      //     title: "Kassa",
-      //     link: "/kassa/",
-      //   });
-      // }
-      if (this.isSpeler || this.isKassa) {
+      if (this.isAuthenticated) {
         links.push({
           title: "Reserveringen",
           link: "/beheer/reserveringen/",
