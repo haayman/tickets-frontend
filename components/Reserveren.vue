@@ -74,7 +74,11 @@
           </transition>
 
           <transition name="fade">
-            <v-alert type="warning" v-if="bijbetalingStatus" v-html="bijbetalingStatus" />
+            <v-alert
+              type="warning"
+              v-if="bijbetalingStatus && !loading"
+              v-html="bijbetalingStatus"
+            />
           </transition>
 
           <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
@@ -112,6 +116,10 @@
     <v-dialog v-model="message">
       {{ message }}
     </v-dialog>
+
+    <loader v-if="bijbetalingNodig" :loading="loading"
+      >Je wordt doorgestuurd naar de betaalpagina</loader
+    >
 
     <v-dialog v-model="wachtrijHelp">
       <v-card>
@@ -309,11 +317,15 @@ export default {
     },
 
     totaalBedrag: function () {
-      return this.reservering.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0);
+      return this.reservering?.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0);
     },
 
     betaling: function () {
       return this.totaalBedrag > 0;
+    },
+
+    bijbetalingNodig() {
+      return this.totaalBedrag > 0 && !this.wachtrijNodig;
     },
 
     bijbetalingStatus: function () {
@@ -325,7 +337,7 @@ export default {
           } else {
             return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
           }
-        } else if (bedrag > 0 && !this.wachtrijNodig) {
+        } else if (this.bijbetalingNodig) {
           return "Er is bijbetaling nodig";
         }
       }
@@ -469,8 +481,8 @@ export default {
             }
             // this.message = "Reservering is opgeslagen";
           } else if (reservering.paymentUrl) {
-            clearInterval(timer);
-            document.location.href = reservering.paymentUrl;
+            // clearInterval(timer);
+            // document.location.href = reservering.paymentUrl;
           }
         } catch (e) {
           this.errors["general"] = e.message;
