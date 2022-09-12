@@ -9,8 +9,8 @@
       <v-card-title>Kaarten</v-card-title>
       <v-card-text>
         <v-alert class="warning" v-if="reservering.ingenomen">
-          Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} gezien op
-          {{ reservering.ingenomen | formatDate("dddd D MMMM YYYY H:mm") }}
+          Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} ingenomen op
+          {{ reservering.ingenomen | formatDate("PPPPp") }}
         </v-alert>
 
         <v-simple-table>
