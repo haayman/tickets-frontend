@@ -1,12 +1,6 @@
 <template>
   <v-simple-table>
     <template v-slot:default>
-      <thead>
-        <tr>
-          <th>Voorstelling</th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         <tr
           v-for="uitvoering in uitvoeringen"
@@ -59,9 +53,9 @@ export default {
   },
   mounted() {
     this.checkReserveringen();
-    // this.updater = setInterval(() => {
-    //   this.checkReserveringen();
-    // }, 10000); // elke 10 seconden bijwerken
+    this.updater = setInterval(() => {
+      this.checkReserveringen();
+    }, 10000); // elke 10 seconden bijwerken
   },
   beforeDestroy() {
     if (this.updater) clearInterval(this.updater);

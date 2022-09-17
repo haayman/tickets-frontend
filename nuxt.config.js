@@ -23,7 +23,7 @@ module.exports = {
         content: process.env.npm_package_description || ""
       }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: process.env.APP_FAVICON || "/favicon.ico" }]
   },
   /*
    ** Customize the progress-bar color
@@ -87,8 +87,8 @@ module.exports = {
    */
   axios: { proxy: true, debug: false },
 
-  // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
-  proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
+  proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
+  // proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -96,6 +96,7 @@ module.exports = {
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     treeShake: true,
+    optionsPath: "./vuetify.options.js",
     defaultAssets: {
       icons: "fa"
     },

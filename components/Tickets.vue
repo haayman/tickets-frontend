@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <ticket
-          v-for="ticket in reservering.tickets"
+          v-for="ticket in tickets"
           :ticket="ticket"
           :reservering="reservering"
           :aantalTekoop="aantalTekoop"
@@ -75,6 +75,13 @@ export default {
       } else {
         return 1;
       }
+    },
+
+    /**
+     * sorteer de tickets aflopend op prijs
+     */
+    tickets() {
+      return this.reservering.tickets.sort((a, b) => b.prijs.prijs - a.prijs.prijs);
     },
   },
 };

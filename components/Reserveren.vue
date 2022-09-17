@@ -16,32 +16,51 @@
         </v-alert>
 
         <v-form @submit.prevent="onSubmit" v-model="valid" ref="form">
-          <v-alert dense type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
+          <v-card>
+            <v-card-text>
+              <v-card-subtitle>Je gegevens</v-card-subtitle>
+              <v-alert dense type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
 
-          <v-text-field
-            label="Naam"
-            v-model="reservering.naam"
-            :rules="rules.naam"
-            validate-on-blur
-            required
-          />
-          <v-text-field
-            label="E-mail"
-            v-model="reservering.email"
-            type="email"
-            :rules="rules.email"
-            validate-on-blur
-            required
-          />
+              <v-text-field
+                label="Naam"
+                v-model="reservering.naam"
+                :rules="rules.naam"
+                validate-on-blur
+                required
+              />
+              <v-text-field
+                label="E-mail"
+                v-model="reservering.email"
+                type="email"
+                :rules="rules.email"
+                validate-on-blur
+                required
+              />
+            </v-card-text>
+          </v-card>
 
-          <div class="invalid-feedback" v-if="errors.uitvoering">{{ errors.uitvoering }}</div>
-          <v-radio-group v-model="uitvoering_id" :rules="rules.uitvoering_id">
-            <uitvoeringen v-if="voorstelling" :uitvoeringen="voorstelling.uitvoeringen" />
-          </v-radio-group>
+          <v-card class="mt-3">
+            <v-card-subtitle>Voorstelling</v-card-subtitle>
+            <v-card-text>
+              <div class="invalid-feedback" v-if="errors.uitvoering">{{ errors.uitvoering }}</div>
+              <v-radio-group v-model="uitvoering_id" :rules="rules.uitvoering_id">
+                <uitvoeringen
+                  v-if="voorstelling"
+                  :uitvoeringen="voorstelling.uitvoeringen"
+                  v-model="uitvoering_id"
+                />
+              </v-radio-group>
+            </v-card-text>
+          </v-card>
 
-          <div v-if="reservering.tickets">
-            <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
-          </div>
+          <v-card class="mt-3">
+            <v-card-subtitle>Aantal kaarten</v-card-subtitle>
+            <v-card-text>
+              <div v-if="reservering.tickets">
+                <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
+              </div>
+            </v-card-text>
+          </v-card>
 
           <transition name="fade">
             <v-alert type="warning" dense v-if="wachtrijNodig">
@@ -72,8 +91,12 @@
             />
           </transition>
 
-          <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
-          <v-textarea v-model="reservering.opmerking" v-if="loggedInUser" label="Reactie" />
+          <v-card class="mt-3">
+            <v-card-text>
+              <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
+              <v-textarea v-model="reservering.opmerking" v-if="loggedInUser" label="Reactie" />
+            </v-card-text>
+          </v-card>
 
           <v-alert type="error" v-if="errors['general']">{{ errors.general }}</v-alert>
 
@@ -155,7 +178,7 @@
             aanpassingen te doen:
           </p>
           <ul>
-            <li>Datum aanpassen</li>
+            <li v-if="datumAanpasbaar">Datum aanpassen</li>
             <li>Kaarten annuleren (zie hieronder)</li>
             <li>Kaarten bijkopen</li>
           </ul>
@@ -267,6 +290,10 @@ export default {
     if (!this.voorstelling) {
       this.voorstelling = new Voorstelling(voorstellingen[0]);
       console.log(this.voorstelling);
+      // als er maar 1 voorstelling is, dan wordt deze automatisch gekozen
+      if (this.voorstelling.uitvoeringen.length === 1) {
+        this.uitvoering_id = this.voorstelling.uitvoeringen[0].id;
+      }
 
       this.voorstelling.prijzen?.forEach((prijs) => {
         if (!this.reservering.tickets.find((t) => t.prijs.id == prijs.id)) {
@@ -305,6 +332,10 @@ export default {
 
     totaalBedrag: function () {
       return this.reservering.tickets?.reduce((totaal, t) => totaal + t.tebetalen, 0);
+    },
+
+    datumAanpasbaar() {
+      return this.voorstelling?.uitvoeringen?.length > 1;
     },
 
     betaling: function () {
@@ -364,7 +395,7 @@ export default {
     },
 
     uitvoering: function () {
-      return this.voorstelling?.uitvoeringen.find((u) => u.id == this.reservering.uitvoering_id);
+      return this.voorstelling?.uitvoeringen.find((u) => u.id == this.uitvoering_id);
     },
 
     uitvoering_id: {
@@ -484,8 +515,8 @@ export default {
             }
             // this.message = "Reservering is opgeslagen";
           } else if (reservering.paymentUrl) {
-            // clearInterval(timer);
-            // document.location.href = reservering.paymentUrl;
+            clearInterval(timer);
+            document.location.href = reservering.paymentUrl;
           }
         } catch (e) {
           this.errors["general"] = e.message;
@@ -513,5 +544,12 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.v-sheet.v-card {
+  background-color: #252525;
+}
+.v-sheet.v-card .v-card {
+  background-color: #1e1e1e;
 }
 </style>
