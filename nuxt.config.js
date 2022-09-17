@@ -5,7 +5,7 @@ process.env.title = "Frontend";
 module.exports = {
   telemetry: false,
 
-  server: { port: 4000, host: "0.0.0.0" },
+  server: { port: +process.env.CLIENT_PORT || 4000, host: "0.0.0.0" },
 
   components: true, // autoload components
   /*
@@ -20,10 +20,10 @@ module.exports = {
       {
         hid: "description",
         name: "description",
-        content: process.env.npm_package_description || ""
-      }
+        content: process.env.npm_package_description || "",
+      },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+    link: [{ rel: "icon", type: "image/x-icon", href: process.env.APP_FAVICON || "/favicon.ico" }],
   },
   /*
    ** Customize the progress-bar color
@@ -36,8 +36,8 @@ module.exports = {
 
   plugins: [
     "~plugins/filters.js",
-    { src: '~/plugins/notifications-ssr', ssr: true },
-    { src: '~/plugins/notifications-client', ssr: false }
+    { src: "~/plugins/notifications-ssr", ssr: true },
+    { src: "~/plugins/notifications-client", ssr: false },
   ],
   /*
    ** Nuxt.js dev-modules
@@ -52,7 +52,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/dotenv-module
     "@nuxtjs/dotenv",
     "@nuxtjs/proxy",
-    "@nuxtjs/auth"
+    "@nuxtjs/auth",
   ],
 
   auth: {
@@ -60,7 +60,7 @@ module.exports = {
       login: "/login",
       logout: "/login",
       callback: "/login",
-      home: "/"
+      home: "/",
     },
     strategies: {
       local: {
@@ -68,17 +68,17 @@ module.exports = {
           login: {
             url: "/auth/",
             method: "post",
-            propertyName: "token"
+            propertyName: "token",
           },
           user: {
             url: "/auth/me",
             method: "get",
-            propertyName: "user"
+            propertyName: "user",
           },
-          logout: false
-        }
-      }
-    }
+          logout: false,
+        },
+      },
+    },
   },
 
   /*
@@ -87,8 +87,10 @@ module.exports = {
    */
   axios: { proxy: true, debug: false },
 
-  // proxy: { '/api/': `${process.env.API_HOST}:${process.env.API_PORT}` },
-  proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
+  proxy: {
+    "/api/": `${process.env.API_HOST}:${process.env.API_PORT}`,
+    "/iframe/": `${process.env.API_HOST}:${process.env.API_PORT}`,
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -97,11 +99,11 @@ module.exports = {
     customVariables: ["~/assets/variables.scss"],
     treeShake: true,
     defaultAssets: {
-      icons: "fa"
+      icons: "fa",
     },
     theme: {
-      dark: true
-    }
+      dark: true,
+    },
   },
   /*
    ** Build configuration
@@ -116,5 +118,5 @@ module.exports = {
         config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
       }
     },
-  }
+  },
 };
