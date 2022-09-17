@@ -234,6 +234,7 @@ export default {
       errors: {},
       voorstelling: this.reservering?.voorstelling,
       message: null,
+      uitvoering_id: null,
       originalUitvoeringId: null,
       originalAantal: 0,
       wachtrijHelp: false,
@@ -272,6 +273,7 @@ export default {
         });
         this.reservering = new Reservering(data);
         this.originalUitvoeringId = data.uitvoering.id;
+        this.uitvoering_id = data.uitvoering.id;
       } catch (e) {
         this.$router.replace({ name: "not-found" }, { id: this.$route.params.id });
       }
@@ -289,8 +291,7 @@ export default {
 
     if (!this.voorstelling) {
       this.voorstelling = new Voorstelling(voorstellingen[0]);
-      console.log(this.voorstelling);
-      // als er maar 1 voorstelling is, dan wordt deze automatisch gekozen
+      // als er maar 1 uitvoering is, dan wordt deze automatisch gekozen
       if (this.voorstelling.uitvoeringen.length === 1) {
         this.uitvoering_id = this.voorstelling.uitvoeringen[0].id;
       }
@@ -395,21 +396,16 @@ export default {
     },
 
     uitvoering: function () {
-      return this.voorstelling?.uitvoeringen.find((u) => u.id == this.uitvoering_id);
-    },
-
-    uitvoering_id: {
-      get: function () {
-        const uitvoering = this.reservering.uitvoering;
-        return uitvoering && uitvoering.id ? uitvoering.id : uitvoering;
-      },
-      set(id) {
-        this.reservering.uitvoering_id = id;
-        this.reservering.uitvoering = this.uitvoering;
-      },
+      const uitvoering = this.voorstelling?.uitvoeringen.find((u) => u.id == +this.uitvoering_id);
+      return uitvoering;
     },
   },
   watch: {
+    uitvoering_id() {
+      this.reservering.uitvoering_id = +this.uitvoering_id;
+      this.reservering.uitvoering = this.uitvoering;
+    },
+
     hoewerkthet(toggle) {
       if (toggle) {
         localStorage.setItem("helpShown", true);
