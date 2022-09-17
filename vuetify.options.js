@@ -7,7 +7,7 @@ export default function () {
       dark: true,
       themes: {
         dark: {
-          primary: "00a0ba",
+          primary: "#f0940a",
         },
       },
     },
