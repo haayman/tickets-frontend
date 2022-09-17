@@ -14,7 +14,7 @@
           :rules="[rules.required, rules.strength]"
           validate-on-blur
           :type="showPassword ? 'text' : 'password'"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :append-icon="showPassword ? 'fa-eye' : 'fa-eye-slash'"
           @click:append="showPassword = !showPassword"
         ></v-text-field>
         <v-progress-linear
