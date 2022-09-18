@@ -34,6 +34,9 @@ export default {
   },
   created() {
     this.$nextTick(() => {
+      // dit voorkomt problemen met ssr en hydration.
+      // Om de één of andere reden werd de navbar niet goed gerendered als je voorheen was ingelogd
+      // en de pagina herlaadde
       this.loading = false;
     });
   },
