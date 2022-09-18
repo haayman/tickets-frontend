@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav v-if="!loading">
     <v-app-bar app>
       <v-container class="py-0 fill-height">
         <v-toolbar-title>
@@ -27,6 +27,16 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      loading: true,
+    };
+  },
+  created() {
+    this.$nextTick(() => {
+      this.loading = false;
+    });
+  },
   computed: {
     ...mapGetters(["isAdmin", "isAuthenticated", "isKassa", "isSpeler", "loggedInUser"]),
     title() {
