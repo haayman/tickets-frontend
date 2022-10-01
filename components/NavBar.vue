@@ -57,13 +57,13 @@ export default {
           link: "/reserveren/",
         });
       }
-      if (this.isKassa) {
-        links.push({
-          title: "Kassa",
-          link: "/kassa/",
-        });
-      }
-      if (this.isSpeler) {
+      // if (this.isKassa) {
+      //   links.push({
+      //     title: "Kassa",
+      //     link: "/kassa/",
+      //   });
+      // }
+      if (this.isSpeler || this.isKassa) {
         links.push({
           title: "Reserveringen",
           link: "/beheer/reserveringen/",
