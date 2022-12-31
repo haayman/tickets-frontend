@@ -184,12 +184,12 @@
           </ul>
 
           <h4>Annuleren</h4>
-          <strong>Tot 14 dagen voor de voorstelling</strong>:
+          <strong>Tot 7 dagen voor de voorstelling</strong>:
           <ul>
             <li>Je kunt gratis annuleren (1 of meerdere kaarten)</li>
             <li>Het geld wordt teruggestort</li>
           </ul>
-          <strong>minder dan 14 dagen voor de voorstelling: </strong>
+          <strong>minder dan 7 dagen voor de voorstelling: </strong>
           <ul>
             <li>De kaarten worden voor doorverkoop aangeboden</li>
             <li>Zodra iemand anders de kaarten koopt krijg je je geld terug</li>
