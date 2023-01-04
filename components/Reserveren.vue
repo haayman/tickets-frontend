@@ -261,9 +261,6 @@ export default {
   },
 
   async mounted() {
-    if (!localStorage.getItem("helpShown")) {
-      this.hoewerkthet = true;
-    }
     if (this.$route.params.id) {
       try {
         const { data } = await this.$axios.get(`/reservering/${this.$route.params.id}`, {
