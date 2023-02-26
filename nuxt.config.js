@@ -87,8 +87,10 @@ module.exports = {
    */
   axios: { proxy: true, debug: false },
 
-  proxy: { "/api/": `${process.env.API_HOST}:${process.env.API_PORT}` },
-  // proxy: { "/api/": "http://localhost:3000/", "/iframe": "http://localhost:3000/" },
+  proxy: {
+    "/api/": `${process.env.API_HOST}:${process.env.API_PORT}`,
+    "/iframe/": `${process.env.API_HOST}:${process.env.API_PORT}`,
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
