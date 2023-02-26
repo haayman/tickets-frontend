@@ -98,6 +98,7 @@ module.exports = {
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
     treeShake: true,
+    optionsPath: "./vuetify.options.js",
     defaultAssets: {
       icons: "fa",
     },
