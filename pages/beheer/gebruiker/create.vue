@@ -16,17 +16,17 @@
             :type="showPassword ? 'text' : 'password'"
             label="Wachtwoord"
             required
-            :append-icon="showPassword ? 'fa-eye' : 'fa-eye-slash'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (showPassword = !showPassword)"
           />
 
-          <v-select v-if="isAdmin" v-model="user.role" :items="roleOptions" label="Rol" />
+          <v-select v-if="isAdministrator" v-model="user.role" :items="roleOptions" label="Rol" />
 
           <v-text-field v-else v-model="user.role" readonly label="Rol" />
         </v-card-text>
 
         <v-card-actions>
-          <v-alert v-if="errors['general']" type="error"> {{ errors.general }} </v-alert>
+          <v-alert v-if="refErrors['general']" type="error"> {{ refErrors.general }} </v-alert>
 
           <v-btn type="submit" color="primary"> Opslaan </v-btn>
 
@@ -37,43 +37,31 @@
   </v-container>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script setup lang="ts">
 import { User } from "~~/models/User";
 import { RoleList } from "~~/models/Role";
 
-export default {
-  name: "UsersEdit",
-  data() {
-    return {
-      user: new User(),
-      roles: RoleList,
-      errors: {},
-      showPassword: false,
-    };
-  },
+const { post } = useAPI();
+const router = useRouter();
 
-  computed: {
-    ...mapGetters(["isAdmin"]),
-    roleOptions() {
-      return RoleList.map((r) => ({ value: r.id, text: r.description }));
-    },
-  },
+const user = new User();
+const refErrors = ref<any>([]);
+const showPassword = ref(false);
 
-  methods: {
-    async save() {
-      try {
-        await this.$axios.post("/user", this.user);
-        this.$router.push({ name: "beheer-gebruiker" });
-      } catch (error) {
-        const errors = error.errors || {};
+const { isAdministrator } = useAuth();
+const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, label: r.description })));
 
-        if (error.message) {
-          errors.general = error.message;
-        }
-        this.errors = errors;
-      }
-    },
-  },
-};
+async function save() {
+  try {
+    await post(`/user/`, user.toJSON());
+    router.push({ name: "beheer-gebruiker" });
+  } catch (error: any) {
+    const errors = error.errors || {};
+
+    if (error.message) {
+      errors.general = error.message;
+    }
+    refErrors.value = errors;
+  }
+}
 </script>
