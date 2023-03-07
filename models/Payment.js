@@ -10,6 +10,6 @@ export class Payment {
     this.created_at = this.created_at ? new Date(this.created_at) : null;
     this.paidAt = this.paidAt ? new Date(this.paidAt) : null;
     this.failedAt = this.failedAt ? new Date(this.failedAt) : null;
-    this.refunds = this.refunds || []
+    this.refunds = this.refunds || [];
   }
 }

@@ -1,33 +1,21 @@
+<!-- eslint-disable vue/valid-v-slot -->
 <template>
   <v-container>
     <v-card class="mx-auto">
       <v-card-title>Gebruikers</v-card-title>
-      <v-data-table
-        v-if="users.length"
-        class="user-management"
-        :loading="loading"
-        :headers="headers"
-        :items="users"
-        :options.sync="options"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td>{{ props.item.username }}</td>
-            <td>{{ props.item.name }}</td>
-            <td>
-              <div class="text-muted" v-if="props.item.role">
-                {{ props.item.role }}
-              </div>
-            </td>
-            <td>
-              <nuxt-link :to="{ path: props.item.id }" append> <v-icon>fa-edit</v-icon></nuxt-link>
-              <a href="#delete" @click.prevent="remove(props.item)">
-                <v-icon>fa-trash</v-icon>
-              </a>
-            </td>
-          </tr>
+
+      <v-data-table class="user-management" :loading="pending" :headers="headers" :items="users">
+        <template #item.actions="{ item }">
+          <nuxt-link :to="{ name: 'beheer-gebruiker-id', params: { id: item.raw.id } }">
+            <v-icon size="small" class="me-2">mdi-pencil</v-icon>
+          </nuxt-link>
+
+          <a href="#delete" @click.prevent="remove(item.raw)">
+            <v-icon size="small" class="me-2">mdi-delete</v-icon>
+          </a>
         </template>
       </v-data-table>
+
       <v-card-actions>
         <v-btn :to="{ name: 'beheer-gebruiker-create' }" color="primary">Gebruiker toevoegen</v-btn>
       </v-card-actions>
@@ -35,47 +23,30 @@
   </v-container>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
+<script setup lang="ts">
+import { onMounted } from "vue";
 import { User } from "@/models/User";
 
-export default {
-  name: "Users",
+const headers = [
+  { title: "Account", key: "username", sortable: false },
+  { title: "Naam", key: "name", sortable: false },
+  { title: "Rol", key: "role", sortable: false },
+  { title: "", key: "actions", sortable: false },
+];
 
-  data() {
-    return {
-      loading: false,
-      options: {},
-      headers: [
-        { text: "account", value: "username", sortable: false },
-        { text: "naam", value: "name", sortable: false },
-        { text: "rol", value: "role", sortable: false },
-        { text: "actions", value: "name", sortable: false },
-      ],
-      users: [],
-    };
-  },
+const users = ref<User[]>([]);
+const pending = ref(true);
 
-  computed: {
-    ...mapGetters(["isAdmin"]),
-  },
+onMounted(async () => {
+  const { data } = await useFetch<User[]>("/api/user");
+  users.value = data.value || [];
+  pending.value = false;
+});
 
-  mounted() {
-    this.fetch();
-  },
-  methods: {
-    async fetch() {
-      this.loading = true;
-      const { data: users } = await this.$axios.get("/user");
-      this.users = users;
-      this.loading = false;
-    },
-    async remove(user) {
-      if (confirm(`Weet je zeker dat je ${user.name} wilt verwijderen?`)) {
-        await this.$axios.delete(`/user/${user.id}`);
-        this.users = this.users.filter((u) => u.id !== user.id);
-      }
-    },
-  },
-};
+async function remove(user: User) {
+  if (confirm(`Weet je zeker dat je ${user.name} wilt verwijderen?`)) {
+    await useFetch(`/user/${user.id}`, { method: "DELETE" });
+    users.value = users.value?.filter((u) => u.id !== user.id) || [];
+  }
+}
 </script>

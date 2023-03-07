@@ -1,4 +1,4 @@
-import { Prijs } from './Prijs'
+import { Prijs } from "./Prijs";
 
 export class Ticket {
   constructor({ message = null, aantal = 0, aantalBetaald = 0, aantalTekoop = 0, prijs } = {}) {
@@ -10,35 +10,36 @@ export class Ticket {
   }
 
   get betaald() {
-    return this.aantalBetaald * this.prijs.prijs
+    return this.aantalBetaald * this.prijs.prijs;
   }
 
   get tebetalen() {
-    return this.prijs.prijs * +this.aantal - +this.betaald
+    return this.prijs.prijs * +this.aantal - +this.betaald;
   }
 
   get newAantal() {
-    return Math.max(this.aantal - this.aantalTekoop, 0)
+    return Math.max(this.aantal - this.aantalTekoop, 0);
   }
 
   set newAantal(value) {
     if (this.aantalTekoop) {
-      this.aantalTekoop -= Math.min(value, this.aantalTekoop)
+      this.aantalTekoop -= Math.min(value, this.aantalTekoop);
     }
-    this.aantal = value + this.aantalTekoop
+    this.aantal = value + this.aantalTekoop;
   }
 
   toString() {
-    let aantal = +this.aantal,
-      totaal = aantal * this.prijs.prijs;
+    const aantal = +this.aantal;
+    const totaal = aantal * this.prijs.prijs;
 
     let retval = `${aantal} x ${this.prijs}: €${totaal.toFixed(2)}`;
     if (this.aantalTekoop) {
       retval += ` waarvan ${this.aantalTekoop} te koop`;
     }
     if (this.aantalTerugbetalen) {
-      retval += ` ${this.aantalTekoop ? 'en' : 'waarvan'} ${this.aantalTerugbetalen
-        } wacht op terugbetaling`;
+      retval += ` ${this.aantalTekoop ? "en" : "waarvan"} ${
+        this.aantalTerugbetalen
+      } wacht op terugbetaling`;
     }
     return retval;
   }
@@ -46,7 +47,7 @@ export class Ticket {
   serialize() {
     return {
       prijs: { id: this.prijs.id },
-      aantal: this.aantal
-    }
+      aantal: this.aantal,
+    };
   }
 }

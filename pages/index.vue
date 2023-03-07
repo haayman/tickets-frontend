@@ -1,19 +1,13 @@
-<script>
-import { mapGetters } from "vuex";
-export default {
-  computed: {
-    ...mapGetters(["isAuthenticated"]),
-  },
+<template>
+  <nuxt-link to="/beheer/gebruiker">Gebruikers</nuxt-link>
+</template>
+<script setup lang="ts">
+const { isAuthenticated } = useAuth();
 
-  beforeCreate() {
-    if (!this.isAuthenticated) {
-      this.$router.push({ name: "reserveren" });
-    } else {
-      this.$router.push({ name: "beheer-reserveringen" });
-    }
-  },
-  render() {
-    return null;
-  },
-};
+const router = useRouter();
+if (!isAuthenticated) {
+  router.push({ name: "reserveren" });
+} else {
+  router.push({ name: "beheer-gebruiker" });
+}
 </script>

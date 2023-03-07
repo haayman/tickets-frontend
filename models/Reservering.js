@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Ticket } from "./Ticket";
 import { Uitvoering } from "./Uitvoering";
 import { Payment } from "./Payment";

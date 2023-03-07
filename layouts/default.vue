@@ -1,28 +1,14 @@
 <template>
   <v-app>
-    <Navbar />
-    <notifications position="top left" />
+    <NavBar />
+
     <v-main>
       <v-container>
-        <nuxt />
+        <slot />
       </v-container>
     </v-main>
   </v-app>
 </template>
-
-<script>
-import Navbar from "@/components/NavBar.vue";
-
-// TODO: Remove when Nuxt bug is fixed and apply in nuxt.config.js
-// See: https://github.com/nuxt/nuxt.js/issues/4219
-// import '@/assets/variables.scss'
-
-export default {
-  components: {
-    Navbar,
-  },
-};
-</script>
 
 <style>
 .page-enter-active,

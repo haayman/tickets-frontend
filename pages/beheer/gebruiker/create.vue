@@ -3,10 +3,12 @@
     <v-card class="mx-auto">
       <v-form @submit.prevent="save">
         <v-card-title>Nieuwe gebruiker</v-card-title>
+
         <v-card-text>
           <v-text-field v-model="user.username" type="text" label="Gebruikersnaam" required />
 
           <v-text-field v-model="user.name" type="text" label="Naam" required />
+
           <v-text-field v-model="user.email" type="email" label="E-mail" required />
 
           <v-text-field
@@ -18,16 +20,16 @@
             @click:append="() => (showPassword = !showPassword)"
           />
 
-          <v-select v-model="user.role" :items="roleOptions" label="Rol" v-if="isAdmin" />
+          <v-select v-if="isAdmin" v-model="user.role" :items="roleOptions" label="Rol" />
+
           <v-text-field v-else v-model="user.role" readonly label="Rol" />
         </v-card-text>
 
         <v-card-actions>
-          <v-alert type="error" v-if="errors['general']">
-            {{ errors.general }}
-          </v-alert>
+          <v-alert v-if="errors['general']" type="error"> {{ errors.general }} </v-alert>
 
           <v-btn type="submit" color="primary"> Opslaan </v-btn>
+
           <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary"> annuleren </v-btn>
         </v-card-actions>
       </v-form>
@@ -36,9 +38,9 @@
 </template>
 
 <script>
-import { User } from "~/models/User";
-import { RoleList } from "~/models/Role";
 import { mapGetters } from "vuex";
+import { User } from "~~/models/User";
+import { RoleList } from "~~/models/Role";
 
 export default {
   name: "UsersEdit",
@@ -61,10 +63,10 @@ export default {
   methods: {
     async save() {
       try {
-        const result = await this.$axios.post("/user", this.user);
+        await this.$axios.post("/user", this.user);
         this.$router.push({ name: "beheer-gebruiker" });
       } catch (error) {
-        let errors = error.errors || {};
+        const errors = error.errors || {};
 
         if (error.message) {
           errors.general = error.message;

@@ -2,12 +2,11 @@
   <v-container>
     <v-card class="mx-auto" max-width="400" outlined>
       <v-card-title>Login</v-card-title>
-      <v-card-text>
-        <v-alert v-if="error" type="error">
-          {{ error }}
-        </v-alert>
 
-        <v-form method="post" @submit.prevent="login">
+      <v-card-text>
+        <v-alert v-if="error" type="error"> {{ error }} </v-alert>
+
+        <v-form method="post" @submit.prevent="postLogin">
           <v-text-field
             v-model="username"
             type="text"
@@ -15,6 +14,7 @@
             data-test="username"
             autocomplete="username"
           />
+
           <v-text-field
             v-model="password"
             type="password"
@@ -24,69 +24,68 @@
           />
 
           <v-btn type="submit" depressed color="primary">Log In</v-btn>
+
           <v-btn color="secondary" @click="forgotten = !forgotten">Wachtwoord vergeten</v-btn>
         </v-form>
       </v-card-text>
     </v-card>
+
     <v-card v-if="forgotten" class="mx-auto mt-2" max-width="400" outlined>
       <v-card-title>Wachtwoord vergeten</v-card-title>
+
       <v-card-text>
         <v-form @submit.prevent="sendForgotten">
           <v-text-field v-model="username" required label="gebruikersnaam" />
+
           <v-btn color="primary" type="submit">Stuur link</v-btn>
         </v-form>
+
         <v-alert v-if="forgottenSent">Controleer je e-mail</v-alert>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      username: "",
-      password: "",
-      error: null,
-      forgotten: false,
-      forgottenSent: false,
-    };
-  },
+<script setup lang="ts">
+import { ref } from "vue";
 
-  methods: {
-    async login() {
-      this.error = null;
+const username = ref<string>("");
+const password = ref("");
+const error = ref<null | string>(null);
+const forgotten = ref(false);
+const forgottenSent = ref(false);
+const router = useRouter();
+const { login } = useAuth();
+const { post } = useAPI();
 
-      try {
-        await this.$auth.loginWith("local", {
-          data: {
-            username: this.username,
-            password: this.password,
-          },
-        });
+async function postLogin() {
+  error.value = null;
 
-        this.$router.push("/");
-      } catch (e) {
-        if (e.response !== undefined) {
-          this.error = e.response.data.message;
-        } else {
-          this.error = `Server problem: ${e}`;
-        }
-      }
-    },
-    sendForgotten() {
-      this.error = false;
-      this.$axios
-        .post("/user/forgotten", {
-          username: this.username,
-        })
-        .then((request) => {
-          this.forgottenSent = true;
-        })
-        .catch((e) => {
-          this.error = e.response.statusText || e.message;
-        });
-    },
-  },
-};
+  try {
+    await login({
+      username: username.value,
+      password: password.value,
+    });
+
+    router.push("/");
+  } catch (e: any) {
+    if (e.response !== undefined) {
+      error.value = e.response.data.message;
+    } else {
+      error.value = `Server problem: ${e}`;
+    }
+  }
+}
+async function sendForgotten() {
+  error.value = null;
+
+  try {
+    await post("/user/forgotten", {
+      username,
+    });
+    forgottenSent.value = true;
+  } catch (e: any) {
+    error.value = e.response?.statusText || e.message;
+  }
+}
 </script>

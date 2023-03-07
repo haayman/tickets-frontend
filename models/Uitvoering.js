@@ -1,8 +1,18 @@
-import formatter from 'date-fns/format'
-import nl from 'date-fns/locale/nl'
+/* eslint-disable camelcase */
+import { format, nl } from "date-fns";
 
 export class Uitvoering {
-  constructor({ id, aanvang, deur_open, extra_text, aantal_plaatsen, vrije_plaatsen, gereserveerd, wachtlijst, te_koop } = {}) {
+  constructor({
+    id,
+    aanvang,
+    deur_open,
+    extra_text,
+    aantal_plaatsen,
+    vrije_plaatsen,
+    gereserveerd,
+    wachtlijst,
+    te_koop,
+  } = {}) {
     this.id = id;
     this.aanvang = aanvang ? new Date(aanvang) : new Date();
     this.deur_open = deur_open ? new Date(deur_open) : new Date();
@@ -15,13 +25,13 @@ export class Uitvoering {
   }
 
   get verkoopbaar() {
-    return this.aanvang > new Date()
+    return this.aanvang > new Date();
   }
 
   toString() {
-    return `${formatter(this.aanvang, 'PPPPp', {
-      locale: nl
-    })} ${this.extra_text} `
+    return `${format(this.aanvang, "PPPPp", {
+      locale: nl,
+    })} ${this.extra_text} `;
   }
 
   serialize() {
@@ -30,7 +40,7 @@ export class Uitvoering {
       aanvang: this.aanvang,
       deur_open: this.deur_open,
       aantal_plaatsen: this.aantal_plaatsen,
-      extra_text: this.extra_text
-    }
+      extra_text: this.extra_text,
+    };
   }
 }

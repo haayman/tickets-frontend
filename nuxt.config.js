@@ -1,19 +1,15 @@
-const colors = require("vuetify/es5/util/colors").default;
-require("dotenv").config();
+import vuetify from "vite-plugin-vuetify";
+
 process.env.title = "Frontend";
 
-module.exports = {
-  telemetry: false,
-
-  server: { port: +process.env.CLIENT_PORT || 4000, host: "0.0.0.0" },
-
-  components: true, // autoload components
-  /*
-   ** Headers of the page
-   */
-  head: {
-    titleTemplate: "%s - " + process.env.npm_package_name,
-    title: process.env.APP_TITLE || "",
+const config = defineNuxtConfig({
+  ssr: false,
+  app: {
+    // pageTransition: { name: "page", mode: "out-in" },
+    head: {
+      titleTemplate: "%s - " + process.env.npm_package_name,
+      title: process.env.APP_TITLE || "",
+    },
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -25,35 +21,49 @@ module.exports = {
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: process.env.APP_FAVICON || "/favicon.ico" }],
   },
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: { color: "#fff" },
-  /*
-   ** Global CSS
-   */
-  css: [],
+  runtimeConfig: {
+    public: {
+      app: {
+        title: process.env.APP_TITLE || "Theater tickets",
+      },
+      api: {
+        base: `${process.env.API_BASE || ""}/api`,
+        routes: {
+          auth: {
+            login: "/auth/login",
+          },
+          profile: {
+            index: "/auth/me",
+          },
+        },
+      },
+    },
+  },
+  css: ["vuetify/styles"],
 
-  plugins: [
-    "~plugins/filters.js",
-    { src: "~/plugins/notifications-ssr", ssr: true },
-    { src: "~/plugins/notifications-client", ssr: false },
-  ],
-  /*
-   ** Nuxt.js dev-modules
-   */
-  buildModules: ["@nuxtjs/vuetify"],
   /*
    ** Nuxt.js modules
    */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    "@nuxtjs/axios",
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    "@nuxtjs/dotenv",
-    "@nuxtjs/proxy",
-    "@nuxtjs/auth",
+    "@vueuse/nuxt",
+    "nuxt-proxy",
+    // // Doc: https://axios.nuxtjs.org/usage
+    // "@nuxtjs/axios",
+    // // Doc: https://github.com/nuxt-community/dotenv-module
+    // "@nuxtjs/proxy",
+    // "@nuxtjs/auth",
+    // "@nuxtjs/vuetify",
+    (options, nuxt) => {
+      nuxt.hooks.hook("vite:extendConfig", (config) => config.plugins.push(vuetify()));
+    },
   ],
+
+  // proxy: {
+  //   options: {
+  //     target: process.env.API_BASEURL,
+  //     pathFilter: "/api",
+  //   },
+  // },
 
   auth: {
     redirect: {
@@ -81,29 +91,18 @@ module.exports = {
     },
   },
 
-  /*
-   ** Axios module configuration
-   ** See https://axios.nuxtjs.org/options
-   */
-  axios: { proxy: true, debug: false },
-
-  proxy: {
-    "/api/": `${process.env.API_HOST}:${process.env.API_PORT}`,
-    "/iframe/": `${process.env.API_HOST}:${process.env.API_PORT}`,
-  },
-  /*
-   ** vuetify module configuration
-   ** https://github.com/nuxt-community/vuetify-module
-   */
-  vuetify: {
-    customVariables: ["~/assets/variables.scss"],
-    treeShake: true,
-    optionsPath: "./vuetify.options.js",
-    defaultAssets: {
-      icons: "fa",
+  nitro: {
+    devProxy: {
+      "/api": {
+        target: process.env.API_BASEURL,
+        changeOrigin: true,
+      },
     },
-    theme: {
-      dark: true,
+  },
+
+  vite: {
+    ssr: {
+      noExternal: ["vuetify"],
     },
   },
   /*
@@ -120,4 +119,7 @@ module.exports = {
       }
     },
   },
-};
+});
+
+console.log(config);
+export default config;

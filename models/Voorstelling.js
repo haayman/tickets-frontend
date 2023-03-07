@@ -2,7 +2,19 @@ import { Uitvoering } from "./Uitvoering";
 import { Prijs } from "./Prijs";
 
 export class Voorstelling {
-  constructor({ id, title, description, active, url, locatie, opmerkingen, poster, thumbnail, uitvoeringen, prijzen } = {}) {
+  constructor({
+    id,
+    title,
+    description,
+    active,
+    url,
+    locatie,
+    opmerkingen,
+    poster,
+    thumbnail,
+    uitvoeringen,
+    prijzen,
+  } = {}) {
     if (id) {
       this.id = id;
     }
@@ -14,14 +26,13 @@ export class Voorstelling {
     this.opmerkingen = opmerkingen;
     this.poster = poster;
     this.thumbnail = thumbnail;
-    this.uitvoeringen = uitvoeringen?.map(u => new Uitvoering(u)) || [];
-    this.prijzen = prijzen?.map(p => new Prijs(p)) || [];
-
+    this.uitvoeringen = uitvoeringen?.map((u) => new Uitvoering(u)) || [];
+    this.prijzen = prijzen?.map((p) => new Prijs(p)) || [];
   }
 
   serialize() {
     return {
-      ... this.id ? { id: this.id } : {},
+      ...(this.id ? { id: this.id } : {}),
       title: this.title,
       description: this.description,
       active: this.active,
@@ -30,9 +41,8 @@ export class Voorstelling {
       opmerkingen: this.opmerkingen,
       poster: this.poster,
       thumbnail: this.thumbnail,
-      uitvoeringen: this.uitvoeringen.map(u => u.serialize()),
-      prijzen: this.prijzen
-    }
+      uitvoeringen: this.uitvoeringen.map((u) => u.serialize()),
+      prijzen: this.prijzen,
+    };
   }
-
 }
