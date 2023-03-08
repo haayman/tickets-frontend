@@ -31,7 +31,7 @@ export function useAPI() {
     return fetch<T>(path, "PUT", { body: data, ...options });
   }
 
-  function remove<T>(path: string) {
+  function del<T>(path: string) {
     return fetch<T>(path, "DELETE");
   }
 
@@ -43,7 +43,7 @@ export function useAPI() {
     post,
     put,
     get,
-    remove,
+    del,
     fetch,
   };
 }
