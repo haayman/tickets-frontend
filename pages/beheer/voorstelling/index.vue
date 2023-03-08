@@ -1,92 +1,74 @@
+<!-- eslint-disable vue/valid-v-slot -->
 <template>
   <v-container>
     <v-card class="mx-auto">
       <v-card-title>Voorstellingen</v-card-title>
+
       <v-data-table
+        v-model:options="options"
         :loading="loading"
         :headers="headers"
         :items="voorstellingen"
-        :options.sync="options"
       >
-        <template v-slot:item="props">
-          <tr>
-            <td>{{ props.item.title }}</td>
-            <td>{{ props.item.description }}</td>
-            <td>
-              <img v-if="props.item.thumbnail" :src="props.item.thumbnail" class="thumbnail" />
-            </td>
-            <td>
-              <nuxt-link
-                :to="{
-                  name: 'beheer-voorstelling-id',
-                  params: { id: props.item.id },
-                }"
-              >
-                <v-icon>fa-edit</v-icon></nuxt-link
-              >
-              <a href="#delete" @click.prevent="remove(props.item)">
-                <v-icon>fa-trash</v-icon>
-              </a>
-            </td>
-          </tr>
+        <template #item.actions="{ item }">
+          <nuxt-link :to="{ name: 'beheer-voorstelling-id', params: { id: item.raw.id } }">
+            <v-icon size="small" class="me-2">mdi-pencil</v-icon>
+          </nuxt-link>
+
+          <a href="#delete" @click.prevent="remove(item.raw)">
+            <v-icon size="small" class="me-2">mdi-delete</v-icon>
+          </a>
+        </template>
+
+        <template #item.thumbnail="{ item }">
+          <img v-if="item.raw.thumbnail" class="thumbnail" :src="item.raw.thumbnail" />
         </template>
       </v-data-table>
+
       <v-card-actions>
-        <v-btn :to="{ name: 'beheer-voorstelling-create' }" color="primary"
-          >Voorstelling toevoegen</v-btn
-        >
+        <v-btn :to="{ name: 'beheer-voorstelling-create' }" color="primary">
+          Voorstelling toevoegen
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
-<script>
-import { mapGetters, createNamespacedHelpers } from "vuex";
-import { Voorstelling } from "@/models/Voorstelling";
+<script setup lang="ts">
+import { Voorstelling } from "~~/models";
 
-export default {
-  data() {
-    return {
-      loading: false,
-      options: {},
-      headers: [
-        { text: "Titel", value: "title", sortable: false },
-        { text: "Omschrijving", value: "description", sortable: false },
-        { text: "", value: "thumbnail", sortable: false },
-        { text: "actions", value: "name", sortable: false },
-      ],
-      voorstellingen: [],
-    };
-  },
+const { get, del } = useAPI();
 
-  computed: {
-    ...mapGetters(["isAdmin"]),
-  },
-  mounted() {
-    this.fetch();
-  },
+const loading = ref(false);
+const options = ref({});
+const headers = [
+  { title: "Titel", key: "title", sortable: false },
+  { title: "Omschrijving", key: "description", sortable: false },
+  { title: "", key: "thumbnail", sortable: false },
+  { title: "", key: "actions", sortable: false },
+];
 
-  methods: {
-    async fetch() {
-      this.loading = true;
-      const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
-        params: {
-          include: ["prijzen", "uitvoeringen"],
-        },
-      });
-      this.voorstellingen = voorstellingen;
-      this.loading = false;
+const voorstellingen = ref<Voorstelling[]>([]);
+
+onMounted(async () => {
+  const data = await get<Voorstelling[]>("/voorstelling", {
+    params: {
+      include: ["prijzen", "uitvoeringen"],
     },
+  });
+  voorstellingen.value = data || [];
+  loading.value = false;
+});
 
-    async remove(voorstelling) {
-      if (confirm(`Weet je zeker dat je de voorstelling wilt verwijderen?`)) {
-        await this.$axios.delete(`/voorstelling/${voorstelling.id}`);
-        this.voorstellingen = this.voorstellingen.filter((v) => v.id !== voorstelling.id);
-      }
-    },
-  },
-};
+async function remove(voorstelling: Voorstelling) {
+  if (confirm(`Weet je zeker dat je de voorstelling wilt verwijderen?`)) {
+    await del(`/voorstelling/${voorstelling.id}`);
+
+    voorstellingen.value = voorstellingen.value.filter((v) => v.id !== voorstelling.id);
+  }
+}
 </script>
+
 <style>
 .thumbnail {
   max-height: 100px;
