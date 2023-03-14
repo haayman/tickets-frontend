@@ -19,7 +19,7 @@ export function useAuth() {
     listenToStorageChanges: true,
   });
 
-  const isAuthenticated = computed(() => userStorage.value && accessTokenStorage.value);
+  const isAuthenticated = computed(() => userStorage.value);
   const redirectedFrom = ref<string | undefined>();
 
   /**
@@ -76,18 +76,18 @@ export function useAuth() {
     }
   }
 
-  const user = userStorage.value;
+  const user = computed(() => (userStorage.value ? new User(userStorage.value) : new User()));
 
   const isAdministrator = computed(() => {
-    return user?.role === "admin";
+    return user.value?.role === "admin";
   });
 
   const isSpeler = computed(() => {
-    return user?.role === "speler" || isAdministrator;
+    return user.value?.role === "speler" || isAdministrator;
   });
 
   const isKassa = computed(() => {
-    return user?.role === "kassa";
+    return user.value?.role === "kassa";
   });
 
   /**
@@ -104,8 +104,12 @@ export function useAuth() {
     }
   }
 
+  function isAuthorized(role: string): boolean {
+    return !!user.value?.isAuthorised(role);
+  }
+
   return {
-    user: userStorage,
+    user,
     isAdministrator,
     isSpeler,
     isKassa,
@@ -116,5 +120,6 @@ export function useAuth() {
     fetchUser,
     validate,
     getAuthorizationHeader,
+    isAuthorized,
   };
 }
