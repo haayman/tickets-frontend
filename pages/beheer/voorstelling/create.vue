@@ -1,19 +1,9 @@
 <template>
-  <EditVoorstelling :voorstelling="voorstelling" />
+  <BeheerVoorstellingEdit :voorstelling="voorstelling" />
 </template>
 
-<script>
-import { Voorstelling } from "~/models/Voorstelling";
-import EditVoorstelling from "~/components/beheer/voorstelling/EditVoorstelling.vue";
+<script setup lang="ts">
+import { Voorstelling } from "~~/models/Voorstelling";
 
-export default {
-  data() {
-    return {
-      voorstelling: new Voorstelling(),
-    };
-  },
-  components: {
-    EditVoorstelling,
-  },
-};
+const voorstelling = new Voorstelling();
 </script>
