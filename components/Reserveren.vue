@@ -1,12 +1,12 @@
 <template>
   <div>
-    <voorstelling v-if="!loggedInUser"></voorstelling>
+    <voorstelling-header v-if="!isAuthenticated" />
 
     <v-card v-if="reservering" class="mt-3">
       <v-card-title>
         Kaarten
-        <v-icon small class="float-right ml-3" @click="hoewerkthet = true">
-          far fa-question-circle >
+        <v-icon class="float-right ml-3" @click="hoewerkthet = true">
+          mdi-help-circle-outline
         </v-icon>
       </v-card-title>
 
@@ -21,7 +21,9 @@
             <v-card-text>
               <v-card-subtitle>Je gegevens</v-card-subtitle>
 
-              <v-alert v-if="errors['general']" dense type="error">{{ errors.general }}</v-alert>
+              <v-alert v-if="displayErrors['general']" dense type="error">{{
+                displayErrors.general
+              }}</v-alert>
 
               <v-text-field
                 v-model="reservering.naam"
@@ -46,15 +48,15 @@
             <v-card-subtitle>Voorstelling</v-card-subtitle>
 
             <v-card-text>
-              <div v-if="errors.uitvoering" class="invalid-feedback">{{ errors.uitvoering }}</div>
+              <div v-if="displayErrors.uitvoering" class="invalid-feedback">
+                {{ displayErrors.uitvoering }}
+              </div>
 
-              <v-radio-group v-model="uitvoering_id" :rules="rules.uitvoering_id">
-                <uitvoeringen
-                  v-if="voorstelling"
-                  v-model="uitvoering_id"
-                  :uitvoeringen="voorstelling.uitvoeringen"
-                />
-              </v-radio-group>
+              <uitvoeringen
+                v-if="voorstelling"
+                v-model:uitvoering_id="uitvoering_id"
+                :uitvoeringen="voorstelling.uitvoeringen"
+              />
             </v-card-text>
           </v-card>
 
@@ -72,7 +74,7 @@
             <v-alert v-if="wachtrijNodig" type="warning" dense>
               <h4 class="alert-heading">Let op!</h4>
               Er zijn onvoldoende plaatsen beschikbaar. Je komt op de wachtlijst
-              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle</v-icon>
+              <v-icon small @click="wachtrijHelp = true"> mdi-help-circle-outline</v-icon>
 
               <br />
 
@@ -87,7 +89,7 @@
           <transition name="fade">
             <v-alert v-if="wachtlijst" type="info" dense>
               Je staat op de wachtlijst
-              <v-icon small @click="wachtrijHelp = true"> far fa-question-circle</v-icon>
+              <v-icon small @click="wachtrijHelp = true">mdi-help-circle-outline</v-icon>
             </v-alert>
           </transition>
 
@@ -103,18 +105,20 @@
             <v-card-text>
               <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
 
-              <v-textarea v-if="loggedInUser" v-model="reservering.opmerking" label="Reactie" />
+              <v-textarea v-if="isAuthenticated" v-model="reservering.opmerking" label="Reactie" />
             </v-card-text>
           </v-card>
 
-          <v-alert v-if="errors['general']" type="error">{{ errors.general }}</v-alert>
+          <v-alert v-if="displayErrors['general']" type="error">{{
+            displayErrors.general
+          }}</v-alert>
 
           <v-row>
             <v-btn
               color="primary"
               type="submit"
               :loading="loading"
-              :disabled="reservering.ingenomen"
+              :disabled="!!reservering.ingenomen"
             >
               {{ submitText }}
             </v-btn>
@@ -124,7 +128,7 @@
             <v-btn
               v-if="reservering.id"
               color="secondary"
-              :disabled="reservering.ingenomen"
+              :disabled="!!reservering.ingenomen"
               @click.prevent="annuleren"
             >
               Alle kaarten annuleren
@@ -138,8 +142,6 @@
       v-if="reservering && reservering.payments"
       :payments="reservering.payments"
     ></payments>
-
-    <v-dialog v-model="message"> {{ message }} </v-dialog>
 
     <v-dialog v-model="wachtrijHelp" max-width="600px">
       <v-card>
@@ -239,313 +241,267 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from "vuex";
-import { Reservering } from "@/models/Reservering";
-import { Ticket } from "@/models/Ticket";
-import { Voorstelling } from "@/models/Voorstelling";
-import Payments from "@/components/Payments";
-import VoorstellingComponent from "@/components/Voorstelling";
-import UitvoeringRadio from "@/components/UitvoeringRadio";
-import Tickets from "@/components/Tickets";
+<script setup lang="ts">
+/* eslint-disable camelcase */
+import { Uitvoering, Ticket } from "~~/models";
+import { IReservering, Reservering } from "~~/models/Reservering";
+import { IVoorstelling, Voorstelling } from "~~/models/Voorstelling";
 
-export default {
-  name: "Reserveren",
+const { isAuthenticated } = useAuth();
+const form = ref();
 
-  components: {
-    Payments,
-    Voorstelling: VoorstellingComponent,
-    uitvoeringen: UitvoeringRadio,
-    tickets: Tickets,
-  },
-  data() {
-    return {
-      reservering: null,
-      valid: true,
-      errors: {},
-      voorstelling: this.reservering?.voorstelling,
-      message: null,
-      uitvoering_id: null,
-      originalUitvoeringId: null,
-      originalAantal: 0,
-      wachtrijHelp: false,
-      hoewerkthet: false,
-      loading: false,
-      rules: {
-        naam: [required],
-        email: [required, email],
-        wachtlijst: [required],
-        uitvoering_id: [required],
-        aantal: [
-          () => this.aantalKaarten > 0 || "Geen kaarten geselecteerd",
-          () => !this.teveelKaarten || "Teveel kaarten",
-        ],
-      },
-    };
-  },
+const route = useRoute();
+const router = useRouter();
+const { get } = useAPI();
 
-  computed: {
-    ...mapGetters(["loggedInUser"]),
+const reservering = ref<Reservering | null>(null);
+const valid = ref(true);
+const displayErrors: any = ref({});
+const voorstelling = ref<Voorstelling | null>(null);
+const uitvoering_id = ref<number | null>(null);
+const originalUitvoeringId = ref<number | null>(null);
+const originalAantal = ref<number>(0);
+const wachtrijHelp = ref(false);
+const hoewerkthet = ref(false);
+const loading = ref(false);
 
-    colspanTotal: function () {
-      return this.reservering.id ? 2 : 1;
-    },
-    submitText: function () {
-      if (this.betaling && !this.wachtrijNodig && !this.wachtlijst) {
-        return "Betalen";
-      } else {
-        return "Opslaan";
-      }
-    },
-    aantalKaarten: function () {
-      return this.reservering?.tickets?.reduce((aantal, t) => aantal + +t.aantal, 0);
-    },
+const aantalKaarten = computed(
+  () => reservering.value?.tickets?.reduce((aantal, t) => aantal + +t.aantal, 0) || 0,
+);
+const teveelKaarten = computed(() => {
+  if (!reservering.value?.uitvoering) return false;
+  return aantalKaarten.value > reservering.value.uitvoering.aantal_plaatsen;
+});
 
-    subTotaal: function () {
-      return this.reservering.prijs?.prijs * (this.aantalKaarten - this.reservering.aantalBetaald);
-    },
+const totaalBedrag = computed(
+  () => reservering.value?.tickets?.reduce((totaal, t) => totaal + t.tebetalen, 0) || 0,
+);
 
-    totaalBedrag: function () {
-      return this.reservering.tickets?.reduce((totaal, t) => totaal + t.tebetalen, 0);
-    },
+const wachtlijst = computed(() => {
+  return (
+    reservering.value?.id &&
+    reservering.value?.wachtlijst &&
+    uitvoering_id.value === originalUitvoeringId.value
+  );
+});
 
-    datumAanpasbaar() {
-      return this.voorstelling?.uitvoeringen?.length > 1;
-    },
+const uitvoering = computed(() => {
+  return voorstelling.value?.uitvoeringen.find((u) => u.id === uitvoering_id.value);
+});
 
-    betaling: function () {
-      return this.totaalBedrag > 0;
-    },
-
-    bijbetalingNodig() {
-      return this.totaalBedrag > 0 && !this.wachtrijNodig;
-    },
-
-    bijbetalingStatus: function () {
-      if (this.reservering.id && !this.wachtlijst) {
-        const bedrag = this.totaalBedrag;
-        if (bedrag < 0) {
-          if (this.reservering.teruggeefbaar) {
-            return "Het bedrag zal z.s.m. teruggestort worden";
-          } else {
-            return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
-          }
-        } else if (this.bijbetalingNodig) {
-          return "Er is bijbetaling nodig";
-        }
-      }
-      return "";
-    },
-
-    /**
-     * berekent of de bestelling groter is dan het aantal beschikbare kaarten
-     */
-    teveelKaarten() {
-      if (!this.uitvoering) return false;
-      return this.aantalKaarten > this.uitvoering.aantal_plaatsen;
-    },
-
-    wachtrijNodig: function () {
-      if (this.wachtlijst) return false;
-      let retval = false;
-      if (this.uitvoering) {
-        if (this.uitvoering_id !== this.originalUitvoeringId) {
-          retval =
-            this.aantalKaarten > this.uitvoering.vrije_plaatsen + (this.uitvoering.te_koop || 0);
-        } else {
-          retval =
-            this.aantalKaarten - this.originalAantal >
-            this.uitvoering.vrije_plaatsen + (this.uitvoering.te_koop || 0);
-        }
-      }
-      return retval;
-    },
-
-    wachtlijst() {
-      return (
-        this.reservering.id &&
-        this.reservering.wachtlijst &&
-        this.uitvoering_id === this.originalUitvoeringId
-      );
-    },
-
-    uitvoering: function () {
-      const uitvoering = this.voorstelling?.uitvoeringen.find((u) => u.id === +this.uitvoering_id);
-      return uitvoering;
-    },
-  },
-
-  watch: {
-    uitvoering_id() {
-      this.reservering.uitvoering_id = +this.uitvoering_id;
-      this.reservering.uitvoering = this.uitvoering;
-    },
-
-    hoewerkthet(toggle) {
-      if (toggle) {
-        localStorage.setItem("helpShown", true);
-      }
-    },
-    loading(toggle, oldValue) {
-      if (toggle && !oldValue) {
-        this.$nuxt.$loading.start("opslaan");
-      } else if (!toggle && newValue) {
-        this.$nuxt.$loading.finish("opslaan");
-      }
-    },
-    aantalKaarten() {
-      this.$refs.form?.resetValidation();
-    },
-  },
-
-  async mounted() {
-    if (this.$route.params.id) {
-      try {
-        const { data } = await this.$axios.get(`/reservering/${this.$route.params.id}`, {
-          params: {
-            include: ["tickets", "payments"],
-          },
-        });
-        this.reservering = new Reservering(data);
-        this.originalUitvoeringId = data.uitvoering.id;
-        this.uitvoering_id = data.uitvoering.id;
-      } catch (e) {
-        this.$router.replace({ name: "not-found" }, { id: this.$route.params.id });
-      }
+const wachtrijNodig = computed(() => {
+  if (wachtlijst.value) return false;
+  let retval = false;
+  if (uitvoering.value) {
+    if (uitvoering_id !== originalUitvoeringId) {
+      retval =
+        aantalKaarten.value > uitvoering.value.vrije_plaatsen + (uitvoering.value.te_koop || 0);
     } else {
-      this.reservering = new Reservering();
-      if (this.$route.query.uitvoeringId) {
-        this.uitvoering_id = +this.$route.query.uitvoeringId;
-      }
+      retval =
+        aantalKaarten.value - originalAantal.value >
+        uitvoering.value.vrije_plaatsen + (uitvoering.value.te_koop || 0);
     }
-    const { data: voorstellingen } = await this.$axios.get("/voorstelling", {
-      params: {
-        include: ["prijzen", "uitvoeringen"],
-      },
-    });
+  }
+  return retval;
+});
 
-    if (!this.voorstelling) {
-      this.voorstelling = new Voorstelling(voorstellingen[0]);
-      // als er maar 1 uitvoering is, dan wordt deze automatisch gekozen
-      if (this.voorstelling.uitvoeringen.length === 1) {
-        this.uitvoering_id = this.voorstelling.uitvoeringen[0].id;
+const betaling = computed(() => totaalBedrag.value > 0);
+
+const rules = {
+  naam: [required],
+  email: [required, email],
+  wachtlijst: [required],
+  aantal: [
+    () => aantalKaarten.value > 0 || "Geen kaarten geselecteerd",
+    () => !teveelKaarten.value || "Teveel kaarten",
+  ],
+};
+
+const submitText = computed(() => {
+  if (betaling.value && !wachtrijNodig.value && !wachtlijst.value) {
+    return "Betalen";
+  } else {
+    return "Opslaan";
+  }
+});
+
+const datumAanpasbaar = computed(() => voorstelling.value?.uitvoeringen?.length || 0 > 1);
+
+const bijbetalingNodig = computed(() => totaalBedrag.value > 0 && !wachtrijNodig.value);
+
+const bijbetalingStatus = computed(() => {
+  if (reservering.value?.id && !wachtlijst?.value) {
+    const bedrag = totaalBedrag.value;
+    if (bedrag < 0) {
+      if (reservering.value.teruggeefbaar) {
+        return "Het bedrag zal z.s.m. teruggestort worden";
+      } else {
+        return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
+      }
+    } else if (bijbetalingNodig.value) {
+      return "Er is bijbetaling nodig";
+    }
+  }
+  return "";
+});
+
+watch(uitvoering_id, (uitvoering_id) => {
+  if (!reservering.value || !uitvoering_id) return;
+  reservering.value.uitvoering_id = uitvoering_id;
+  reservering.value.uitvoering = uitvoering.value as Uitvoering;
+});
+
+onMounted(async () => {
+  if (route.params.id) {
+    try {
+      const data = await get<IReservering>(`/reservering/${route.params.id}`, {
+        query: {
+          include: ["tickets", "payments"],
+        },
+      });
+      reservering.value = new Reservering(data);
+    } catch (e) {
+      router.replace({ name: "not-found", params: { id: route.params.id } });
+    }
+  } else {
+    reservering.value = new Reservering();
+    if (route.query.uitvoeringId) {
+      uitvoering_id.value = +route.query.uitvoeringId;
+    }
+  }
+
+  const voorstellingen = await get<IVoorstelling[]>("/voorstelling", {
+    query: {
+      include: ["prijzen", "uitvoeringen"],
+    },
+  });
+
+  if (!voorstelling.value) {
+    voorstelling.value = new Voorstelling(voorstellingen[0]);
+    if (voorstelling.value.uitvoeringen.length === 1) {
+      uitvoering_id.value = voorstelling.value.uitvoeringen[0].id || null;
+    }
+
+    voorstelling.value.prijzen?.forEach((prijs) => {
+      if (!reservering.value?.tickets.find((t) => t.prijs.id === prijs.id)) {
+        const ticket = new Ticket({ prijs, aantal: 0 });
+        reservering.value?.tickets.push(ticket);
+      }
+    });
+  }
+
+  originalAantal.value = aantalKaarten.value;
+});
+
+function validate() {
+  const valid = form.value.validate();
+
+  // TODO
+  // if (!valid) {
+  //   nextTick(() => {
+  //     const el = $el.value.querySelector(".v-messages.error--text:first-of-type");
+  //     this.$vuetify.goTo(el);
+  //   });
+  // }
+  return valid;
+}
+
+function getNextPage() {
+  if (!reservering.value) return;
+  let maxRetries = 100;
+  const id = reservering.value?.id;
+  const { get } = useAPI();
+  const router = useRouter();
+  const timer = setInterval(async () => {
+    try {
+      const reservering = await get<Reservering>(`/reservering/${id}`, {
+        params: {
+          include: ["tickets"],
+        },
+      });
+
+      if (reservering.wachtlijst || !(reservering.openstaandBedrag > 0)) {
+        clearInterval(timer);
+        loading.value = false;
+        if (isAuthenticated.value) {
+          router.push({ name: "beheer-reserveringen" });
+        } else {
+          router.push({
+            name: "reserveren-id-details",
+            params: { id },
+          });
+        }
+        // message.value = "Reservering is opgeslagen";
+      } else if (reservering.paymentUrl) {
+        clearInterval(timer);
+        document.location.href = reservering.paymentUrl;
+      }
+    } catch (e: any) {
+      displayErrors.value.general = e.message;
+    }
+    if (!--maxRetries) {
+      clearInterval(timer);
+    }
+  }, 1000);
+}
+
+async function onSubmit() {
+  if (!reservering.value) return;
+  const { put, post } = useAPI();
+  if (validate()) {
+    loading.value = true;
+    try {
+      if (reservering.value?.id) {
+        await put<Reservering>(
+          `/reservering/${reservering.value.id}`,
+          reservering.value.serialize(),
+        );
+      } else {
+        const result = await post<Reservering>("/reservering", reservering.value?.serialize());
+        reservering.value.id = result.id;
       }
 
-      this.voorstelling.prijzen?.forEach((prijs) => {
-        if (!this.reservering.tickets.find((t) => t.prijs.id === prijs.id)) {
-          this.reservering.tickets.push(
-            new Ticket({
-              prijs,
-              aantal: 0,
-            }),
-          );
+      getNextPage();
+    } catch (e: any) {
+      loading.value = false;
+      const errors = e.errors || {};
+
+      if (e.response) {
+        // error is afkomstig van de server
+        const data = e.response.data?.data;
+        if (data && data.message) {
+          errors.general = data.message;
+        } else if (e.message) {
+          errors.general = e.message;
         }
+      }
+      displayErrors.value = errors;
+    }
+  }
+}
+
+async function annuleren() {
+  if (!reservering.value) return;
+  if (confirm("Weet je zeker dat je deze reservering wilt annuleren?")) {
+    const { del } = useAPI();
+    const router = useRouter();
+    await del(`/reservering/${reservering.value.id}`);
+    if (isAuthenticated) {
+      router.push({
+        name: "beheer-reserveringen",
+      });
+    } else if (reservering.value.teruggeefbaar) {
+      router.push({
+        name: "geannuleerd",
+      });
+    } else {
+      router.push({
+        name: "reserveren-id-details",
+        params: { id: reservering.value.id },
       });
     }
-
-    this.originalAantal = this.aantalKaarten;
-  },
-
-  methods: {
-    setTotaalBedrag(bedrag) {
-      this.totaalBedrag = bedrag;
-    },
-
-    validate() {
-      const valid = this.$refs.form.validate();
-      if (!valid) {
-        this.$nextTick(() => {
-          const el = this.$el.querySelector(".v-messages.error--text:first-of-type");
-          this.$vuetify.goTo(el);
-        });
-      }
-      return valid;
-    },
-
-    onSubmit() {
-      if (this.validate()) {
-        this.loading = true;
-        this.reservering
-          .save(this.$axios)
-          .then(() => {
-            this.getNextPage();
-          })
-          .catch((error) => {
-            this.loading = false;
-            const errors = error.errors || {};
-
-            if (error.response) {
-              // error is afkomstig van de server
-              const data = error.response.data?.data;
-              if (data && data.message) {
-                errors.general = data.message;
-              } else if (error.message) {
-                errors.general = error.message;
-              }
-            }
-            this.errors = errors;
-          });
-      }
-    },
-
-    annuleren() {
-      if (confirm("Weet je zeker dat je deze reservering wilt annuleren?")) {
-        this.reservering.delete(this.$axios).then(() => {
-          if (this.loggedInUser) {
-            this.$router.push({
-              name: "beheer-reserveringen",
-            });
-          } else if (this.reservering.teruggeefbaar) {
-            this.$router.push({
-              name: "geannuleerd",
-            });
-          } else {
-            this.$router.push({
-              name: "reserveren-id-details",
-              params: { id: this.reservering.id },
-            });
-          }
-        });
-      }
-    },
-
-    getNextPage() {
-      let maxRetries = 100;
-      const id = this.reservering.id;
-      const timer = setInterval(async () => {
-        try {
-          const { data: reservering } = await this.$axios.get(`/reservering/${id}`, {
-            params: {
-              include: ["tickets"],
-            },
-          });
-
-          if (reservering.wachtlijst || !(reservering.openstaandBedrag > 0)) {
-            clearInterval(timer);
-            this.loading = false;
-            if (this.loggedInUser) {
-              this.$router.push({ name: "beheer-reserveringen" });
-            } else {
-              this.$router.push({
-                name: "reserveren-id-details",
-                params: { id },
-              });
-            }
-            // this.message = "Reservering is opgeslagen";
-          } else if (reservering.paymentUrl) {
-            clearInterval(timer);
-            document.location.href = reservering.paymentUrl;
-          }
-        } catch (e) {
-          this.errors.general = e.message;
-        }
-        if (!--maxRetries) {
-          clearInterval(timer);
-        }
-      }, 5000);
-    },
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
