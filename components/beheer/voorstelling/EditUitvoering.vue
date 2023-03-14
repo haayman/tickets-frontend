@@ -41,7 +41,10 @@ const props = defineProps<{
   deletable: boolean;
 }>();
 
-const emit = defineEmits(["save", "delete"]);
+const emit = defineEmits<{
+  (event: "save", value: Uitvoering): void;
+  (event: "delete", value: Uitvoering): void;
+}>();
 
 const uitvoering = useVModel(props, "uitvoering", emit);
 watch(
@@ -50,11 +53,11 @@ watch(
 );
 
 function save() {
-  emit("save", uitvoering);
+  emit("save", uitvoering.value);
 }
 
 function remove() {
-  emit("delete", uitvoering);
+  emit("delete", props.uitvoering);
 }
 </script>
 
