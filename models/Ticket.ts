@@ -1,12 +1,29 @@
-import { Prijs } from "./Prijs";
+import { Prijs, IPrijs } from "./Prijs";
+
+export type ITicket = {
+  aantal: number;
+  prijs: IPrijs | Prijs;
+  message?: string | null;
+  aantalBetaald?: number;
+  aantalTekoop?: number;
+  aantalTerugbetalen?: number;
+};
 
 export class Ticket {
-  constructor({ message = null, aantal = 0, aantalBetaald = 0, aantalTekoop = 0, prijs } = {}) {
-    this.message = message;
-    this.aantal = +aantal;
-    this.aantalBetaald = aantalBetaald;
-    this.aantalTekoop = aantalTekoop;
-    this.prijs = new Prijs(prijs);
+  message: string | null;
+  aantal: number;
+  aantalBetaald: number;
+  aantalTekoop: number;
+  prijs: Prijs;
+  aantalTerugbetalen: number;
+
+  constructor(params: ITicket) {
+    this.message = params.message || "";
+    this.aantal = +params.aantal;
+    this.aantalBetaald = params.aantalBetaald || 0;
+    this.aantalTekoop = params.aantalTekoop || 0;
+    this.aantalTerugbetalen = params.aantalTerugbetalen || 0;
+    this.prijs = new Prijs(params.prijs);
   }
 
   get betaald() {

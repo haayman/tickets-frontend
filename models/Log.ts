@@ -1,25 +1,18 @@
-import { Reservering } from "./Reservering";
+export type ILog = {
+  id: string;
+  message: string;
+  created_at: string;
+};
 
-/* eslint-disable camelcase */
 export class Log {
   id: string;
   message: string;
   created_at: Date;
-  reservering?: Reservering;
 
-  constructor({
-    id,
-    message,
-    created_at,
-  }: {
-    id: string;
-    message: string;
-    created_at: string;
-    reservering: Reservering;
-  }) {
-    this.id = id;
-    this.message = message;
-    this.created_at = new Date(created_at);
+  constructor(params: ILog) {
+    this.id = params.id;
+    this.message = params.message;
+    this.created_at = new Date(params.created_at);
   }
 
   toString() {

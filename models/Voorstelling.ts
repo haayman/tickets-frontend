@@ -1,7 +1,33 @@
-import { Uitvoering } from "./Uitvoering";
-import { Prijs } from "./Prijs";
+import { IUitvoering, Uitvoering } from "./Uitvoering";
+import { IPrijs, Prijs } from "./Prijs";
+
+export type IVoorstelling = {
+  id?: number;
+  title?: string;
+  description?: string;
+  active?: boolean;
+  url?: string;
+  locatie?: string;
+  opmerkingen?: string;
+  poster?: string;
+  thumbnail?: string;
+  uitvoeringen?: IUitvoering[];
+  prijzen?: IPrijs[];
+};
 
 export class Voorstelling {
+  id?: number;
+  title: string;
+  description: string;
+  active: boolean;
+  url?: string;
+  locatie?: string;
+  opmerkingen?: string;
+  poster?: string;
+  thumbnail?: string;
+  uitvoeringen: Uitvoering[];
+  prijzen: Prijs[];
+
   constructor({
     id,
     title,
@@ -14,13 +40,13 @@ export class Voorstelling {
     thumbnail,
     uitvoeringen,
     prijzen,
-  } = {}) {
+  }: IVoorstelling = {}) {
     if (id) {
       this.id = id;
     }
-    this.title = title;
-    this.description = description;
-    this.active = active;
+    this.title = title || "";
+    this.description = description || "";
+    this.active = !!active;
     this.url = url;
     this.locatie = locatie;
     this.opmerkingen = opmerkingen;
@@ -41,7 +67,7 @@ export class Voorstelling {
       opmerkingen: this.opmerkingen,
       poster: this.poster,
       thumbnail: this.thumbnail,
-      uitvoeringen: this.uitvoeringen.map((u) => u.serialize()),
+      uitvoeringen: (this.uitvoeringen || []).map((u) => u.serialize()),
       prijzen: this.prijzen,
     };
   }
