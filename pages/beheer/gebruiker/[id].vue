@@ -39,11 +39,11 @@ const route = useRoute();
 const router = useRouter();
 const { get, put } = useAPI();
 
-const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, label: r.description })));
+const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, title: r.description })));
 
 onMounted(async () => {
   try {
-    user.value = await get<User>(`/user/${route.params.id}`);
+    user.value = new User(await get<User>(`/user/${route.params.id}`));
   } catch (error: any) {
     const errors = error.errors || {};
 
