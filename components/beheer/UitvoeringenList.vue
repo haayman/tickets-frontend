@@ -15,14 +15,13 @@
           v-for="uitvoering in uitvoeringen"
           :key="uitvoering.id"
           v-slot="{ navigate }"
-          :class="classes(uitvoering.id)"
           :to="{
             name: 'beheer-reserveringen',
             query: { uitvoering_id: uitvoering.id },
           }"
           custom
         >
-          <tr @click="navigate">
+          <tr :class="classes(uitvoering.id)" @click="navigate">
             <td>{{ formatDate(uitvoering.aanvang, "PPPPp") }}</td>
             <td>{{ uitvoering.gereserveerd }} gereserveerd</td>
             <td>
@@ -40,7 +39,7 @@ import { Uitvoering } from "~~/models";
 
 const props = defineProps<{
   uitvoeringen: Uitvoering[];
-  uitvoeringId?: number;
+  uitvoeringId?: number | null;
 }>();
 const totaalGereserveerd = computed(() =>
   props.uitvoeringen.reduce((total, u) => total + u.gereserveerd, 0),

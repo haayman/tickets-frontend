@@ -3,7 +3,7 @@
     <v-card v-if="uitvoeringen">
       <BeheerUitvoeringenList
         :uitvoeringen="uitvoeringen"
-        :uitvoering_id="uitvoeringId"
+        :uitvoering-id="uitvoeringId"
       ></BeheerUitvoeringenList>
     </v-card>
 
@@ -80,6 +80,7 @@ watch(
   (uitvoering_id) => {
     // eslint-disable-next-line camelcase
     uitvoeringId.value = uitvoering_id ? +uitvoering_id : null;
+    fetch();
   },
   {
     immediate: true,
