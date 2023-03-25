@@ -121,5 +121,5 @@ const config = defineNuxtConfig({
   },
 });
 
-console.log(config);
+// console.log(config);
 export default config;
