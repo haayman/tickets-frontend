@@ -10,13 +10,13 @@ export class Prijs {
   description: string;
   prijs: number;
   role: string | null;
-  constructor(params: IPrijs | Prijs) {
-    if (params.id) {
+  constructor(params?: IPrijs | Prijs) {
+    if (params?.id) {
       this.id = params.id;
     }
-    this.description = params.description || "";
-    this.prijs = +(params.prijs ?? 0);
-    this.role = params.role || null;
+    this.description = params?.description || "";
+    this.prijs = +(params?.prijs ?? 0);
+    this.role = params?.role || null;
   }
 
   toString() {

@@ -1,11 +1,11 @@
 export type ILog = {
-  id: string;
+  id: number;
   message: string;
   created_at: string;
 };
 
 export class Log {
-  id: string;
+  id: number;
   message: string;
   created_at: Date;
 

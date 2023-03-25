@@ -17,9 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { Uitvoering } from "~~/models";
-
 defineProps<{
-  uitvoering: Uitvoering;
+  uitvoering: { vrije_plaatsen: number; wachtlijst: number; te_koop: number; verkoopbaar: boolean };
 }>();
 </script>

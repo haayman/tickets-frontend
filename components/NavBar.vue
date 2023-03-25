@@ -52,7 +52,7 @@ const links = computed(() => {
     });
   }
 
-  if (isAdministrator) {
+  if (isAdministrator.value) {
     links.push({
       title: "Voorstelling",
       link: "/beheer/voorstelling/",

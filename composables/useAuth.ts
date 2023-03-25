@@ -19,6 +19,8 @@ export function useAuth() {
     listenToStorageChanges: true,
   });
 
+  const accessTokenCookie = useCookie("auth._token.local");
+
   const isAuthenticated = computed(() => userStorage.value);
   const redirectedFrom = ref<string | undefined>();
 
@@ -49,6 +51,7 @@ export function useAuth() {
   function logout() {
     accessTokenStorage.value = null;
     userStorage.value = null;
+    accessTokenCookie.value = null;
   }
 
   /**
@@ -76,14 +79,14 @@ export function useAuth() {
     }
   }
 
-  const user = computed(() => (userStorage.value ? new User(userStorage.value) : new User()));
+  const user = computed(() => (userStorage.value ? new User(userStorage.value) : null));
 
   const isAdministrator = computed(() => {
     return user.value?.role === "admin";
   });
 
   const isSpeler = computed(() => {
-    return user.value?.role === "speler" || isAdministrator;
+    return user.value?.role === "speler" || isAdministrator.value;
   });
 
   const isKassa = computed(() => {

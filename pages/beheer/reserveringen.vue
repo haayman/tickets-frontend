@@ -1,92 +1,88 @@
 <template>
   <div>
     <v-card v-if="uitvoeringen">
-      <uitvoeringen :uitvoeringen="uitvoeringen" :uitvoering_id="uitvoering_id"></uitvoeringen>
+      <BeheerUitvoeringenList
+        :uitvoeringen="uitvoeringen"
+        :uitvoering_id="uitvoeringId"
+      ></BeheerUitvoeringenList>
     </v-card>
-    <reserveringen-list
+
+    <BeheerReserveringenList
       class="mt-3"
       :loading="loading"
       :reserveringen="gereserveerd"
-      :uitvoering_id="uitvoering_id"
-      >Gereserveerd</reserveringen-list
+      :uitvoering_id="uitvoeringId"
     >
-    <reserveringen-list
+      Gereserveerd
+    </BeheerReserveringenList>
+
+    <BeheerReserveringenList
       v-if="wachtlijst.length"
       class="mt-3"
       :loading="loading"
       :reserveringen="wachtlijst"
-      :uitvoering_id="uitvoering_id"
-      >Wachtlijst</reserveringen-list
+      :uitvoering_id="uitvoeringId"
     >
+      Wachtlijst
+    </BeheerReserveringenList>
   </div>
 </template>
-<script>
+
+<script setup lang="ts">
+import { ref, computed, watch } from "vue";
 import { Uitvoering } from "@/models/Uitvoering";
-import { Reservering } from "@/models/Reservering";
-import Uitvoeringen from "@/components/beheer/uitvoering/UitvoeringenList";
-import ReserveringenList from "@/components/beheer/reserveringen/ReserveringenList";
+import { IReservering, Reservering } from "@/models/Reservering";
 
-export default {
-  middleware: "auth",
-  components: {
-    Uitvoeringen,
-    ReserveringenList,
-  },
-  data() {
-    return {
-      uitvoering_id: "",
-      loading: false,
-      uitvoeringen: null,
-      reserveringen: [],
-    };
-  },
-  watch: {
-    $route: {
-      handler() {
-        this.uitvoering_id = this.$route.query?.uitvoering_id || "";
-        this.fetch();
-      },
-      immediate: true,
-    },
-  },
-  created() {
-    this.updater = setInterval(() => {
-      this.fetch(false); // geen spinner
-    }, 60000); // elke minuut bijwerken
-  },
-  beforeDestroy() {
-    if (this.updater) clearInterval(this.updater);
-  },
-  computed: {
-    gereserveerd: function () {
-      return this.reserveringen.filter((r) => !r.wachtlijst);
-    },
+const uitvoeringId = ref<number | null>(null);
+const loading = ref(false);
+const uitvoeringen = ref<Uitvoering[]>([]);
+const reserveringen = ref<Reservering[]>([]);
+const { get } = useAPI();
 
-    wachtlijst: function () {
-      return this.reserveringen.filter((r) => r.wachtlijst);
-    },
-  },
-  methods: {
-    async fetch(loading = true) {
-      this.loading = loading;
-      let params = {
-        params: {
-          include: ["tickets", "payments"],
-          order: "-created_at",
-        },
-      };
-      if (this.uitvoering_id) {
-        params.params.uitvoering_id = this.uitvoering_id;
-        params.params.order = "naam";
-      }
-      const { data: reserveringen } = await this.$axios.get("/reservering", params);
-      this.reserveringen = reserveringen.map((r) => new Reservering(r));
+const gereserveerd = computed(() => reserveringen.value.filter((r) => !r.wachtlijst));
+const wachtlijst = computed(() => reserveringen.value.filter((r) => r.wachtlijst));
 
-      const { data: uitvoeringen } = await this.$axios.get("/uitvoering");
-      this.uitvoeringen = uitvoeringen.map((u) => new Uitvoering(u));
-
-      this.loading = false;
+async function fetch(setLoading = false) {
+  loading.value = setLoading;
+  const params: any = {
+    params: {
+      include: ["tickets", "payments"],
+      order: "-created_at",
     },
+  };
+  if (uitvoeringId.value) {
+    params.params.uitvoering_id = uitvoeringId.value;
+    params.params.order = "naam";
+  }
+  const reserveringenData = await get<IReservering[]>("/reservering", params);
+  reserveringen.value = reserveringenData?.map((r) => new Reservering(r)) || [];
+
+  const data = await get<Uitvoering[]>("/uitvoering");
+  uitvoeringen.value = data?.map((u) => new Uitvoering(u)) || [];
+
+  loading.value = false;
+}
+
+const updater = setInterval(() => {
+  fetch(false); // geen spinner
+}, 60000); // elke minuut bijwerken
+
+onBeforeUnmount(() => {
+  clearInterval(updater);
+});
+
+const route = useRoute();
+fetch();
+
+watch(
+  () => route.query.uitvoering_id,
+  // eslint-disable-next-line camelcase
+  (uitvoering_id) => {
+    // eslint-disable-next-line camelcase
+    uitvoeringId.value = uitvoering_id ? +uitvoering_id : null;
   },
-};
+  {
+    immediate: true,
+  },
+);
 </script>

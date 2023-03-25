@@ -8,6 +8,6 @@ const router = useRouter();
 if (!isAuthenticated) {
   router.push({ name: "reserveren" });
 } else {
-  router.push({ name: "beheer-gebruiker" });
+  router.push({ name: "beheer-reserveringen" });
 }
 </script>

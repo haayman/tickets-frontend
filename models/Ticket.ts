@@ -1,6 +1,7 @@
 import { Prijs, IPrijs } from "./Prijs";
 
 export type ITicket = {
+  id?: number;
   aantal: number;
   prijs: IPrijs | Prijs;
   message?: string | null;
@@ -10,6 +11,7 @@ export type ITicket = {
 };
 
 export class Ticket {
+  id?: number;
   message: string | null;
   aantal: number;
   aantalBetaald: number;
@@ -18,6 +20,7 @@ export class Ticket {
   aantalTerugbetalen: number;
 
   constructor(params: ITicket) {
+    this.id = params.id;
     this.message = params.message || "";
     this.aantal = +params.aantal;
     this.aantalBetaald = params.aantalBetaald || 0;

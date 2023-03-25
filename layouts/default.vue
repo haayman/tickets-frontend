@@ -6,6 +6,7 @@
       <v-container>
         <slot />
       </v-container>
+      <NotifcationRenderer />
     </v-main>
   </v-app>
 </template>

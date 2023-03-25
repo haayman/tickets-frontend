@@ -17,10 +17,12 @@
 
           <v-text-field
             v-model="password"
-            type="password"
             label="wachtwoord"
             data-test="password"
             autocomplete="current-password"
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
           />
 
           <v-btn type="submit" depressed color="primary">Log In</v-btn>
@@ -54,6 +56,7 @@ const password = ref("");
 const error = ref<null | string>(null);
 const forgotten = ref(false);
 const forgottenSent = ref(false);
+const showPassword = ref(false);
 const router = useRouter();
 const { login } = useAuth();
 const { post } = useAPI();
@@ -81,7 +84,7 @@ async function sendForgotten() {
 
   try {
     await post("/user/forgotten", {
-      username,
+      username: username.value,
     });
     forgottenSent.value = true;
   } catch (e: any) {
