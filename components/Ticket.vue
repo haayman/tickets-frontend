@@ -4,16 +4,8 @@
 
     <td class="money">{{ formatMoney(ticket.prijs.prijs) }}</td>
 
-    <td class="aantal">
-      <v-text-field
-        v-if="isAuthorized"
-        v-model.number="aantal"
-        type="number"
-        min="0"
-        :rules="rules"
-      />
-
-      <v-select v-else v-model.number="aantal" required :items="availableOptions" />
+    <td>
+      <ticket-amount v-model="aantal" :max="8" />
     </td>
 
     <td v-if="aantalTekoop">{{ ticket.aantalTekoop }}</td>
@@ -70,15 +62,4 @@ const aantal = computed({
     // emit("update:aantal", value + props.ticket.aantalTekoop);
   },
 });
-
-const availableOptions = computed(() => {
-  // genereer een array van [0..originalAantal]
-  return [...Array(originalAantal.value + 1).keys()];
-});
 </script>
-
-<style scoped>
-.aantal {
-  max-width: 3em;
-}
-</style>
