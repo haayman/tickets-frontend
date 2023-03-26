@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="voorstelling" class="mt-3">
+  <v-card>
     <v-card-text>
       <v-container>
         <v-row>
@@ -32,14 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { IVoorstelling } from "~~/models";
+import { Voorstelling } from "~~/models";
 
-const { get } = useAPI();
-
-const voorstelling = ref<IVoorstelling | null>();
-
-onMounted(async () => {
-  const data = await get<IVoorstelling[]>("/voorstelling");
-  voorstelling.value = data[0];
-});
+defineProps<{
+  voorstelling: Voorstelling;
+}>();
 </script>

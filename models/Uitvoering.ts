@@ -2,6 +2,7 @@
 import { format } from "date-fns";
 // eslint-disable-next-line import/no-duplicates
 import nl from "date-fns/locale/nl";
+import { IVoorstelling, Voorstelling } from "./Voorstelling";
 
 export type IUitvoering = {
   id?: number;
@@ -13,6 +14,7 @@ export type IUitvoering = {
   gereserveerd?: string | number;
   wachtlijst?: string | number;
   te_koop?: string | number;
+  voorstelling?: number | IVoorstelling | Voorstelling;
 };
 
 export class Uitvoering {
@@ -25,6 +27,7 @@ export class Uitvoering {
   gereserveerd: number;
   wachtlijst: number;
   te_koop: number;
+  voorstelling: number | Voorstelling;
 
   constructor({
     id,
@@ -36,6 +39,7 @@ export class Uitvoering {
     gereserveerd,
     wachtlijst,
     te_koop,
+    voorstelling,
   }: IUitvoering = {}) {
     this.id = id;
     this.aanvang = aanvang ? new Date(aanvang) : new Date();
@@ -46,6 +50,12 @@ export class Uitvoering {
     this.gereserveerd = +(gereserveerd || 0);
     this.wachtlijst = +(wachtlijst || 0);
     this.te_koop = +(te_koop || 0);
+    if (voorstelling instanceof Voorstelling) {
+      this.voorstelling = voorstelling;
+    } else {
+      this.voorstelling =
+        typeof voorstelling === "number" ? voorstelling : new Voorstelling(voorstelling);
+    }
   }
 
   get verkoopbaar() {

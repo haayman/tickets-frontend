@@ -140,7 +140,7 @@ const props = defineProps<{
 }>();
 
 const prijs = ref<Prijs>(new Prijs());
-const uitvoering = ref<Uitvoering>(new Uitvoering());
+const uitvoering = ref<Uitvoering>(new Uitvoering({ voorstelling: props.voorstelling }));
 const errors = ref<any>({});
 const dirty = ref(false);
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <voorstelling-header v-if="!isAuthenticated" />
+    <voorstelling-header v-if="!isAuthenticated" :voorstelling="voorstelling" />
 
     <v-card v-if="reservering" class="mt-3">
       <v-card-title>
@@ -54,8 +54,8 @@
 
               <uitvoeringen
                 v-if="voorstelling"
-                v-model:uitvoering_id="uitvoering_id"
-                :uitvoeringen="voorstelling.uitvoeringen"
+                v-model:uitvoering-id="reservering.uitvoering_id"
+                :voorstelling="voorstelling"
               />
             </v-card-text>
           </v-card>
@@ -250,21 +250,20 @@
 <script setup lang="ts">
 /* eslint-disable camelcase */
 import { Uitvoering, Ticket } from "~~/models";
-import { IReservering, Reservering } from "~~/models/Reservering";
-import { IVoorstelling, Voorstelling } from "~~/models/Voorstelling";
+import { Reservering } from "~~/models/Reservering";
+import { Voorstelling } from "~~/models/Voorstelling";
+
+const props = defineProps<{
+  voorstelling: Voorstelling;
+  reservering: Reservering;
+}>();
 
 const { isAuthenticated } = useAuth();
 const form = ref();
 
-const route = useRoute();
-const router = useRouter();
-const { get } = useAPI();
-
-const reservering = ref<Reservering | null>(null);
+const reservering = ref<Reservering | null>(props.reservering);
 const valid = ref(true);
 const displayErrors: any = ref({});
-const voorstelling = ref<Voorstelling | null>(null);
-const uitvoering_id = ref<number | null>(null);
 const originalUitvoeringId = ref<number | null>(null);
 const originalAantal = ref<number>(0);
 const wachtrijHelp = ref(false);
@@ -287,12 +286,14 @@ const wachtlijst = computed(() => {
   return (
     reservering.value?.id &&
     reservering.value?.wachtlijst &&
-    uitvoering_id.value === originalUitvoeringId.value
+    reservering.value?.uitvoering_id === originalUitvoeringId.value
   );
 });
 
+const uitvoering_id = computed(() => reservering.value?.uitvoering_id);
+
 const uitvoering = computed(() => {
-  return voorstelling.value?.uitvoeringen.find((u) => u.id === uitvoering_id.value);
+  return props.voorstelling.uitvoeringen.find((u) => u.id === uitvoering_id.value);
 });
 
 const wachtrijNodig = computed(() => {
@@ -331,7 +332,7 @@ const submitText = computed(() => {
   }
 });
 
-const datumAanpasbaar = computed(() => voorstelling.value?.uitvoeringen?.length || 0 > 1);
+const datumAanpasbaar = computed(() => props.voorstelling.uitvoeringen?.length || 0 > 1);
 
 const bijbetalingNodig = computed(() => totaalBedrag.value > 0 && !wachtrijNodig.value);
 
@@ -355,50 +356,18 @@ watch(
   uitvoering_id,
   (uitvoering_id) => {
     if (!reservering.value || !uitvoering_id) return;
-    reservering.value.uitvoering_id = uitvoering_id;
     reservering.value.uitvoering = uitvoering.value as Uitvoering;
   },
   { immediate: true },
 );
 
-onMounted(async () => {
-  if (route.params.id) {
-    try {
-      const data = await get<IReservering>(`/reservering/${route.params.id}`, {
-        query: {
-          include: ["tickets", "payments"],
-        },
-      });
-      reservering.value = new Reservering(data);
-    } catch (e) {
-      router.replace({ name: "not-found", params: { id: route.params.id } });
+onMounted(() => {
+  props.voorstelling.prijzen?.forEach((prijs) => {
+    if (!reservering.value?.tickets.find((t) => t.prijs.id === prijs.id)) {
+      const ticket = new Ticket({ prijs, aantal: 0 });
+      reservering.value?.tickets.push(ticket);
     }
-  } else {
-    reservering.value = new Reservering();
-    if (route.query.uitvoeringId) {
-      uitvoering_id.value = +route.query.uitvoeringId;
-    }
-  }
-
-  const voorstellingen = await get<IVoorstelling[]>("/voorstelling", {
-    query: {
-      include: ["prijzen", "uitvoeringen"],
-    },
   });
-
-  if (!voorstelling.value) {
-    voorstelling.value = new Voorstelling(voorstellingen[0]);
-    if (voorstelling.value.uitvoeringen.length === 1) {
-      uitvoering_id.value = voorstelling.value.uitvoeringen[0].id || null;
-    }
-
-    voorstelling.value.prijzen?.forEach((prijs) => {
-      if (!reservering.value?.tickets.find((t) => t.prijs.id === prijs.id)) {
-        const ticket = new Ticket({ prijs, aantal: 0 });
-        reservering.value?.tickets.push(ticket);
-      }
-    });
-  }
 
   originalAantal.value = aantalKaarten.value;
 });
@@ -528,12 +497,5 @@ async function annuleren() {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
-}
-
-.v-sheet.v-card {
-  background-color: #252525;
-}
-.v-sheet.v-card .v-card {
-  background-color: #1e1e1e;
 }
 </style>

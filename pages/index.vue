@@ -1,13 +1,10 @@
-<template>
-  <nuxt-link to="/beheer/gebruiker">Gebruikers</nuxt-link>
-</template>
 <script setup lang="ts">
 const { isAuthenticated } = useAuth();
 
 const router = useRouter();
-if (!isAuthenticated) {
-  router.push({ name: "reserveren" });
+if (!isAuthenticated.value) {
+  router.replace({ name: "voorstelling" });
 } else {
-  router.push({ name: "beheer-reserveringen" });
+  router.replace({ name: "beheer-reserveringen" });
 }
 </script>
