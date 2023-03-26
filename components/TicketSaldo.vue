@@ -1,16 +1,13 @@
 <template>
   <div class="ticket-summary">
-    <div v-if="originalTekoop" class="text-right mb-4">
-      Je hebt {{ ticket.aantalTekoop }} {{ kaarten }} in de verkoop
-    </div>
     <v-table density="comfortable">
       <tr class="totaal">
         <td class="text-right"></td>
-        <td class="money text-right text-medium-emphasis">{{ formatMoney(ticket.totaal) }}</td>
+        <td class="money text-right">{{ formatMoney(ticket.totaal) }}</td>
       </tr>
       <tr v-if="ticket.betaald" class="betaald">
         <td class="text-right">betaald</td>
-        <td class="money text-right text-medium-emphasis">{{ formatMoney(ticket.betaald) }}</td>
+        <td class="money text-right">{{ formatMoney(ticket.betaald) }}</td>
       </tr>
       <tr v-if="ticket.betaald" class="tebetalen">
         <td class="text-right">{{ saldoTekst }}</td>
@@ -27,9 +24,6 @@ import { Ticket } from "~~/models";
 const props = defineProps<{
   ticket: Ticket;
 }>();
-
-const originalTekoop = ref(props.ticket.aantalTekoop);
-const kaarten = computed(() => (props.ticket.aantalTekoop === 1 ? "kaart" : "kaarten"));
 
 const saldoTekst = computed(() => (props.ticket.tebetalen >= 0 ? "" : "terug"));
 </script>

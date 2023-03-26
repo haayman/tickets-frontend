@@ -1,16 +1,23 @@
 <template>
-  <div class="overzicht">
-    <div class="aantal">
-      <v-icon>mdi-ticket-outline</v-icon> {{ aantalKaarten }} {{ kaarten(aantalKaarten) }}
-      <span v-if="aantalTekoop" class="tekoop">
-        waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staat }}
-      </span>
-    </div>
-    <div class="totaal">{{ formatMoney(totaalBedrag) }}</div>
-    <div v-if="teBetalen" class="bedrag">
-      {{ saldoTekst }} {{ formatMoney(Math.abs(teBetalen)) }}
-    </div>
-  </div>
+  <v-container class="overzicht">
+    <v-row>
+      <v-col>
+        <div class="aantal">
+          <v-icon>mdi-ticket-outline</v-icon> {{ aantalKaarten }} {{ kaarten(aantalKaarten) }}
+          <span v-if="aantalTekoop" class="tekoop">
+            waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staat }}
+          </span>
+        </div>
+      </v-col>
+      <v-col cols="3" class="bedragen">
+        <div class="totaal text-right">{{ formatMoney(totaalBedrag) }}</div>
+        <div v-if="betaald" class="betaald text-right">betaald {{ formatMoney(betaald) }}</div>
+        <div v-if="betaald && teBetalen" class="tebetalen text-right">
+          {{ saldoTekst }} {{ formatMoney(Math.abs(teBetalen)) }}
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script setup lang="ts">
 import { Reservering } from "~~/models";
@@ -25,6 +32,10 @@ const originalTekoop = ref(0);
 
 const aantalKaarten = computed(() =>
   props.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0),
+);
+
+const betaald = computed(() =>
+  props.reservering.tickets.reduce((totaal, t) => totaal + t.betaald, 0),
 );
 
 const aantalTekoop = computed(() =>
@@ -59,5 +70,11 @@ onMounted(() => {
 <style lang="scss">
 .overzicht {
   font-size: large;
+
+  .bedragen {
+    div {
+      margin-bottom: 1em;
+    }
+  }
 }
 </style>
