@@ -61,12 +61,18 @@
           </v-card>
 
           <v-card class="mt-3">
-            <v-card-subtitle>Aantal kaarten</v-card-subtitle>
-
             <v-card-text>
-              <div v-if="reservering.tickets">
-                <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
-              </div>
+              <tickets
+                v-if="reservering.tickets"
+                :reservering="reservering"
+                :rules="rules.aantal"
+              ></tickets>
+            </v-card-text>
+          </v-card>
+
+          <v-card class="mt-3">
+            <v-card-text>
+              <tickets-summary :reservering="reservering" />
             </v-card-text>
           </v-card>
 
@@ -345,11 +351,15 @@ const bijbetalingStatus = computed(() => {
   return "";
 });
 
-watch(uitvoering_id, (uitvoering_id) => {
-  if (!reservering.value || !uitvoering_id) return;
-  reservering.value.uitvoering_id = uitvoering_id;
-  reservering.value.uitvoering = uitvoering.value as Uitvoering;
-});
+watch(
+  uitvoering_id,
+  (uitvoering_id) => {
+    if (!reservering.value || !uitvoering_id) return;
+    reservering.value.uitvoering_id = uitvoering_id;
+    reservering.value.uitvoering = uitvoering.value as Uitvoering;
+  },
+  { immediate: true },
+);
 
 onMounted(async () => {
   if (route.params.id) {

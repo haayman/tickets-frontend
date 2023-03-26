@@ -37,6 +37,10 @@ export class Ticket {
     return this.prijs.prijs * +this.aantal - +this.betaald;
   }
 
+  get totaal() {
+    return this.prijs.prijs * +this.aantal;
+  }
+
   get newAantal() {
     return Math.max(this.aantal - this.aantalTekoop, 0);
   }

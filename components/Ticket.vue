@@ -1,18 +1,16 @@
 <template>
   <tr v-if="shouldBeDisplayed">
-    <td>{{ ticket.prijs.description }}</td>
-
-    <td class="money">{{ formatMoney(ticket.prijs.prijs) }}</td>
-
     <td>
-      <ticket-amount v-model="aantal" :max="8" />
+      <Prijs :prijs="ticket.prijs" />
     </td>
 
-    <td v-if="aantalTekoop">{{ ticket.aantalTekoop }}</td>
+    <td>
+      <ticket-amount v-model="aantal" :max="max" />
+    </td>
 
-    <td v-if="reservering.id" class="text-center">{{ formatMoney(ticket.betaald) }}</td>
-
-    <td class="money text-center">{{ formatMoney(factor * ticket.tebetalen) }}</td>
+    <td>
+      <ticket-saldo :ticket="ticket" />
+    </td>
   </tr>
 </template>
 
@@ -40,11 +38,24 @@ const originalAantal = ref<number>(props.ticket.aantal - props.ticket.aantalTeko
 const originalTekoop = ref<number>(props.ticket.aantalTekoop);
 const { isAuthorized: userIsAuthorized } = useAuth();
 
+/**
+ * is de huidige gebruiker gemachtigd deze prijs te bestellen?
+ */
 const isAuthorized = computed(() => {
   return !props.ticket.prijs.role || userIsAuthorized(props.ticket.prijs.role);
 });
 
+/**
+ * een anonieme gebruiker kan z'n eigen vrijkaartjes zien
+ */
 const shouldBeDisplayed = computed(() => isAuthorized.value || originalAantal.value);
+
+const max = computed(() => {
+  if (props.ticket.prijs.prijs > 0 || isAuthorized.value) return 8;
+
+  // iemand die de eigen vrijkaartjes aanpast kan alleen omlaag
+  return originalAantal.value;
+});
 
 const aantal = computed({
   get() {
