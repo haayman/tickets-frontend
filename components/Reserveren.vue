@@ -22,7 +22,6 @@
                   :display-errors="displayErrors"
                   :rules="rules"
                 />
-                <ReserverenOpmerkingen :reservering="reservering" />
               </v-col>
               <v-col>
                 <ReserverenUitvoeringen
@@ -30,6 +29,13 @@
                   :voorstelling="voorstelling"
                   :display-errors="displayErrors"
                 />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <ReserverenOpmerkingen :reservering="reservering" />
+              </v-col>
+              <v-col>
                 <v-card class="mt-3">
                   <v-card-text>
                     <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
