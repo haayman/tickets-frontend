@@ -5,7 +5,7 @@
 import { IVoorstelling, Reservering, Voorstelling } from "~~/models";
 
 const voorstelling = ref<Voorstelling>();
-const reservering = new Reservering();
+const reservering = ref(new Reservering());
 const { get } = useAPI();
 const route = useRoute();
 onMounted(async () => {

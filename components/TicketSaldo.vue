@@ -1,5 +1,5 @@
 <template>
-  <div class="ticket-summary">
+  <div class="ticket-summary d-flex flex-column">
     <div class="text-right money">{{ formatMoney(ticket.totaal) }}</div>
     <div v-if="ticket.betaald" class="text-right">betaald {{ formatMoney(-ticket.betaald) }}</div>
     <div v-if="ticket.betaald" class="text-right total">

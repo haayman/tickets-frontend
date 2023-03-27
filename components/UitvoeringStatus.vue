@@ -10,7 +10,7 @@
       wachtlijst: {{ uitvoering.wachtlijst }}
     </span>
 
-    <span v-if="uitvoering.te_koop">te koop: {{ uitvoering.te_koop }}</span>
+    <span v-if="uitvoering.te_koop">, te koop: {{ uitvoering.te_koop }}</span>
 
     <span v-if="!uitvoering.verkoopbaar">(gesloten)</span>
   </span>

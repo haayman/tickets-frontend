@@ -232,7 +232,7 @@ const bijbetalingStatus = computed(() => {
   if (reservering.value?.id && !wachtlijst?.value) {
     const bedrag = totaalBedrag.value;
     if (bedrag < 0 && !reservering.value.teruggeefbaar) {
-      return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
+      return "Het bedrag zal worden teruggestort zodra de kaarten zijn verkocht";
     }
   }
   return "";

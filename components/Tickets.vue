@@ -1,21 +1,17 @@
 <template>
-  <v-table class="tickets">
-    <template #default>
-      <tbody>
-        <ticket
-          v-for="ticket in reservering.tickets"
-          :key="ticket.prijs.id"
-          v-model:aantal-tekoop="aantalTekoop"
-          v-model:aantal="ticket.aantal"
-          :ticket="ticket"
-          :reservering="reservering"
-          :factor="factor"
-          :rules="rules"
-        >
-        </ticket>
-      </tbody>
-    </template>
-  </v-table>
+  <v-container class="tickets">
+    <ticket
+      v-for="ticket in reservering.tickets"
+      :key="ticket.prijs.id"
+      v-model:aantal-tekoop="aantalTekoop"
+      v-model:aantal="ticket.aantal"
+      :ticket="ticket"
+      :reservering="reservering"
+      :factor="factor"
+      :rules="rules"
+    >
+    </ticket>
+  </v-container>
 </template>
 
 <script setup lang="ts">

@@ -26,10 +26,12 @@
         <a :href="voorstelling.url" target="_blank">Meer informatie</a>
       </div>
 
-      <UitvoeringStatus
-        class="text-medium-emphasis"
-        :uitvoering="{ vrije_plaatsen, wachtlijst, te_koop, verkoopbaar }"
-      />
+      <div>
+        <UitvoeringStatus
+          class="text-medium-emphasis"
+          :uitvoering="{ vrije_plaatsen, wachtlijst, te_koop, verkoopbaar }"
+        />
+      </div>
     </v-col>
     <v-col cols="1">
       <v-btn :to="{ name: 'voorstelling-id', params: { id: voorstelling.id } }"

@@ -1,5 +1,5 @@
 <template>
-  <div class="ticket-number">
+  <div class="ticket-number d-flex">
     <v-btn :disabled="value <= 0" size="small" class="decrement" @click="decrement">
       <v-icon> mdi-minus-circle </v-icon>
     </v-btn>
@@ -15,7 +15,7 @@ const props = defineProps<{
   max: number;
 }>();
 const emit = defineEmits<{
-  (e: "modelValue", value: number): void;
+  (e: "update:modelValue", value: number): void;
 }>();
 
 const value = useVModel(props, "modelValue", emit);

@@ -1,17 +1,17 @@
 <template>
-  <tr v-if="shouldBeDisplayed">
-    <td>
+  <v-row v-if="shouldBeDisplayed">
+    <v-col>
       <Prijs :prijs="ticket.prijs" />
-    </td>
+    </v-col>
 
-    <td>
+    <v-col>
       <ticket-amount v-model="aantal" :max="max" />
-    </td>
+    </v-col>
 
-    <td>
+    <v-col>
       <ticket-saldo :ticket="ticket" />
-    </td>
-  </tr>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -30,19 +30,20 @@ const props = defineProps<{
 const emit = defineEmits<{
   (event: "update:aantalTekoop", value: number): void;
   (event: "update:aantal", value: number): void;
+  (event: "update:ticket", value: Ticket): void;
 }>();
 
-const aantalTekoop = useVModel(props, "aantalTekoop", emit);
+const ticket = useVModel(props, "ticket", emit);
 
-const originalAantal = ref<number>(props.ticket.aantal - props.ticket.aantalTekoop);
-const originalTekoop = ref<number>(props.ticket.aantalTekoop);
+const originalAantal = ref<number>(ticket.value.aantal - ticket.value.aantalTekoop);
+const originalTekoop = ref<number>(ticket.value.aantalTekoop);
 const { isAuthorized: userIsAuthorized } = useAuth();
 
 /**
  * is de huidige gebruiker gemachtigd deze prijs te bestellen?
  */
 const isAuthorized = computed(() => {
-  return !props.ticket.prijs.role || userIsAuthorized(props.ticket.prijs.role);
+  return !ticket.value.prijs.role || userIsAuthorized(ticket.value.prijs.role);
 });
 
 /**
@@ -51,7 +52,7 @@ const isAuthorized = computed(() => {
 const shouldBeDisplayed = computed(() => isAuthorized.value || originalAantal.value);
 
 const max = computed(() => {
-  if (props.ticket.prijs.prijs > 0 || isAuthorized.value) return 8;
+  if (ticket.value.prijs.prijs > 0 || isAuthorized.value) return 8;
 
   // iemand die de eigen vrijkaartjes aanpast kan alleen omlaag
   return originalAantal.value;
@@ -59,18 +60,14 @@ const max = computed(() => {
 
 const aantal = computed({
   get() {
-    return Math.max(props.ticket.aantal - props.ticket.aantalTekoop);
+    return Math.max(ticket.value.aantal - ticket.value.aantalTekoop);
   },
   set(value) {
     if (originalTekoop.value) {
-      // eslint-disable-next-line vue/no-mutating-props
-      props.ticket.aantalTekoop = Math.max(originalTekoop.value + originalAantal.value - value, 0);
+      ticket.value.aantalTekoop = Math.max(originalTekoop.value + originalAantal.value - value, 0);
     }
-    // eslint-disable-next-line vue/no-mutating-props
-    props.ticket.aantal = value + props.ticket.aantalTekoop;
-    // this.$emit("change", this.aantal);
 
-    // emit("update:aantal", value + props.ticket.aantalTekoop);
+    ticket.value.aantal = value + ticket.value.aantalTekoop;
   },
 });
 </script>

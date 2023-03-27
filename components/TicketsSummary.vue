@@ -11,7 +11,8 @@
           </transition>
         </div>
       </v-col>
-      <v-col cols="3" class="bedragen">
+      <v-spacer />
+      <v-col class="bedragen">
         <div class="totaal text-right money">{{ formatMoney(totaalBedrag) }}</div>
         <transition name="fade">
           <div v-if="betaald" class="betaald text-right">betaald {{ formatMoney(betaald) }}</div>
