@@ -78,3 +78,5 @@ export class Uitvoering {
     };
   }
 }
+
+export type ExistingUitvoering = Uitvoering & { id: number };
