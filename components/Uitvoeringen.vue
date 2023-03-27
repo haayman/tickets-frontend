@@ -1,29 +1,29 @@
 <template>
-  <v-table>
-    <template #default>
-      <v-radio-group v-model="uitvoeringId" :rules="rules">
-        <tbody>
-          <tr v-for="uitvoering in uitvoeringen" :key="uitvoering.id">
-            <td>
-              <v-radio
-                :value="uitvoering.id"
-                :disabled="!uitvoering.verkoopbaar"
-                :label="`${formatDate(uitvoering.aanvang)} ${uitvoering.extra_text}`"
-              />
-            </td>
-
-            <td>
-              <uitvoering-status :uitvoering="uitvoering" />
-            </td>
-          </tr>
-        </tbody>
-      </v-radio-group>
-    </template>
-  </v-table>
+  <v-radio-group v-model="uitvoeringId" class="uitvoeringen" :rules="rules">
+    <v-container v-for="uitvoering in uitvoeringen" :key="uitvoering.id" classes="">
+      <v-row
+        class="d-flex align-center"
+        :class="classes(uitvoering.id)"
+        @click="uitvoeringId = uitvoering.id"
+      >
+        <v-col cols="1">
+          <v-radio :value="uitvoering.id" :disabled="!uitvoering.verkoopbaar" />
+        </v-col>
+        <v-col>
+          {{ weekdag(uitvoering.aanvang) }}
+          {{ formatDate(uitvoering.aanvang, "d LLLL") }}
+        </v-col>
+        <v-spacer />
+        <v-col>
+          <uitvoering-status :uitvoering="uitvoering" />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-radio-group>
 </template>
 
 <script setup lang="ts">
-import { IVoorstelling, Uitvoering, Voorstelling } from "~~/models";
+import { IVoorstelling, ExistingUitvoering, Uitvoering, Voorstelling } from "~~/models";
 
 const props = defineProps<{
   voorstelling: Voorstelling;
@@ -36,23 +36,29 @@ const emit = defineEmits<{
 
 const uitvoeringId = useVModel(props, "uitvoeringId", emit);
 
-const uitvoeringen = ref<Uitvoering[]>([]);
+const uitvoeringen = ref<ExistingUitvoering[]>([]);
 const { get } = useAPI();
 
 const rules = [required];
 
-async function updateUitvoeringen() {
-  const voorstelling = await get<IVoorstelling>(`/voorstelling/${props.voorstelling.id}`);
-  uitvoeringen.value = voorstelling?.uitvoeringen?.map((u) => new Uitvoering(u)) || [];
+function weekdag(date: Date) {
+  return formatDate(date, "EEEE");
 }
 
-let updater: any;
-onMounted(() => {
+function classes(id: number) {
+  return id === uitvoeringId.value ? ["elevation-2"] : [];
+}
+
+async function updateUitvoeringen() {
+  const voorstelling = await get<IVoorstelling>(`/voorstelling/${props.voorstelling.id}`);
+  uitvoeringen.value =
+    voorstelling?.uitvoeringen?.map((u) => new Uitvoering(u) as ExistingUitvoering) || [];
+}
+
+updateUitvoeringen();
+const updater = setInterval(() => {
   updateUitvoeringen();
-  updater = setInterval(() => {
-    updateUitvoeringen();
-  }, 10000); // elke 10 seconden
-});
+}, 10000); // elke 10 seconden
 
 onUnmounted(() => {
   if (updater) {
@@ -60,3 +66,12 @@ onUnmounted(() => {
   }
 });
 </script>
+<style lang="scss">
+.uitvoeringen {
+  cursor: pointer;
+
+  .active {
+    background-color: #eee;
+  }
+}
+</style>
