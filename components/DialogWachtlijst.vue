@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px">
-    <template #activator="{ on }">
-      <v-icon small v-on="on" @click.stop="dialog = !dialog"> mdi-help-circle-outline</v-icon>
+    <template #activator>
+      <v-icon small @click.stop="dialog = !dialog"> mdi-help-circle-outline</v-icon>
     </template>
     <v-card>
       <v-card-title>Hoe werkt de wachtlijst?</v-card-title>
