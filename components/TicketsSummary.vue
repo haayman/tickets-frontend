@@ -6,7 +6,7 @@
           <v-icon>mdi-ticket-outline</v-icon> {{ aantalKaarten }} {{ kaarten(aantalKaarten) }}
           <transition name="fade">
             <span v-if="aantalTekoop" class="tekoop">
-              waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staat }}
+              waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staan }}
             </span>
           </transition>
         </div>
@@ -62,11 +62,11 @@ const saldoTekst = computed(() => {
   return teBetalen.value < 0 ? "te ontvangen" : "te betalen";
 });
 
+const staan = computed(() => (aantalTekoop.value === 1 ? "staat" : "staan"));
+
 function kaarten(aantal: number) {
   return aantal === 1 ? "kaart" : "kaarten";
 }
-
-const staat = computed(() => (aantalTekoop.value === 1 ? "staat" : "staan"));
 
 onMounted(() => {
   originalAantal.value = aantalKaarten.value;
