@@ -14,62 +14,77 @@
             Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} al ingenomen op
             {{ formatDate(reservering.ingenomen, "Pp") }}
           </v-alert>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-card>
+                  <v-card-text>
+                    <v-alert v-if="displayErrors['general']" dense type="error">{{
+                      displayErrors.general
+                    }}</v-alert>
 
-          <v-card>
-            <v-card-text>
-              <v-card-subtitle>Je gegevens</v-card-subtitle>
+                    <v-text-field
+                      v-model="reservering.naam"
+                      label="Naam"
+                      :rules="rules.naam"
+                      validate-on-blur
+                      required
+                    />
 
-              <v-alert v-if="displayErrors['general']" dense type="error">{{
-                displayErrors.general
-              }}</v-alert>
+                    <v-text-field
+                      v-model="reservering.email"
+                      label="E-mail"
+                      type="email"
+                      :rules="rules.email"
+                      validate-on-blur
+                      required
+                    />
+                  </v-card-text>
+                </v-card>
 
-              <v-text-field
-                v-model="reservering.naam"
-                label="Naam"
-                :rules="rules.naam"
-                validate-on-blur
-                required
-              />
+                <v-card class="mt-3">
+                  <v-card-text>
+                    <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
 
-              <v-text-field
-                v-model="reservering.email"
-                label="E-mail"
-                type="email"
-                :rules="rules.email"
-                validate-on-blur
-                required
-              />
-            </v-card-text>
-          </v-card>
+                    <v-textarea
+                      v-if="isAuthenticated"
+                      v-model="reservering.opmerking"
+                      label="Reactie"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-col>
+              <v-col>
+                <v-card>
+                  <v-card-title>{{ voorstelling.title }}</v-card-title>
 
-          <v-card class="mt-3">
-            <v-card-subtitle>Voorstelling</v-card-subtitle>
+                  <v-card-text>
+                    <div v-if="displayErrors.uitvoering" class="invalid-feedback">
+                      {{ displayErrors.uitvoering }}
+                    </div>
 
-            <v-card-text>
-              <div v-if="displayErrors.uitvoering" class="invalid-feedback">
-                {{ displayErrors.uitvoering }}
-              </div>
+                    <uitvoeringen
+                      v-if="voorstelling"
+                      v-model:uitvoering-id="reservering.uitvoering_id"
+                      :voorstelling="voorstelling"
+                    />
+                  </v-card-text>
+                </v-card>
 
-              <uitvoeringen
-                v-if="voorstelling"
-                v-model:uitvoering-id="reservering.uitvoering_id"
-                :voorstelling="voorstelling"
-              />
-            </v-card-text>
-          </v-card>
+                <v-card class="mt-3">
+                  <v-card-text>
+                    <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
+                  </v-card-text>
+                </v-card>
 
-          <v-card class="mt-3">
-            <v-card-text>
-              <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
-            </v-card-text>
-          </v-card>
-
-          <v-card class="mt-3">
-            <v-card-text>
-              <tickets-summary :reservering="reservering" />
-            </v-card-text>
-          </v-card>
-
+                <v-card class="mt-3">
+                  <v-card-text>
+                    <tickets-summary :reservering="reservering" />
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
           <transition name="fade">
             <v-alert v-if="wachtrijNodig" type="warning" dense class="mt-3">
               <h4 class="alert-heading">Let op!</h4>
@@ -101,14 +116,6 @@
               v-html="bijbetalingStatus"
             />
           </transition>
-
-          <v-card class="mt-3">
-            <v-card-text>
-              <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
-
-              <v-textarea v-if="isAuthenticated" v-model="reservering.opmerking" label="Reactie" />
-            </v-card-text>
-          </v-card>
 
           <v-alert v-if="displayErrors['general']" type="error">{{
             displayErrors.general
