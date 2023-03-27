@@ -31,7 +31,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (event: "update:uitvoering_id", value: number): void;
+  (event: "update:uitvoeringId", value: number): void;
 }>();
 
 const uitvoeringId = useVModel(props, "uitvoeringId", emit);

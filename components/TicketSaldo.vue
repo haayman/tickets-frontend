@@ -1,21 +1,11 @@
 <template>
   <div class="ticket-summary">
-    <v-table density="comfortable">
-      <tr class="totaal">
-        <td class="text-right"></td>
-        <td class="money text-right">{{ formatMoney(ticket.totaal) }}</td>
-      </tr>
-      <tr v-if="ticket.betaald" class="betaald">
-        <td class="text-right">betaald</td>
-        <td class="money text-right">{{ formatMoney(ticket.betaald) }}</td>
-      </tr>
-      <tr v-if="ticket.betaald" class="tebetalen">
-        <td class="text-right">{{ saldoTekst }}</td>
-        <td class="money text-right text-high-emphasis">
-          {{ formatMoney(ticket.tebetalen) }}
-        </td>
-      </tr>
-    </v-table>
+    <div class="text-right money">{{ formatMoney(ticket.totaal) }}</div>
+    <div v-if="ticket.betaald" class="text-right">betaald {{ formatMoney(-ticket.betaald) }}</div>
+    <div v-if="ticket.betaald" class="text-right total">
+      {{ saldoTekst }}
+      <span class="money total">{{ formatMoney(Math.abs(ticket.tebetalen)) }}</span>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -25,20 +15,21 @@ const props = defineProps<{
   ticket: Ticket;
 }>();
 
-const saldoTekst = computed(() => (props.ticket.tebetalen >= 0 ? "" : "terug"));
+const saldoTekst = computed(() => (props.ticket.tebetalen >= 0 ? "" : "te ontvangen"));
 </script>
 <style lang="scss">
 .money {
   font-weight: bold;
 }
 .ticket-summary {
-  margin: 4px !important;
-  .tebetalen td.money {
-    border-top: 1px solid grey;
-  }
+  div {
+    margin-bottom: 4px;
 
-  td.money {
-    width: 30%;
+    .total {
+      border-top: 1px solid grey;
+      padding-top: 4px;
+      display: inline-block;
+    }
   }
 }
 </style>

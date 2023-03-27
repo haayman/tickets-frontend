@@ -23,14 +23,11 @@ onMounted(async () => {
     });
     reservering.value = new Reservering(reserveringData);
     if (!reservering.value) throw new Error("not found");
-    if (typeof reservering.value.uitvoering?.voorstelling === "number") {
-      const voorstellingData = await get<IVoorstelling>(
-        `/voorstelling/${reserveringData.uitvoering.voorstelling}`,
-      );
-      voorstelling.value = new Voorstelling(voorstellingData);
-    } else {
-      voorstelling.value = reservering.value.uitvoering?.voorstelling;
-    }
+    const voorstellingData = await get<IVoorstelling>(
+      // @ts-ignore id is aanwezig
+      `/voorstelling/${reserveringData.uitvoering.voorstelling.id}`,
+    );
+    voorstelling.value = new Voorstelling(voorstellingData);
   } catch (e) {
     router.replace({ name: "not-found", params: { id: route.params.id } });
   }

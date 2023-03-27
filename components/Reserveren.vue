@@ -3,20 +3,18 @@
     <voorstelling-header v-if="!isAuthenticated" :voorstelling="voorstelling" />
 
     <v-card v-if="reservering" class="mt-3">
-      <v-card-title>
-        Kaarten
-        <v-icon class="float-right ml-3" @click="hoewerkthet = true">
-          mdi-help-circle-outline
-        </v-icon>
-      </v-card-title>
+      <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
+        <v-card-title>
+          Kaarten
+          <DialogHelp :voorstelling="voorstelling" />
+        </v-card-title>
 
-      <v-card-text>
-        <v-alert v-if="reservering.ingenomen" color="danger">
-          Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} al ingenomen op
-          {{ formatDate(reservering.ingenomen, "Pp") }}
-        </v-alert>
+        <v-card-text>
+          <v-alert v-if="reservering.ingenomen" color="danger">
+            Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} al ingenomen op
+            {{ formatDate(reservering.ingenomen, "Pp") }}
+          </v-alert>
 
-        <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
           <v-card>
             <v-card-text>
               <v-card-subtitle>Je gegevens</v-card-subtitle>
@@ -62,11 +60,7 @@
 
           <v-card class="mt-3">
             <v-card-text>
-              <tickets
-                v-if="reservering.tickets"
-                :reservering="reservering"
-                :rules="rules.aantal"
-              ></tickets>
+              <tickets :reservering="reservering" :rules="rules.aantal"></tickets>
             </v-card-text>
           </v-card>
 
@@ -77,10 +71,10 @@
           </v-card>
 
           <transition name="fade">
-            <v-alert v-if="wachtrijNodig" type="warning" dense>
+            <v-alert v-if="wachtrijNodig" type="warning" dense class="mt-3">
               <h4 class="alert-heading">Let op!</h4>
               Er zijn onvoldoende plaatsen beschikbaar. Je komt op de wachtlijst
-              <v-icon small @click="wachtrijHelp = true"> mdi-help-circle-outline</v-icon>
+              <DialogWachtlijst />
 
               <br />
 
@@ -93,15 +87,16 @@
           </transition>
 
           <transition name="fade">
-            <v-alert v-if="wachtlijst" type="info" dense>
+            <v-alert v-if="wachtlijst" type="info" dense class="mt-3">
               Je staat op de wachtlijst
-              <v-icon small @click="wachtrijHelp = true">mdi-help-circle-outline</v-icon>
+              <DialogWachtlijst />
             </v-alert>
           </transition>
 
           <transition name="fade">
             <v-alert
               v-if="bijbetalingStatus && !loading"
+              class="mt-3"
               type="warning"
               v-html="bijbetalingStatus"
             />
@@ -118,132 +113,30 @@
           <v-alert v-if="displayErrors['general']" type="error">{{
             displayErrors.general
           }}</v-alert>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            type="submit"
+            :loading="loading"
+            :disabled="!!reservering.ingenomen"
+          >
+            {{ submitText }}
+          </v-btn>
 
-          <v-row>
-            <v-btn
-              color="primary"
-              type="submit"
-              :loading="loading"
-              :disabled="!!reservering.ingenomen"
-            >
-              {{ submitText }}
-            </v-btn>
+          <v-spacer />
 
-            <v-spacer />
-
-            <v-btn
-              v-if="reservering.id"
-              color="secondary"
-              :disabled="!!reservering.ingenomen"
-              @click.prevent="annuleren"
-            >
-              Alle kaarten annuleren
-            </v-btn>
-          </v-row>
-        </v-form>
-      </v-card-text>
+          <v-btn
+            v-if="reservering.id"
+            color="secondary"
+            :disabled="!!reservering.ingenomen"
+            @click.prevent="annuleren"
+          >
+            Alle kaarten annuleren
+          </v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
-
-    <payments
-      v-if="reservering && reservering.payments"
-      :payments="reservering.payments"
-    ></payments>
-
-    <v-dialog v-model="wachtrijHelp" max-width="600px">
-      <v-card>
-        <v-card-title>Hoe werkt de wachtlijst?</v-card-title>
-
-        <v-card-text>
-          <p>
-            Je komt op de wachtlijst als er voor de voorstelling die je wilt zien onvoldoende
-            plaatsen beschikbaar zijn.
-          </p>
-
-          <p>
-            Mocht het voorkomen dat iemand zijn/haar reservering nog wijzigt, waardoor er alsnog
-            voldoende plaatsen vrijkomen, dan krijg je daarvan automatisch bericht en wordt je
-            reservering definitief. Pas dan hoef je te betalen.
-          </p>
-
-          <p>
-            Let wel: je komt pas aan de beurt als het gewenste aantal kaarten vrijkomt. Als je
-            bijvoorbeeld 8 kaarten besteld hebt, maar er komen er 2 vrij, dan gaan mensen die 2 of
-            minder besteld hebben voor.
-          </p>
-
-          <p>
-            Als onvoldoende mensen annuleren, kun je naar de voorstelling komen en hopen dat er
-            iemand niet op komt dagen. De overgebleven plaatsen worden dan vergeven aan de mensen in
-            de wachtlijst, in de volgorde waarin ze in de lijst staan. De lijst wordt gesorteerd op
-            het tijdstip waarop de reservering is bevestigd met de bevestigings e-mail die je
-            toegestuurd krijgt.
-          </p>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn color="primary" @click="wachtrijHelp = false">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="hoewerkthet" max-width="600px">
-      <v-card>
-        <v-card-title>Hoe werkt het?</v-card-title>
-
-        <v-card-text>
-          <h3>Hoe werkt het?</h3>
-
-          <h4>Makkelijk aan te passen</h4>
-
-          <p>
-            Je kunt kaarten kopen, maar je zit niet aan je aankoop vast. Het is altijd mogelijk om
-            aanpassingen te doen:
-          </p>
-
-          <ul>
-            <li v-if="datumAanpasbaar">Datum aanpassen</li>
-
-            <li>Kaarten annuleren (zie hieronder)</li>
-
-            <li>Kaarten bijkopen</li>
-          </ul>
-
-          <h4>Annuleren</h4>
-
-          <strong>Tot 7 dagen voor de voorstelling</strong>
-          :
-          <ul>
-            <li>Je kunt gratis annuleren (1 of meerdere kaarten)</li>
-
-            <li>Het geld wordt teruggestort</li>
-          </ul>
-
-          <strong>minder dan 7 dagen voor de voorstelling: </strong>
-
-          <ul>
-            <li>De kaarten worden voor doorverkoop aangeboden</li>
-
-            <li>Zodra iemand anders de kaarten koopt krijg je je geld terug</li>
-          </ul>
-
-          <h3>Hoe annuleren?</h3>
-
-          <ul>
-            <li>Als je alle kaarten wilt annuleren, klik dan op de knop 'Alle kaarten annuleren</li>
-
-            <li>
-              Als je bv. maar één kaart wilt annuleren, verander dan het aantal kaarten dat je
-              gekocht hebt. Maak bijvoorbeeld van 3 kaarten een 2. Het verschil zal teruggestort of
-              verkocht worden.
-            </li>
-          </ul>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn color="primary" @click="hoewerkthet = false">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -258,16 +151,19 @@ const props = defineProps<{
   reservering: Reservering;
 }>();
 
+const emit = defineEmits<{
+  (e: "update:reservering", reservering: Reservering): void;
+}>();
+
 const { isAuthenticated } = useAuth();
 const form = ref();
 
-const reservering = ref<Reservering | null>(props.reservering);
+const reservering = useVModel(props, "reservering", emit);
+
 const valid = ref(true);
 const displayErrors: any = ref({});
 const originalUitvoeringId = ref<number | null>(null);
 const originalAantal = ref<number>(0);
-const wachtrijHelp = ref(false);
-const hoewerkthet = ref(false);
 const loading = ref(false);
 
 const aantalKaarten = computed(
@@ -332,21 +228,11 @@ const submitText = computed(() => {
   }
 });
 
-const datumAanpasbaar = computed(() => props.voorstelling.uitvoeringen?.length || 0 > 1);
-
-const bijbetalingNodig = computed(() => totaalBedrag.value > 0 && !wachtrijNodig.value);
-
 const bijbetalingStatus = computed(() => {
   if (reservering.value?.id && !wachtlijst?.value) {
     const bedrag = totaalBedrag.value;
-    if (bedrag < 0) {
-      if (reservering.value.teruggeefbaar) {
-        return "Het bedrag zal z.s.m. teruggestort worden";
-      } else {
-        return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
-      }
-    } else if (bijbetalingNodig.value) {
-      return "Er is bijbetaling nodig";
+    if (bedrag < 0 && !reservering.value.teruggeefbaar) {
+      return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
     }
   }
   return "";
@@ -361,16 +247,18 @@ watch(
   { immediate: true },
 );
 
-onMounted(() => {
-  props.voorstelling.prijzen?.forEach((prijs) => {
-    if (!reservering.value?.tickets.find((t) => t.prijs.id === prijs.id)) {
-      const ticket = new Ticket({ prijs, aantal: 0 });
-      reservering.value?.tickets.push(ticket);
-    }
-  });
-
-  originalAantal.value = aantalKaarten.value;
+props.voorstelling.prijzen?.forEach((prijs) => {
+  if (!reservering.value?.tickets.find((t) => t.prijs.id === prijs.id)) {
+    const ticket = new Ticket({ prijs, aantal: 0 });
+    reservering.value?.tickets.push(ticket);
+  }
 });
+
+originalAantal.value = aantalKaarten.value;
+
+if (props.voorstelling.uitvoeringen.length === 1 && !reservering.value?.uitvoering_id) {
+  reservering.value.uitvoering_id = props.voorstelling.uitvoeringen[0].id as number;
+}
 
 function validate() {
   const valid = form.value.validate();
@@ -494,7 +382,7 @@ async function annuleren() {
   transition: opacity 0.5s;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }

@@ -4,17 +4,23 @@
       <v-col>
         <div class="aantal">
           <v-icon>mdi-ticket-outline</v-icon> {{ aantalKaarten }} {{ kaarten(aantalKaarten) }}
-          <span v-if="aantalTekoop" class="tekoop">
-            waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staat }}
-          </span>
+          <transition name="fade">
+            <span v-if="aantalTekoop" class="tekoop">
+              waarvan {{ aantalTekoop }} {{ kaarten(aantalTekoop) }} in de verkoop {{ staat }}
+            </span>
+          </transition>
         </div>
       </v-col>
       <v-col cols="3" class="bedragen">
-        <div class="totaal text-right">{{ formatMoney(totaalBedrag) }}</div>
-        <div v-if="betaald" class="betaald text-right">betaald {{ formatMoney(betaald) }}</div>
-        <div v-if="betaald && teBetalen" class="tebetalen text-right">
-          {{ saldoTekst }} {{ formatMoney(Math.abs(teBetalen)) }}
-        </div>
+        <div class="totaal text-right money">{{ formatMoney(totaalBedrag) }}</div>
+        <transition name="fade">
+          <div v-if="betaald" class="betaald text-right">betaald {{ formatMoney(betaald) }}</div>
+        </transition>
+        <transition name="fade">
+          <div v-if="betaald && teBetalen" class="tebetalen text-right">
+            {{ saldoTekst }} <span class="money">{{ formatMoney(Math.abs(teBetalen)) }}</span>
+          </div>
+        </transition>
       </v-col>
     </v-row>
   </v-container>
@@ -52,7 +58,7 @@ const totaalBedrag = computed(() =>
 
 const saldoTekst = computed(() => {
   if (!props.reservering.id || teBetalen.value === 0) return "bedrag";
-  return teBetalen.value < 0 ? "teruggave" : "bijbetalen";
+  return teBetalen.value < 0 ? "te ontvangen" : "te betalen";
 });
 
 function kaarten(aantal: number) {
@@ -76,5 +82,14 @@ onMounted(() => {
       margin-bottom: 1em;
     }
   }
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
