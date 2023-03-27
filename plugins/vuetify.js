@@ -37,6 +37,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       messages: { nl, en },
     },
     theme: {
+      defaultTheme: "dark",
       themes: {
         light: {
           colors: {
