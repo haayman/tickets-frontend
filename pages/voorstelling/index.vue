@@ -1,5 +1,7 @@
 <template>
-  <VoorstellingList v-if="voorstellingen" :voorstellingen="voorstellingen" />
+  <v-card>
+    <VoorstellingList v-if="voorstellingen" :voorstellingen="voorstellingen" />
+  </v-card>
 </template>
 <script setup lang="ts">
 import { IVoorstelling, Voorstelling } from "~~/models";
