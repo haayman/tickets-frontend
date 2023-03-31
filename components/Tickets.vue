@@ -11,6 +11,7 @@
       :rules="rules"
     >
     </ticket>
+    <v-text-field v-model="aantal" type="hidden" :rules="rules" />
   </v-container>
 </template>
 
@@ -25,6 +26,10 @@ const props = defineProps<{
 
 const aantalTekoop = computed(() =>
   props.reservering.tickets.reduce((aantal, t) => aantal + +t.aantalTekoop, 0),
+);
+
+const aantal = computed(() =>
+  props.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0),
 );
 
 const totaalBedrag = computed(() =>
