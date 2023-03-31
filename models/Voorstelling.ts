@@ -72,3 +72,5 @@ export class Voorstelling {
     };
   }
 }
+
+export type ExistingVoorstelling = Voorstelling & { id: number };
