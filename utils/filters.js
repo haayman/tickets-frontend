@@ -44,7 +44,7 @@ export function formatBytes(bytes) {
   return formatter.format(parseFloat(bytes / Math.pow(k, i))) + " " + sizes[i];
 }
 
-// https://date-fns.org/v1.30.1/docs/format
+// https://date-fns.org/v2.29.3/docs/format
 export function formatDate(value, format = "Pp") {
   if (value === null || value === undefined) {
     return "";
