@@ -3,7 +3,7 @@
     <voorstelling-header v-if="!isAuthenticated" :voorstelling="voorstelling" />
 
     <v-card v-if="reservering" class="mt-3">
-      <v-form ref="form" v-model="valid" @submit.prevent="onSubmit">
+      <v-form ref="form" v-model="valid" validate-on="input" @submit.prevent="onSubmit">
         <v-card-title>
           Kaarten
           <DialogHelp :voorstelling="voorstelling" />
@@ -110,28 +110,30 @@
           <v-alert v-if="displayErrors['general']" type="error">{{
             displayErrors.general
           }}</v-alert>
+          <v-container>
+            <v-row>
+              <v-btn
+                color="primary"
+                type="submit"
+                :loading="loading"
+                :disabled="!!reservering.ingenomen || valid === false"
+              >
+                {{ submitText }}
+              </v-btn>
+
+              <v-spacer />
+
+              <v-btn
+                v-if="reservering.id"
+                color="secondary"
+                :disabled="!!reservering.ingenomen"
+                @click.prevent="annuleren"
+              >
+                Alle kaarten annuleren
+              </v-btn>
+            </v-row>
+          </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            type="submit"
-            :loading="loading"
-            :disabled="!!reservering.ingenomen"
-          >
-            {{ submitText }}
-          </v-btn>
-
-          <v-spacer />
-
-          <v-btn
-            v-if="reservering.id"
-            color="secondary"
-            :disabled="!!reservering.ingenomen"
-            @click.prevent="annuleren"
-          >
-            Alle kaarten annuleren
-          </v-btn>
-        </v-card-actions>
       </v-form>
     </v-card>
   </div>
@@ -168,7 +170,9 @@ const aantalKaarten = computed(
 );
 const teveelKaarten = computed(() => {
   if (!reservering.value?.uitvoering) return false;
-  return aantalKaarten.value > reservering.value.uitvoering.aantal_plaatsen;
+  return (
+    aantalKaarten.value > reservering.value.uitvoering.aantal_plaatsen || aantalKaarten.value > 8
+  );
 });
 
 const totaalBedrag = computed(
@@ -260,13 +264,6 @@ if (props.voorstelling.uitvoeringen.length === 1 && !reservering.value?.uitvoeri
 function validate() {
   const valid = form.value.validate();
 
-  // TODO
-  // if (!valid) {
-  //   nextTick(() => {
-  //     const el = $el.value.querySelector(".v-messages.error--text:first-of-type");
-  //     this.$vuetify.goTo(el);
-  //   });
-  // }
   return valid;
 }
 
@@ -312,7 +309,8 @@ function getNextPage() {
 async function onSubmit() {
   if (!reservering.value) return;
   const { put, post } = useAPI();
-  if (validate()) {
+  validate();
+  if (valid.value) {
     loading.value = true;
     try {
       if (reservering.value?.id) {
@@ -341,6 +339,13 @@ async function onSubmit() {
       }
       displayErrors.value = errors;
     }
+  } else {
+    nextTick(() => {
+      const el = form.value.$el.querySelector(".v-messages__message:first-of-type");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
   }
 }
 
