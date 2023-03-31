@@ -6,7 +6,7 @@
         :class="classes(uitvoering.id)"
         @click="uitvoeringId = uitvoering.id"
       >
-        <v-col cols="1">
+        <v-col cols="2" md="1">
           <v-radio :value="uitvoering.id" :disabled="!uitvoering.verkoopbaar" />
         </v-col>
         <v-col>

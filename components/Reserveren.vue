@@ -14,6 +14,8 @@
             Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} al ingenomen op
             {{ formatDate(reservering.ingenomen, "Pp") }}
           </v-alert>
+
+          <!-- groot scherm -->
           <v-container v-if="$vuetify.display.mdAndUp">
             <v-row>
               <v-col>
@@ -50,6 +52,8 @@
               </v-col>
             </v-row>
           </v-container>
+
+          <!-- mobiel -->
           <v-container v-else>
             <ReserverenNaam
               :reservering="reservering"

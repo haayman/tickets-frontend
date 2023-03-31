@@ -3,7 +3,7 @@
     <v-col cols="2">
       <VoorstellingDate :min="dateRange.min" :max="dateRange.max" />
     </v-col>
-    <v-col cols="1">
+    <v-col>
       <v-col v-if="voorstelling.thumbnail">
         <img :src="voorstelling.thumbnail" style="max-height: 100px" />
       </v-col>
@@ -33,7 +33,7 @@
         />
       </div>
     </v-col>
-    <v-col cols="1">
+    <v-col>
       <v-btn :to="{ name: 'voorstelling-id', params: { id: voorstelling.id } }"
         ><v-icon>mdi-cart</v-icon></v-btn
       >
