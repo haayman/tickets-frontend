@@ -42,6 +42,7 @@
   </v-row>
 </template>
 <script setup lang="ts">
+/* eslint-disable camelcase */
 import { Voorstelling } from "~~/models";
 
 const props = defineProps<{
