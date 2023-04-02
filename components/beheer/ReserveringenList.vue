@@ -19,6 +19,7 @@
 
     <v-data-table
       :headers="headers"
+      class="reserveringen-list"
       :items="reserveringen"
       item-key="id"
       :search="filter"
@@ -80,8 +81,6 @@ const props = defineProps<{
   uitvoering_id: number | null;
 }>();
 
-const sortColumn = ref<string>("created_at");
-const ascending = ref(false);
 const filter = ref("");
 
 const hasOpmerkingen = computed(() => props.reserveringen.find((r) => r.opmerking_gebruiker));
@@ -181,11 +180,12 @@ function gotoReservation(pointerEvent, { item }) {
 }
 </script>
 
-<style scoped>
-.sortable {
+<style lang="scss">
+.reserveringen-list {
   cursor: pointer;
-}
-th {
-  white-space: nowrap;
+
+  & tr {
+    background-color: #eee;
+  }
 }
 </style>

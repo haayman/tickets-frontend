@@ -3,7 +3,7 @@
     <v-card-text>
       <v-textarea v-model="reservering.opmerking_gebruiker" label="Opmerking" />
 
-      <v-textarea v-if="isAuthenticated" v-model="reservering.opmerking" label="Reactie" />
+      <v-textarea v-if="user" v-model="reservering.opmerking" label="Reactie" />
     </v-card-text>
   </v-card>
 </template>
@@ -20,5 +20,5 @@ const emit = defineEmits<{
 
 const reservering = useVModel(props, "reservering", emit);
 
-const { isAuthenticated } = useAuth();
+const { user } = useAuth();
 </script>

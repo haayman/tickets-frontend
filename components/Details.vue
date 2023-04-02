@@ -4,13 +4,16 @@
 
     <!-- alleen bezoekers voorstelling tonen -->
 
-    <voorstelling-header v-if="!isAuthenticated"></voorstelling-header>
+    <voorstelling-header
+      v-if="reservering?.uitvoering?.voorstelling && !user"
+      :voorstelling="reservering?.uitvoering?.voorstelling"
+    ></voorstelling-header>
 
     <v-card v-if="reservering" class="mt-3">
       <v-card-title>Kaarten</v-card-title>
 
       <v-card-text>
-        <v-alert v-if="reservering.ingenomen" class="warning">
+        <v-alert v-if="reservering.ingenomen" color="warning">
           Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} ingenomen op
           {{ formatDate(reservering.ingenomen, "PPPPp") }}
         </v-alert>
@@ -129,10 +132,11 @@ withDefaults(
 
 const reservering = ref<Reservering | null>(null);
 
-const showLogs = computed(() => isAuthenticated.value);
-const showPayments = computed(() => isAuthenticated.value);
+const { isKassa, user } = useAuth();
 
-const { isKassa, isAuthenticated } = useAuth();
+const showLogs = computed(() => user.value);
+const showPayments = computed(() => user.value);
+
 const bijbetalingStatus = computed(() => {
   if (!reservering.value) return "";
   const saldo = reservering.value?.saldo;

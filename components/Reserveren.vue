@@ -1,6 +1,6 @@
 <template>
   <div>
-    <voorstelling-header v-if="!isAuthenticated" :voorstelling="voorstelling" />
+    <voorstelling-header v-if="!user" :voorstelling="voorstelling" />
 
     <v-card v-if="reservering" class="mt-3">
       <v-form ref="form" v-model="valid" validate-on="input" @submit.prevent="onSubmit">
@@ -10,7 +10,7 @@
         </v-card-title>
 
         <v-card-text>
-          <v-alert v-if="reservering.ingenomen" color="danger">
+          <v-alert v-if="reservering.ingenomen" color="warning">
             Deze kaart{{ reservering.aantal > 1 ? "en zijn" : " is" }} al ingenomen op
             {{ formatDate(reservering.ingenomen, "Pp") }}
           </v-alert>
@@ -158,7 +158,7 @@ const emit = defineEmits<{
   (e: "update:reservering", reservering: Reservering): void;
 }>();
 
-const { isAuthenticated } = useAuth();
+const { user } = useAuth();
 const form = ref();
 
 const reservering = useVModel(props, "reservering", emit);
@@ -288,7 +288,7 @@ function getNextPage() {
       if (reservering.wachtlijst || !(reservering.openstaandBedrag > 0)) {
         clearInterval(timer);
         loading.value = false;
-        if (isAuthenticated.value) {
+        if (user.value) {
           router.push({ name: "beheer-reserveringen" });
         } else {
           router.push({
@@ -359,7 +359,7 @@ async function annuleren() {
     const { del } = useAPI();
     const router = useRouter();
     await del(`/reservering/${reservering.value.id}`);
-    if (isAuthenticated) {
+    if (user) {
       router.push({
         name: "beheer-reserveringen",
       });
