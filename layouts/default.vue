@@ -22,7 +22,7 @@
   opacity: 0;
 }
 
-.v-main .container {
+.v-main .v-container {
   max-width: 1000px;
 }
 </style>
