@@ -11,7 +11,7 @@
       :rules="rules"
     >
     </ticket>
-    <v-text-field v-model="aantal" type="hidden" :rules="rules" />
+    <v-text-field v-model="aantal" type="hidden" :rules="rules" variant="solo"/>
   </v-container>
 </template>
 
