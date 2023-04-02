@@ -38,6 +38,10 @@
 import { useStorage } from "@vueuse/core";
 import { IUitvoering, Uitvoering } from "~/models/Uitvoering";
 
+definePageMeta({
+  middleware: "admin",
+});
+
 const { get, post } = useAPI();
 
 const defaultMessage = `Hallo <%=naam%>,
