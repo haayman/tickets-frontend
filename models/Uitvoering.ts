@@ -14,7 +14,7 @@ export type IUitvoering = {
   gereserveerd?: string | number;
   wachtlijst?: string | number;
   te_koop?: string | number;
-  voorstelling?: number | IVoorstelling | Voorstelling;
+  voorstelling?: IVoorstelling | Voorstelling;
 };
 
 export class Uitvoering {
@@ -27,7 +27,7 @@ export class Uitvoering {
   gereserveerd: number;
   wachtlijst: number;
   te_koop: number;
-  voorstelling: number | Voorstelling;
+  voorstelling: Voorstelling;
 
   constructor({
     id,
@@ -53,8 +53,7 @@ export class Uitvoering {
     if (voorstelling instanceof Voorstelling) {
       this.voorstelling = voorstelling;
     } else {
-      this.voorstelling =
-        typeof voorstelling === "number" ? voorstelling : new Voorstelling(voorstelling);
+      this.voorstelling = new Voorstelling(voorstelling);
     }
   }
 
