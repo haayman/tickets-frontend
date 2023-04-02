@@ -1,10 +1,10 @@
 <template>
   <tr>
-    <td>
+    <td width="15%">
       <v-text-field v-model.number="uitvoering.aantal_plaatsen" type="number" />
     </td>
 
-    <td>
+    <td width="25%">
       <input-date
         v-model="uitvoering.aanvang"
         type="datetime-local"
@@ -13,7 +13,7 @@
       />
     </td>
 
-    <td>
+    <td width="25%">
       <input-date
         v-model="uitvoering.deur_open"
         type="datetime-local"
@@ -22,7 +22,7 @@
       />
     </td>
 
-    <td><v-text-field v-model="uitvoering.extra_text" class="form-control" /></td>
+    <td width="25%"><v-text-field v-model="uitvoering.extra_text" class="form-control" /></td>
 
     <td>
       <v-btn v-if="deletable" color="warning" @click.prevent="remove"> Verwijderen </v-btn>

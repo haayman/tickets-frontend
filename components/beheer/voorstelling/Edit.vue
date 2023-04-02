@@ -29,8 +29,8 @@
             <template #default>
               <thead>
                 <tr>
-                  <th>Omschrijving</th>
-                  <th>Prijs</th>
+                  <th width="30%">Omschrijving</th>
+                  <th width="20%">Prijs</th>
                   <th>Benodigde rol voor uitgifte</th>
                   <th></th>
                 </tr>
