@@ -38,10 +38,10 @@ export function useAPI() {
   function get<T>(path: string, options?: FetchOptions<"json">) {
     return fetch<T>(path, "GET", {
       ...options,
-      onRequest({ request, options }) {
-        // console.log({ request, options });
-        options.query = options.query || {};
-      },
+      // onRequest({ request, options }) {
+      //   // console.log({ request, options });
+      //   options.query = options.query || {};
+      // },
     });
   }
 
