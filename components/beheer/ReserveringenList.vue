@@ -31,22 +31,26 @@
     >
       <template #item.actions="{ item }">
         <span>
-          <v-icon v-if="item.ingenomen" small>mdi-check-circle </v-icon>
+          <v-icon v-if="item.raw.ingenomen" small>mdi-check </v-icon>
 
           <v-icon
             v-if="isAdministrator"
             title="ticket opnieuw versturen"
-            @click.stop="resend(item)"
+            @click.stop="resend(item.raw)"
           >
             mdi-ticket-outline
           </v-icon>
 
           <v-icon
-            v-if="isAdministrator && item.openstaandBedrag > 0"
+            v-if="isAdministrator && item.raw.openstaandBedrag > 0"
             title="betalingsverzoek versturen"
-            @click.stop="reminder(item)"
+            @click.stop="reminder(item.raw)"
           >
             mdi-credit-card
+          </v-icon>
+
+          <v-icon v-if="isAdministrator" title="verwijderen" @click.stop="remove(item.raw)">
+            mdi-delete
           </v-icon>
         </span>
       </template>
@@ -79,6 +83,10 @@ const { isAdministrator } = useAuth();
 const props = defineProps<{
   reserveringen: Reservering[];
   uitvoering_id: number | null;
+}>();
+
+const emit = defineEmits<{
+  (event: "refresh", value: void): void;
 }>();
 
 const filter = ref("");
@@ -158,19 +166,42 @@ function formatUitvoering(uitvoering: Uitvoering) {
 }
 
 function remove(reservering: Reservering) {
-  if (confirm("Weet je zeker dat je deze reservering wilt verwijderen")) {
-    del(`/api/reservering/${reservering.id}`);
+  try {
+    if (confirm("Weet je zeker dat je deze reservering wilt verwijderen")) {
+      del(`/reservering/${reservering.id}`);
+      useNotifyBus.emit({ message: `Ticket ${reservering.email} verwijderd` });
+      emit("refresh");
+    }
+  } catch (e) {
+    useNotifyBus.emit({
+      message: `Fout bij verwijderen ticket ${reservering.email}: ${e}`,
+      type: "error",
+    });
   }
 }
 
 async function reminder(reservering: Reservering) {
-  await get(`/api/reservering/${reservering.id}/resend`);
-  useNotifyBus.emit({ message: `Betalingsherinnering ${reservering.email} verzonden` });
+  try {
+    await get(`/reservering/${reservering.id}/resend`);
+    useNotifyBus.emit({ message: `Betalingsherinnering ${reservering.email} verzonden` });
+  } catch (e) {
+    useNotifyBus.emit({
+      message: `Fout bij versturen betalingsherinnering ${reservering.email}: ${e}`,
+      type: "error",
+    });
+  }
 }
 
 async function resend(reservering: Reservering) {
-  await get(`/api/reservering/${reservering.id}/resend`);
-  useNotifyBus.emit({ message: `Ticket ${reservering.email} verzonden` });
+  try {
+    await get(`/reservering/${reservering.id}/resend`);
+    useNotifyBus.emit({ message: `Ticket ${reservering.email} verzonden` });
+  } catch (e) {
+    useNotifyBus.emit({
+      message: `Fout bij versturen ticket ${reservering.email}: ${e}`,
+      type: "error",
+    });
+  }
 }
 
 function gotoReservation(pointerEvent, { item }) {

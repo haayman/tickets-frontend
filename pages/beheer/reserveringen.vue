@@ -4,6 +4,7 @@
       <BeheerUitvoeringenList
         :uitvoeringen="uitvoeringen"
         :uitvoering-id="uitvoeringId"
+        @refresh="fetch()"
       ></BeheerUitvoeringenList>
     </v-card>
 
@@ -12,6 +13,7 @@
       :loading="loading"
       :reserveringen="gereserveerd"
       :uitvoering_id="uitvoeringId"
+      @refresh="fetch()"
     >
       Gereserveerd
     </BeheerReserveringenList>
