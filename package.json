@@ -9,6 +9,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "start": "nuxt start",
     "_postinstall": "nuxt prepare",
     "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:stylelint",
     "lint:eslint": "eslint --ext .ts --ext .vue .",
@@ -25,20 +26,21 @@
     "v3-infinite-loading": "^1.2.2",
     "validator": "^13.7.0",
     "vue": "^3.2.47",
-    "vuetify": "3.1.3",
+    "vuetify": "3.1.12",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@mdi/font": "^7.1.96",
+    "@mdi/font": "^7.2.96",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
-    "@types/validator": "^13.7.12",
-    "@vitejs/plugin-vue": "4.0.0",
+    "@types/validator": "^13.7.14",
+    "@vitejs/plugin-vue": "4.1.0",
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "sass": "1.58.0",
+    "sass": "1.60.0",
+    "sass-loader": "^13.2.2",
     "vite-plugin-vuetify": "1.0.2"
   }
 }

@@ -11,6 +11,7 @@ yarn-error.log*
 
 _components
 _pages
+.output
 
 # Runtime data
 pids

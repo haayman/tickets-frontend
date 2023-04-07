@@ -1,24 +1,17 @@
 <template>
   <v-app>
-    <NavBar />
-
-    <v-main>
-      <v-container>
-        <slot />
-      </v-container>
-      <NotifcationRenderer />
-    </v-main>
+    <slot />
   </v-app>
 </template>
 
 <style>
-.layout-enter-active,
-.layout-leave-active {
+.page-enter-active,
+.page-leave-active {
   transition: opacity 0.3s;
 }
 
-.layout-enter,
-.layout-leave-to {
+.page-enter,
+.page-leave-to {
   opacity: 0;
 }
 

@@ -1,4 +1,4 @@
-import { IUitvoering, Uitvoering } from "./Uitvoering";
+import { ExistingUitvoering, IUitvoering, Uitvoering } from "./Uitvoering";
 import { IPrijs, Prijs } from "./Prijs";
 
 export type IVoorstelling = {
@@ -25,7 +25,7 @@ export class Voorstelling {
   opmerkingen?: string;
   poster?: string;
   thumbnail?: string;
-  uitvoeringen: Uitvoering[];
+  uitvoeringen: ExistingUitvoering[];
   prijzen: Prijs[];
 
   constructor({
@@ -52,7 +52,7 @@ export class Voorstelling {
     this.opmerkingen = opmerkingen;
     this.poster = poster;
     this.thumbnail = thumbnail;
-    this.uitvoeringen = uitvoeringen?.map((u) => new Uitvoering(u)) || [];
+    this.uitvoeringen = uitvoeringen?.map((u) => new Uitvoering(u) as ExistingUitvoering) || [];
     this.prijzen = prijzen?.map((p) => new Prijs(p)) || [];
   }
 

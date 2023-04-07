@@ -9,7 +9,9 @@
       </v-col>
     </v-col>
     <v-col>
-      <div class="title font-weight-bold">{{ voorstelling.title }}</div>
+      <div>
+        <h3>{{ voorstelling.title }}</h3>
+      </div>
       <div
         v-if="voorstelling.description"
         class="description text-medium-emphasis mb-3"

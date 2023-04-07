@@ -20,6 +20,8 @@ const config = defineNuxtConfig({
       },
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: process.env.APP_FAVICON || "/favicon.ico" }],
+
+    // pageTransition: { name: "page", mode: "out-in" },
   },
   runtimeConfig: {
     public: {
@@ -39,7 +41,7 @@ const config = defineNuxtConfig({
       },
     },
   },
-  css: ["vuetify/styles"],
+  css: ["vuetify/styles", `assets/${process.env.APP_CSS}`],
 
   /*
    ** Nuxt.js modules
@@ -54,7 +56,16 @@ const config = defineNuxtConfig({
     // "@nuxtjs/auth",
     // "@nuxtjs/vuetify",
     (options, nuxt) => {
-      nuxt.hooks.hook("vite:extendConfig", (config) => config.plugins.push(vuetify()));
+      nuxt.hooks.hook("vite:extendConfig", (config) =>
+        config.plugins.push(
+          vuetify({
+            autoImport: true,
+            styles: {
+              configFile: "assets/scss/settings.scss",
+            },
+          }),
+        ),
+      );
     },
   ],
 
