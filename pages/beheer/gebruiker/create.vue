@@ -44,16 +44,16 @@ import { RoleList } from "~~/models/Role";
 const { post } = useAPI();
 const router = useRouter();
 
-const user = new User();
+const user = ref(new User());
 const refErrors = ref<any>([]);
 const showPassword = ref(false);
 
 const { isAdministrator } = useAuth();
-const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, label: r.description })));
+const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, title: r.description })));
 
 async function save() {
   try {
-    await post(`/user/`, user.toJSON());
+    await post(`/user/`, user.value.toJSON());
     router.push({ name: "beheer-gebruiker" });
   } catch (error: any) {
     const errors = error.errors || {};
