@@ -22,7 +22,7 @@
           custom
         >
           <tr :class="classes(uitvoering.id)" @click="navigate">
-            <td>{{ formatDate(uitvoering.aanvang, "PPPPp") }}</td>
+            <td>{{ uitvoering }}</td>
             <td>{{ uitvoering.gereserveerd }} gereserveerd</td>
             <td>
               <uitvoering-status :uitvoering="uitvoering"></uitvoering-status>

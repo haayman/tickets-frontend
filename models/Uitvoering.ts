@@ -62,7 +62,7 @@ export class Uitvoering {
   }
 
   toString() {
-    return `${format(this.aanvang, "PPPPp", {
+    return `${this.voorstelling?.title} ${format(this.aanvang, "PPPP", {
       locale: nl,
     })} ${this.extra_text} `;
   }
