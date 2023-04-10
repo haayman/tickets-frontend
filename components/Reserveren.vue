@@ -165,8 +165,8 @@ const reservering = useVModel(props, "reservering", emit);
 
 const valid = ref(true);
 const displayErrors: any = ref({});
-const originalUitvoeringId = ref<number | null>(null);
-const originalAantal = ref<number>(0);
+const originalUitvoeringId = ref<number | null>(reservering.value.uitvoering_id);
+const originalAantal = ref<number>(reservering.value.aantal);
 const loading = ref(false);
 
 const aantalKaarten = computed(
@@ -201,7 +201,7 @@ const wachtrijNodig = computed(() => {
   if (wachtlijst.value) return false;
   let retval = false;
   if (uitvoering.value) {
-    if (uitvoering_id !== originalUitvoeringId) {
+    if (uitvoering_id.value !== originalUitvoeringId.value) {
       retval =
         aantalKaarten.value > uitvoering.value.vrije_plaatsen + (uitvoering.value.te_koop || 0);
     } else {
