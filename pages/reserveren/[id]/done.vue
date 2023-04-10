@@ -1,3 +1,4 @@
+<template></template>
 <script setup lang="ts">
 import { Reservering } from "~~/models";
 

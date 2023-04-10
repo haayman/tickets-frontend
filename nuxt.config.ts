@@ -51,7 +51,6 @@ const config = defineNuxtConfig({
    */
   modules: [
     "@vueuse/nuxt",
-    "nuxt-proxy",
     // // Doc: https://axios.nuxtjs.org/usage
     // "@nuxtjs/axios",
     // // Doc: https://github.com/nuxt-community/dotenv-module
