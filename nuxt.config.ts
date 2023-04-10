@@ -43,6 +43,7 @@ const config = defineNuxtConfig({
       },
       client: process.env.APP_CLIENT,
       logo: process.env.APP_LOGO,
+      teruggave_termijn: process.env.TERUGGAVE_TERMIJN,
     },
   },
 

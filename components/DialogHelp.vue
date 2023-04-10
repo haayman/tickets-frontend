@@ -24,9 +24,9 @@
           <li>Kaarten bijkopen</li>
         </ul>
 
-        <h4>Annuleren</h4>
+        <h3>Annuleren</h3>
 
-        <strong>Tot 7 dagen voor de voorstelling</strong>
+        <strong>Tot {{ teruggaveTermijn }} dagen voor de voorstelling</strong>
         :
         <ul>
           <li>Je kunt gratis annuleren (1 of meerdere kaarten)</li>
@@ -34,7 +34,7 @@
           <li>Het geld wordt teruggestort</li>
         </ul>
 
-        <strong>minder dan 7 dagen voor de voorstelling: </strong>
+        <strong>minder dan {{ teruggaveTermijn }} dagen voor de voorstelling: </strong>
 
         <ul>
           <li>De kaarten worden voor doorverkoop aangeboden</li>
@@ -63,6 +63,10 @@
 </template>
 <script setup lang="ts">
 import { Voorstelling } from "~~/models";
+
+const config = useRuntimeConfig();
+
+const teruggaveTermijn = config.public.teruggave_termijn;
 
 const props = defineProps<{
   voorstelling: Voorstelling;
