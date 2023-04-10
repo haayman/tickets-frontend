@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
-import { Uitvoering } from "@/models/Uitvoering";
+import { IUitvoering, Uitvoering } from "@/models/Uitvoering";
 import { IReservering, Reservering } from "@/models/Reservering";
 
 const uitvoeringId = ref<number | null>(null);
@@ -59,7 +59,11 @@ async function fetch(setLoading = false) {
   const reserveringenData = await get<IReservering[]>("/reservering", params);
   reserveringen.value = reserveringenData?.map((r) => new Reservering(r)) || [];
 
-  const data = await get<Uitvoering[]>("/uitvoering");
+  const data = await get<IUitvoering[]>("/uitvoering", {
+    params: {
+      include: ["voorstelling"],
+    },
+  });
   uitvoeringen.value = data?.map((u) => new Uitvoering(u)) || [];
 
   loading.value = false;
