@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>{{ voorstelling.title }}</v-card-title>
+    <v-card-title v-if="isAuthenticated">{{ voorstelling.title }}</v-card-title>
 
     <v-card-text>
       <div v-if="displayErrors.uitvoering" class="invalid-feedback">
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { Reservering, Voorstelling } from "~~/models";
 
+const { isAuthenticated } = useAuth();
 const props = defineProps<{
   reservering: Reservering;
   voorstelling: Voorstelling;
