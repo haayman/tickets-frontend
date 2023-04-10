@@ -1,16 +1,16 @@
 export const themes = {
   light: {
     colors: {
-      primary: "#f0940a",
+      primary: "#F47E2C",
     },
   },
   dark: {
     colors: {
       background: "#121212",
       surface: "#1e1e1e",
-      primary: "#f0940a",
+      primary: "#F47E2C",
       secondary: "#272727",
-      anchor: "#f0940a",
+      anchor: "#F47E2C",
     },
   },
 };

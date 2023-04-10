@@ -1,9 +1,9 @@
 <template>
   <nav>
     <v-app-bar app>
-      <v-app-bar-title>
-        <nuxt-link :to="{ name: 'index' }" class="v-toolbar__brand"> {{ title }} </nuxt-link>
-      </v-app-bar-title>
+      <nuxt-link :to="{ name: 'index' }" style="height: 100%">
+        <img :src="config.public.logo" style="height: 100%" />
+      </nuxt-link>
 
       <v-btn v-for="link in links" :key="link.title" :to="{ path: link.link }">
         {{ link.title }}
@@ -20,8 +20,6 @@
 
 <script setup lang="ts">
 const config = useRuntimeConfig();
-
-const title = config.public.app.title;
 
 const { user, isAdministrator, logout } = useAuth();
 
