@@ -1,16 +1,17 @@
 <template>
   <v-container class="tickets">
-    <ticket
-      v-for="ticket in reservering.tickets"
-      :key="ticket.prijs.id"
-      v-model:aantal-tekoop="aantalTekoop"
-      v-model:aantal="ticket.aantal"
-      :ticket="ticket"
-      :reservering="reservering"
-      :factor="factor"
-      :rules="rules"
-    >
-    </ticket>
+    <template v-for="(ticket, index) in reservering.tickets" :key="ticket.prijs.id">
+      <v-divider v-if="index" class="mb-3" />
+      <ticket
+        v-model:aantal-tekoop="aantalTekoop"
+        v-model:aantal="ticket.aantal"
+        :ticket="ticket"
+        :reservering="reservering"
+        :factor="factor"
+        :rules="rules"
+      >
+      </ticket>
+    </template>
     <v-text-field v-model="aantal" type="hidden" :rules="rules" variant="solo" />
   </v-container>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <v-row v-if="shouldBeDisplayed">
-    <v-col>
+    <v-col cols="8" md="5">
       <Prijs :prijs="ticket.prijs" />
     </v-col>
 
-    <v-col>
+    <v-col cols="4" md="3">
       <ticket-amount v-model="aantal" :max="max" />
     </v-col>
 
-    <v-col>
+    <v-col cold="12" md="4">
       <ticket-saldo :ticket="ticket" />
     </v-col>
   </v-row>
