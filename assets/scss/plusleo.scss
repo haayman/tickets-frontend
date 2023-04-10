@@ -1,6 +1,6 @@
 body,
 .body,
-.theme--dark.v-application {
+.theme--dark.v-main {
   color: #ccc;
   /* color: #999; */
   background-color: #000;
@@ -8,6 +8,10 @@ body,
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+.v-application {
+  background: inherit !important;
 }
 
 .theme--dark.v-card.v-sheet,
@@ -46,6 +50,10 @@ a,
   text-decoration: none;
 }
 
+.v-app-bar a {
+  color: #fff !important;
+}
+
 .v-application a:hover,
 a:hover {
   color: #ffb400;
@@ -57,7 +65,7 @@ a:active {
   text-decoration: none;
 }
 
-.v-card__title {
+.v-card-title {
   background-color: #444;
 }
 

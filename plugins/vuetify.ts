@@ -7,7 +7,17 @@ import { nl, en } from "vuetify/locale";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 
-export default defineNuxtPlugin((nuxtApp) => {
+import "~/assets/scss/main.scss";
+
+export default defineNuxtPlugin(async (nuxtApp) => {
+  const {
+    public: { client },
+  } = useRuntimeConfig();
+
+  const { themes } = await import(`~/assets/${client}.theme.ts`);
+  console.log({ themes });
+  await import(`~/assets/scss/${client}.scss`);
+
   const vuetify = createVuetify({
     components: { ...components, VDataTable },
     directives,
@@ -20,22 +30,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
     theme: {
       defaultTheme: "dark",
-      themes: {
-        light: {
-          colors: {
-            primary: "#ffb400",
-          },
-        },
-        dark: {
-          colors: {
-            background: "#1e1e1e",
-            surface: "#3e3e3e",
-            primary: "#ffb400",
-            secondary: "#272727",
-            anchor: "#ffb400",
-          },
-        },
-      },
+      themes,
     },
   });
 
