@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <VoorstellingSummary
-      v-for="voorstelling in voorstellingen"
-      :key="voorstelling.id"
+      v-for="(voorstelling, index) in voorstellingen"
+      :key="index"
       :voorstelling="voorstelling"
       class="voorstelling-summary p-3"
       @click="toVoorstelling(voorstelling.id)"
@@ -10,12 +10,12 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import { ExistingVoorstelling } from "~~/models";
+import { Voorstelling } from "~~/models";
 
 const router = useRouter();
 
 defineProps<{
-  voorstellingen: ExistingVoorstelling[];
+  voorstellingen: Voorstelling[];
 }>();
 
 function toVoorstelling(id: number) {

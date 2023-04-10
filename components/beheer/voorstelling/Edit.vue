@@ -96,8 +96,8 @@
             </thead>
             <tbody>
               <BeheerVoorstellingEditUitvoering
-                v-for="uitvoering in voorstelling.uitvoeringen"
-                :key="uitvoering.id"
+                v-for="(uitvoering, index) in voorstelling.uitvoeringen"
+                :key="index"
                 :uitvoering="uitvoering"
                 :deletable="true"
                 @delete="deleteUitvoering"
@@ -137,6 +137,10 @@ import { RoleList } from "~~/models/Role";
 
 const props = defineProps<{
   voorstelling: Voorstelling;
+}>();
+
+const emit = defineEmits<{
+  (event: "voorstelling", voorstelling: Voorstelling): void;
 }>();
 
 const prijs = ref<Prijs>(new Prijs());
@@ -184,7 +188,7 @@ onMounted(() => {
   copyUitvoering();
 });
 
-const voorstelling = useVModel(props, "voorstelling");
+const voorstelling = useVModel(props, "voorstelling", emit);
 
 function addPrijs() {
   voorstelling.value.prijzen.push(prijs.value);

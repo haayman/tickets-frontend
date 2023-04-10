@@ -1,4 +1,4 @@
-import { ExistingUitvoering, IUitvoering, Uitvoering } from "./Uitvoering";
+import { IUitvoering, Uitvoering } from "./Uitvoering";
 import { IPrijs, Prijs } from "./Prijs";
 
 export type IVoorstelling = {
@@ -16,7 +16,7 @@ export type IVoorstelling = {
 };
 
 export class Voorstelling {
-  id?: number;
+  id: number | null;
   title: string;
   description: string;
   active: boolean;
@@ -25,7 +25,7 @@ export class Voorstelling {
   opmerkingen?: string;
   poster?: string;
   thumbnail?: string;
-  uitvoeringen: ExistingUitvoering[];
+  uitvoeringen: Uitvoering[];
   prijzen: Prijs[];
 
   constructor({
@@ -41,9 +41,7 @@ export class Voorstelling {
     uitvoeringen,
     prijzen,
   }: IVoorstelling = {}) {
-    if (id) {
-      this.id = id;
-    }
+    this.id = id || null;
     this.title = title || "";
     this.description = description || "";
     this.active = !!active;
@@ -52,7 +50,7 @@ export class Voorstelling {
     this.opmerkingen = opmerkingen;
     this.poster = poster;
     this.thumbnail = thumbnail;
-    this.uitvoeringen = uitvoeringen?.map((u) => new Uitvoering(u) as ExistingUitvoering) || [];
+    this.uitvoeringen = uitvoeringen?.map((u) => new Uitvoering(u) as Uitvoering) || [];
     this.prijzen = prijzen?.map((p) => new Prijs(p)) || [];
   }
 
@@ -72,5 +70,3 @@ export class Voorstelling {
     };
   }
 }
-
-export type ExistingVoorstelling = Voorstelling & { id: number };

@@ -18,7 +18,7 @@ export type IUitvoering = {
 };
 
 export class Uitvoering {
-  id?: number;
+  id: number | null;
   aanvang: Date;
   deur_open: Date;
   extra_text: string;
@@ -41,7 +41,7 @@ export class Uitvoering {
     te_koop,
     voorstelling,
   }: IUitvoering = {}) {
-    this.id = id;
+    this.id = id || null;
     this.aanvang = aanvang ? new Date(aanvang) : new Date();
     this.deur_open = deur_open ? new Date(deur_open) : new Date();
     this.extra_text = extra_text || "";
@@ -77,5 +77,3 @@ export class Uitvoering {
     };
   }
 }
-
-export type ExistingUitvoering = Uitvoering & { id: number };

@@ -1,10 +1,10 @@
 <template>
   <tr>
-    <td width="15%">
+    <td width="10%">
       <v-text-field v-model.number="uitvoering.aantal_plaatsen" type="number" />
     </td>
 
-    <td width="25%">
+    <td width="30%">
       <input-date
         v-model="uitvoering.aanvang"
         type="datetime-local"
@@ -13,7 +13,7 @@
       />
     </td>
 
-    <td width="25%">
+    <td width="30%">
       <input-date
         v-model="uitvoering.deur_open"
         type="datetime-local"

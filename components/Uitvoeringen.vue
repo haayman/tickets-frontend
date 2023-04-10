@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { IVoorstelling, ExistingUitvoering, Uitvoering, Voorstelling } from "~~/models";
+import { IVoorstelling, Uitvoering, Voorstelling } from "~~/models";
 
 const props = defineProps<{
   voorstelling: Voorstelling;
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 
 const uitvoeringId = useVModel(props, "uitvoeringId", emit);
 
-const uitvoeringen = ref<ExistingUitvoering[]>([]);
+const uitvoeringen = ref<Uitvoering[]>([]);
 const { get } = useAPI();
 
 const rules = [required];
@@ -52,7 +52,7 @@ function classes(id: number) {
 async function updateUitvoeringen() {
   const voorstelling = await get<IVoorstelling>(`/voorstelling/${props.voorstelling.id}`);
   uitvoeringen.value =
-    voorstelling?.uitvoeringen?.map((u) => new Uitvoering(u) as ExistingUitvoering) || [];
+    voorstelling?.uitvoeringen?.map((u) => new Uitvoering(u) as Uitvoering) || [];
 }
 
 updateUitvoeringen();
