@@ -29,6 +29,7 @@
         <v-btn :to="{ name: 'beheer-voorstelling-create' }" color="primary">
           Voorstelling toevoegen
         </v-btn>
+        <v-switch v-model="all" label="Alle voorstellingen" />
       </v-card-actions>
     </v-card>
   </v-container>
@@ -47,16 +48,28 @@ const headers = [
   { title: "", key: "thumbnail", sortable: false },
   { title: "", key: "actions", sortable: false },
 ];
+const all = ref(false);
 
 const voorstellingen = ref<Voorstelling[]>([]);
 
-onMounted(async () => {
+async function fetch() {
   const data = await get<Voorstelling[]>("/voorstelling", {
     params: {
       include: ["prijzen", "uitvoeringen"],
+      ...(all.value ? { all: true } : {}),
     },
   });
   voorstellingen.value = data || [];
+}
+
+onMounted(async () => {
+  await fetch();
+  loading.value = false;
+});
+
+watch(all, async () => {
+  loading.value = true;
+  await fetch();
   loading.value = false;
 });
 
