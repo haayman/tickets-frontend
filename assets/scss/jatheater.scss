@@ -1,0 +1,20 @@
+h1,
+h2,
+h3 {
+  color: #f47e2c;
+}
+
+a {
+  /* color: #ffd779; */
+  color: #fff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #f47e2c;
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: none;
+}

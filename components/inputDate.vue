@@ -1,42 +1,43 @@
 <template>
-  <v-text-field :type="type" class="input-date" :value="asString()" @change="updateValue" />
+  <v-text-field v-model="timestamp" :type="type" class="input-date" />
 </template>
 
-<script>
+<script setup lang="ts">
 import formatter from "date-fns/format";
-export default {
-  props: {
-    value: {
-      type: Date,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-  },
 
-  methods: {
-    updateValue: function (value) {
-      this.$emit("input", new Date(value));
-    },
-    asString() {
-      try {
-        switch (this.type) {
-          // 2018-08-26T04:06:37
-          case "datetime-local":
-            return formatter(this.value, "yyyy-MM-dd'T'HH:mm");
-          case "time":
-            return this.value.toLocaleTimeString();
-          case "date":
-          default:
-            // yyyy-MM-dd
-            return this.value.toISOString().substring(0, 10);
-        }
-      } catch (e) {
-        return this.value.toString();
-      }
-    },
+const props = defineProps<{
+  modelValue: Date;
+  type: string;
+}>();
+
+const emit = defineEmits<{
+  (event: "update:modelValue", value: Date): void;
+}>();
+
+const timestamp = computed({
+  get() {
+    return asString();
   },
-};
+  set(value) {
+    emit("update:modelValue", new Date(value));
+  },
+});
+
+function asString() {
+  try {
+    switch (props.type) {
+      // 2018-08-26T04:06:37
+      case "datetime-local":
+        return formatter(props.modelValue, "yyyy-MM-dd'T'HH:mm");
+      case "time":
+        return props.modelValue.toLocaleTimeString();
+      case "date":
+      default:
+        // yyyy-MM-dd
+        return props.modelValue.toISOString().substring(0, 10);
+    }
+  } catch (e) {
+    return props.modelValue.toString();
+  }
+}
 </script>

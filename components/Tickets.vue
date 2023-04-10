@@ -1,88 +1,53 @@
 <template>
-  <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th>omschrijving</th>
-          <th>prijs</th>
-          <th>aantal</th>
-          <th v-if="aantalTekoop">aantal te koop</th>
-          <th class="text-center" v-if="reservering.id">betaald</th>
-          <th class="text-center">{{ saldoTekst }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ticket
-          v-for="ticket in tickets"
-          :ticket="ticket"
-          :reservering="reservering"
-          :aantalTekoop="aantalTekoop"
-          :key="ticket.prijs.id"
-          :factor="factor"
-          :rules="rules"
-        >
-        </ticket>
-        <tr class="total">
-          <td colspan="2">Totaal</td>
-          <td>
-            {{ aantalKaarten }}
-          </td>
-          <td v-if="aantalTekoop">{{ aantalTekoop }}</td>
-          <td v-if="reservering.id"></td>
-          <td class="money text-center">
-            {{ (factor * totaalBedrag) | formatMoney }}
-          </td>
-        </tr>
-      </tbody>
+  <v-container class="tickets">
+    <template v-for="(ticket, index) in reservering.tickets" :key="ticket.prijs.id">
+      <v-divider v-if="index" class="mb-3" />
+      <ticket
+        v-model:aantal-tekoop="aantalTekoop"
+        v-model:aantal="ticket.aantal"
+        :ticket="ticket"
+        :reservering="reservering"
+        :factor="factor"
+        :rules="rules"
+      >
+      </ticket>
     </template>
-  </v-simple-table>
+    <v-text-field v-model="aantal" type="hidden" :rules="rules" variant="solo" />
+  </v-container>
 </template>
 
-<script>
-import Ticket from "./Ticket";
+<script setup lang="ts">
+import { Reservering } from "~~/models";
+import { Rule } from "~~/types/rule";
 
-export default {
-  props: ["reservering", "rules"],
-  components: {
-    ticket: Ticket,
-  },
-  computed: {
-    aantalKaarten: function () {
-      return this.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0);
-    },
-    aantalTekoop: function () {
-      return this.reservering.tickets.reduce((aantal, t) => aantal + +t.aantalTekoop, 0);
-    },
+const props = defineProps<{
+  reservering: Reservering;
+  rules: Rule[];
+}>();
 
-    subTotaal: function () {
-      return this.reservering.prijs.prijs * (this.aantalKaarten - this.reservering.aantalBetaald);
-    },
+const aantalTekoop = computed(() =>
+  props.reservering.tickets.reduce((aantal, t) => aantal + +t.aantalTekoop, 0),
+);
 
-    totaalBedrag: function () {
-      return this.reservering.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0);
-    },
+const aantal = computed(() =>
+  props.reservering.tickets.reduce((aantal, t) => aantal + +t.aantal, 0),
+);
 
-    saldoTekst() {
-      if (!this.reservering.id) {
-        return "bedrag";
-      }
-      return this.totaalBedrag < 0 ? "teruggave" : "bijbetalen";
-    },
+const totaalBedrag = computed(() =>
+  props.reservering.tickets.reduce((totaal, t) => totaal + t.tebetalen, 0),
+);
 
-    factor() {
-      if (this.saldoTekst === "teruggave") {
-        return -1;
-      } else {
-        return 1;
-      }
-    },
+const saldoTekst = computed(() => {
+  if (!props.reservering.id || totaalBedrag.value === 0) return "bedrag";
+  return totaalBedrag.value < 0 ? "teruggave" : "bijbetalen";
+});
 
-    /**
-     * sorteer de tickets aflopend op prijs
-     */
-    tickets() {
-      return this.reservering.tickets.sort((a, b) => b.prijs.prijs - a.prijs.prijs);
-    },
-  },
-};
+const factor = computed(() => (saldoTekst.value === "teruggave" ? -1 : 1));
 </script>
+<style lang="scss">
+.tickets {
+  .totaal {
+    font-size: large;
+  }
+}
+</style>

@@ -3,10 +3,12 @@
     <v-card class="mx-auto">
       <v-form @submit.prevent="save">
         <v-card-title>Nieuwe gebruiker</v-card-title>
+
         <v-card-text>
           <v-text-field v-model="user.username" type="text" label="Gebruikersnaam" required />
 
           <v-text-field v-model="user.name" type="text" label="Naam" required />
+
           <v-text-field v-model="user.email" type="email" label="E-mail" required />
 
           <v-text-field
@@ -14,20 +16,20 @@
             :type="showPassword ? 'text' : 'password'"
             label="Wachtwoord"
             required
-            :append-icon="showPassword ? 'fa-eye' : 'fa-eye-slash'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="() => (showPassword = !showPassword)"
           />
 
-          <v-select v-model="user.role" :items="roleOptions" label="Rol" v-if="isAdmin" />
+          <v-select v-if="isAdministrator" v-model="user.role" :items="roleOptions" label="Rol" />
+
           <v-text-field v-else v-model="user.role" readonly label="Rol" />
         </v-card-text>
 
         <v-card-actions>
-          <v-alert type="error" v-if="errors['general']">
-            {{ errors.general }}
-          </v-alert>
+          <v-alert v-if="refErrors['general']" type="error"> {{ refErrors.general }} </v-alert>
 
           <v-btn type="submit" color="primary"> Opslaan </v-btn>
+
           <v-btn :to="{ name: 'beheer-gebruiker' }" color="secondary"> annuleren </v-btn>
         </v-card-actions>
       </v-form>
@@ -35,43 +37,31 @@
   </v-container>
 </template>
 
-<script>
-import { User } from "~/models/User";
-import { RoleList } from "~/models/Role";
-import { mapGetters } from "vuex";
+<script setup lang="ts">
+import { User } from "~~/models/User";
+import { RoleList } from "~~/models/Role";
 
-export default {
-  name: "UsersEdit",
-  data() {
-    return {
-      user: new User(),
-      roles: RoleList,
-      errors: {},
-      showPassword: false,
-    };
-  },
+const { post } = useAPI();
+const router = useRouter();
 
-  computed: {
-    ...mapGetters(["isAdmin"]),
-    roleOptions() {
-      return RoleList.map((r) => ({ value: r.id, text: r.description }));
-    },
-  },
+const user = ref(new User());
+const refErrors = ref<any>([]);
+const showPassword = ref(false);
 
-  methods: {
-    async save() {
-      try {
-        const result = await this.$axios.post("/user", this.user);
-        this.$router.push({ name: "beheer-gebruiker" });
-      } catch (error) {
-        let errors = error.errors || {};
+const { isAdministrator } = useAuth();
+const roleOptions = computed(() => RoleList.map((r) => ({ value: r.id, title: r.description })));
 
-        if (error.message) {
-          errors.general = error.message;
-        }
-        this.errors = errors;
-      }
-    },
-  },
-};
+async function save() {
+  try {
+    await post(`/user/`, user.value.toJSON());
+    router.push({ name: "beheer-gebruiker" });
+  } catch (error: any) {
+    const errors = error.errors || {};
+
+    if (error.message) {
+      errors.general = error.message;
+    }
+    refErrors.value = errors;
+  }
+}
 </script>

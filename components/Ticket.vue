@@ -1,75 +1,73 @@
 <template>
-  <tr v-if="shouldBeDisplayed">
-    <td>{{ ticket.prijs.description }}</td>
-    <td class="money">{{ ticket.prijs.prijs | formatMoney() }}</td>
-    <td class="aantal">
-      <v-text-field
-        v-if="isAuthorized"
-        type="number"
-        v-model.number="aantal"
-        min="0"
-        @focus="selectAll($event)"
-        :rules="rules"
-      />
-      <v-select v-else v-model.number="aantal" required :items="availableOptions" />
-    </td>
-    <td v-if="aantalTekoop">
-      {{ ticket.aantalTekoop }}
-    </td>
-    <td v-if="reservering.id" class="text-center">{{ ticket.betaald | formatMoney }}</td>
-    <td class="money text-center">
-      {{ (factor * ticket.tebetalen) | formatMoney }}
-    </td>
-  </tr>
-</template>
-<script>
-import { mapGetters } from "vuex";
+  <v-row v-if="shouldBeDisplayed">
+    <v-col cols="8" md="5">
+      <Prijs :prijs="ticket.prijs" />
+    </v-col>
 
-export default {
-  props: ["ticket", "reservering", "aantalTekoop", "factor", "rules"],
-  data() {
-    return {
-      originalAantal: this.ticket.aantal - this.ticket.aantalTekoop,
-      originalTekoop: this.ticket.aantalTekoop,
-    };
+    <v-col cols="4" md="3">
+      <ticket-amount v-model="aantal" :max="max" />
+    </v-col>
+
+    <v-col cold="12" md="4">
+      <ticket-saldo :ticket="ticket" />
+    </v-col>
+  </v-row>
+</template>
+
+<script setup lang="ts">
+import { Reservering, Ticket } from "~~/models";
+import { Rule } from "~~/types/rule";
+
+const props = defineProps<{
+  ticket: Ticket;
+  reservering: Reservering;
+  aantalTekoop: number;
+  aantal: number;
+  factor: number;
+  rules: Rule[];
+}>();
+
+const emit = defineEmits<{
+  (event: "update:aantalTekoop", value: number): void;
+  (event: "update:aantal", value: number): void;
+  (event: "update:ticket", value: Ticket): void;
+}>();
+
+const ticket = useVModel(props, "ticket", emit);
+
+const originalAantal = ref<number>(ticket.value.aantal - ticket.value.aantalTekoop);
+const originalTekoop = ref<number>(ticket.value.aantalTekoop);
+const { isAuthorized: userIsAuthorized } = useAuth();
+
+/**
+ * is de huidige gebruiker gemachtigd deze prijs te bestellen?
+ */
+const isAuthorized = computed(() => {
+  return !ticket.value.prijs.role || userIsAuthorized(ticket.value.prijs.role);
+});
+
+/**
+ * een anonieme gebruiker kan z'n eigen vrijkaartjes zien
+ */
+const shouldBeDisplayed = computed(() => isAuthorized.value || originalAantal.value);
+
+const max = computed(() => {
+  if (ticket.value.prijs.prijs > 0 || isAuthorized.value) return 8;
+
+  // iemand die de eigen vrijkaartjes aanpast kan alleen omlaag
+  return originalAantal.value;
+});
+
+const aantal = computed({
+  get() {
+    return Math.max(ticket.value.aantal - ticket.value.aantalTekoop);
   },
-  computed: {
-    ...mapGetters(["loggedInUser"]),
-    isAuthorized() {
-      return (
-        !this.ticket.prijs.role ||
-        (this.loggedInUser && this.loggedInUser.isAuthorised(this.ticket.prijs.role))
-      );
-    },
-    shouldBeDisplayed() {
-      return this.isAuthorized || this.originalAantal;
-    },
-    aantal: {
-      get: function () {
-        return Math.max(this.ticket.aantal - this.ticket.aantalTekoop);
-      },
-      set: function (value) {
-        if (this.originalTekoop) {
-          this.ticket.aantalTekoop = Math.max(this.originalTekoop + this.originalAantal - value, 0);
-        }
-        this.ticket.aantal = value + this.ticket.aantalTekoop;
-        this.$emit("change", this.aantal);
-      },
-    },
-    availableOptions() {
-      // genereer een array van [0..originalAantal]
-      return [...Array(this.originalAantal + 1).keys()];
-    },
+  set(value) {
+    if (originalTekoop.value) {
+      ticket.value.aantalTekoop = Math.max(originalTekoop.value + originalAantal.value - value, 0);
+    }
+
+    ticket.value.aantal = value + ticket.value.aantalTekoop;
   },
-  methods: {
-    selectAll(event) {
-      event.target.select();
-    },
-  },
-};
+});
 </script>
-<style scoped>
-.aantal {
-  max-width: 3em;
-}
-</style>

@@ -8,6 +8,7 @@ export default function () {
       themes: {
         dark: {
           primary: "#f0940a",
+          anchor: "#f0940a",
         },
       },
     },

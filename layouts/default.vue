@@ -1,41 +1,61 @@
 <template>
   <v-app>
-    <Navbar />
-    <notifications position="top left" />
+    <NavBar />
+
     <v-main>
       <v-container>
-        <nuxt />
+        <slot />
       </v-container>
+      <NotifcationRenderer />
     </v-main>
   </v-app>
 </template>
 
-<script>
-import Navbar from "@/components/NavBar.vue";
-
-// TODO: Remove when Nuxt bug is fixed and apply in nuxt.config.js
-// See: https://github.com/nuxt/nuxt.js/issues/4219
-// import '@/assets/variables.scss'
-
-export default {
-  components: {
-    Navbar,
-  },
-};
-</script>
-
 <style>
-.page-enter-active,
-.page-leave-active {
+.layout-enter-active,
+.layout-leave-active {
   transition: opacity 0.3s;
 }
 
-.page-enter,
-.page-leave-to {
+.layout-enter,
+.layout-leave-to {
   opacity: 0;
 }
 
-.v-main .container {
+.v-main .v-container {
   max-width: 1000px;
+}
+
+/*--------------------------------------------------------------
+## Netbook
+--------------------------------------------------------------*/
+@media only screen and (max-width: 1024px) {
+  html {
+    font-size: 90%;
+  }
+}
+/*--------------------------------------------------------------
+## iPad
+--------------------------------------------------------------*/
+@media only screen and (max-width: 960px) {
+  html {
+    font-size: 85%;
+  }
+}
+/*--------------------------------------------------------------
+## iPad
+--------------------------------------------------------------*/
+@media only screen and (max-width: 768px) {
+  html {
+    font-size: 80%;
+  }
+}
+/*--------------------------------------------------------------
+## iPad
+--------------------------------------------------------------*/
+@media only screen and (max-width: 480px) {
+  html {
+    font-size: 75%;
+  }
 }
 </style>
