@@ -5,8 +5,6 @@
         <nuxt-link :to="{ name: 'index' }" class="v-toolbar__brand"> {{ title }} </nuxt-link>
       </v-app-bar-title>
 
-      <v-spacer />
-
       <v-btn v-for="link in links" :key="link.title" :to="{ path: link.link }">
         {{ link.title }}
       </v-btn>
