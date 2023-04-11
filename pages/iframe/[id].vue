@@ -7,10 +7,10 @@
       </tr>
 
       <tr class="row">
-        <td>Prij{{ voorstelling.prijzen.length > 1 ? "zen" : "s" }}</td>
+        <td>Prij{{ prijzen.length > 1 ? "zen" : "s" }}</td>
         <td>
           <div class="d-flex flex-column">
-            <span v-for="prijs in voorstelling.prijzen" :key="prijs.id"
+            <span v-for="prijs in prijzen" :key="prijs.id"
               >{{ prijs }}: € {{ prijs.prijs.toFixed(2) }}</span
             >
           </div>
@@ -92,6 +92,8 @@ const uitvoeringen = computed(
       .filter((u) => u.aanvang > new Date())
       .sort((a, b) => a.aanvang.getTime() - b.aanvang.getTime()) || [],
 );
+
+const prijzen = computed(() => voorstelling.value?.prijzen.filter((p) => !p.role) || []);
 
 updateUitvoeringen();
 const updater = setInterval(() => {
