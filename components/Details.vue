@@ -67,7 +67,14 @@
                 <td>
                   <span>{{ formatMoney(Math.abs(reservering.saldo)) }}</span>
 
-                  <span v-html="bijbetalingStatus"></span>
+                  <span v-if="reservering.saldo > 0" v-html="bijbetalingStatus"></span>
+                  <v-btn
+                    v-else-if="reservering.saldo < 0"
+                    color="primary"
+                    class="ml-2"
+                    :to="`/reserveren/${reservering.id}/betalen`"
+                    >Betalen</v-btn
+                  >
                 </td>
               </tr>
 
@@ -147,7 +154,7 @@ const bijbetalingStatus = computed(() => {
       return "Het bedrag zal teruggestort worden zodra de kaarten opnieuw verkocht zijn";
     }
   } else if (saldo < 0) {
-    return `<a href="/reserveren/${reservering.value.id}/betalen">Graag nog overmaken</a>`;
+    return ` <a href="/reserveren/${reservering.value.id}/betalen">Graag nog overmaken</a>`;
   }
 });
 
