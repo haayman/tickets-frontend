@@ -6,8 +6,8 @@ export const themes = {
   },
   dark: {
     colors: {
-      background: "#121212",
-      surface: "#1e1e1e",
+      background: "#222222",
+      surface: "#3e3e3e",
       primary: "#F47E2C",
       secondary: "#272727",
       anchor: "#F47E2C",
