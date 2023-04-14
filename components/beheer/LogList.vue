@@ -93,6 +93,9 @@ function goto(row: Log) {
 </script>
 
 <style scoped>
+.v-row:nth-of-type(even) .v-col {
+  background-color: #424242;
+}
 .v-row:nth-of-type(odd) .v-col {
   background: #383838;
 }
