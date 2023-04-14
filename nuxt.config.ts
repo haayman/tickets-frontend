@@ -7,7 +7,7 @@ const config = defineNuxtConfig({
   app: {
     // pageTransition: { name: "page", mode: "out-in" },
     head: {
-      titleTemplate: "%s - " + process.env.npm_package_name,
+//      titleTemplate: "%s - " + process.env.APP_TITLE,
       title: process.env.APP_TITLE || "",
       meta: [
         { charset: "utf-8" },
