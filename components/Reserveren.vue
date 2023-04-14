@@ -154,6 +154,8 @@ const props = defineProps<{
   reservering: Reservering;
 }>();
 
+const route = useRoute();
+
 const emit = defineEmits<{
   (e: "update:reservering", reservering: Reservering): void;
 }>();
@@ -191,7 +193,11 @@ const wachtlijst = computed(() => {
   );
 });
 
-const uitvoering_id = computed(() => reservering.value?.uitvoering_id);
+const uitvoering_id = computed(
+  () =>
+    reservering.value?.uitvoering_id ||
+    (route.query?.uitvoering_id ? +route.query.uitvoering_id : null),
+);
 
 const uitvoering = computed(() => {
   return props.voorstelling.uitvoeringen.find((u) => u.id === uitvoering_id.value);
@@ -248,6 +254,7 @@ watch(
   (uitvoering_id) => {
     if (!reservering.value || !uitvoering_id) return;
     reservering.value.uitvoering = uitvoering.value as Uitvoering;
+    reservering.value.uitvoering_id = uitvoering_id;
   },
   { immediate: true },
 );
