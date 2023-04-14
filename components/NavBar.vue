@@ -31,7 +31,7 @@ const links = computed(() => {
   const links = [
     {
       title: "bestellen",
-      link: "/reserveren",
+      link: "/voorstelling",
     },
   ];
 
