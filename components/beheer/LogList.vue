@@ -93,14 +93,11 @@ function goto(row: Log) {
 </script>
 
 <style scoped>
-.container {
-  background-color: #424242;
-}
-.v-row:nth-of-type(odd) {
+.v-row:nth-of-type(odd) .v-col {
   background: #383838;
 }
 
-.v-row:hover {
+.v-row:hover .v-col {
   background: rgb(105, 105, 105);
 }
 
