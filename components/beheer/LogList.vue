@@ -39,7 +39,7 @@ const router = useRouter();
 const logs = ref<Log[]>([]);
 const { get } = useAPI();
 
-const page = ref<number>(+route.params.page);
+const page = ref<number>(1);
 
 // watch(page, (value) => {
 //   router.replace({
