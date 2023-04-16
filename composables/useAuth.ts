@@ -41,7 +41,7 @@ export function useAuth() {
       });
       userStorage.value = user;
     } catch (error: any) {
-      throw new Error(error?.message || "Er is een fout opgetreden");
+      throw new Error(error?.data?.message || error?.message || "Er is een fout opgetreden");
     }
   }
 

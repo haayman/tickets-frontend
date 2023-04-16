@@ -72,11 +72,7 @@ async function postLogin() {
 
     router.push("/");
   } catch (e: any) {
-    if (e.response !== undefined) {
-      error.value = e.response.data.message;
-    } else {
-      error.value = `Server problem: ${e}`;
-    }
+    error.value = e.message || `${e}`;
   }
 }
 async function sendForgotten() {
