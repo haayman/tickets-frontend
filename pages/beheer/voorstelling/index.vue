@@ -9,7 +9,12 @@
         :loading="loading"
         :headers="headers"
         :items="voorstellingen"
+        hide-default-footer
+        disable-pagination
       >
+        <template #item.description="{ item }">
+          <div v-html="item.raw.description"></div>
+        </template>
         <template #item.actions="{ item }">
           <nuxt-link :to="{ name: 'beheer-voorstelling-id', params: { id: item.raw.id } }">
             <v-icon size="small" class="me-2">mdi-pencil</v-icon>
@@ -85,5 +90,8 @@ async function remove(voorstelling: Voorstelling) {
 <style>
 .thumbnail {
   max-height: 100px;
+}
+.v-data-table-footer {
+  display: none !important;
 }
 </style>

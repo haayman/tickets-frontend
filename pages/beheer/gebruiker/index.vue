@@ -4,7 +4,14 @@
     <v-card class="mx-auto">
       <v-card-title>Gebruikers</v-card-title>
 
-      <v-data-table class="user-management" :loading="pending" :headers="headers" :items="users">
+      <v-data-table
+        class="user-management"
+        :loading="pending"
+        :headers="headers"
+        :items="users"
+        disable-pagination
+        hide-default-footer
+      >
         <template #item.actions="{ item }">
           <nuxt-link :to="{ name: 'beheer-gebruiker-id', params: { id: item.raw.id } }">
             <v-icon size="small" class="me-2">mdi-pencil</v-icon>
@@ -52,3 +59,8 @@ async function removeUser(user: User) {
   }
 }
 </script>
+<style lang="scss">
+.v-data-table-footer {
+  display: none !important;
+}
+</style>

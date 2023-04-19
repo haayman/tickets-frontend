@@ -23,9 +23,8 @@
       :items="reserveringen"
       item-key="id"
       :search="filter"
-      :disable-pagination="true"
-      :hide-default-footer="true"
-      :items-per-page="0"
+      disable-pagination
+      hide-default-footer
       locale="nl - NL"
       @click:row="gotoReservation"
     >
@@ -218,5 +217,8 @@ function gotoReservation(pointerEvent, { item }) {
   & tr {
     background-color: #eee;
   }
+}
+.v-data-table-footer {
+  display: none !important;
 }
 </style>
