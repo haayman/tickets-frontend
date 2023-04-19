@@ -20,6 +20,7 @@
           :rules="[rules.required, rules.strength]"
           validate-on-blur
           :type="showPassword ? 'text' : 'password'"
+          autocomplete="new-password"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="showPassword = !showPassword"
         ></v-text-field>
