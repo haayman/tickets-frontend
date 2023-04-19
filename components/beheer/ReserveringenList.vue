@@ -25,6 +25,7 @@
       :search="filter"
       disable-pagination
       hide-default-footer
+      :items-per-page="0"
       locale="nl - NL"
       @click:row="gotoReservation"
     >
