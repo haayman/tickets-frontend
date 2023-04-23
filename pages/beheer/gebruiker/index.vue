@@ -9,6 +9,7 @@
         :loading="pending"
         :headers="headers"
         :items="users"
+	:items-per-page="0"
         disable-pagination
         hide-default-footer
       >
