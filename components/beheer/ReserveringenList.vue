@@ -23,6 +23,7 @@
       :items="reserveringen"
       item-key="id"
       :search="filter"
+      :filter-keys="['naam', 'email', 'opmerking_gebruiker', 'opmerking']"
       disable-pagination
       hide-default-footer
       :items-per-page="0"
