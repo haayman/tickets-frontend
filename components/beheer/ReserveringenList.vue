@@ -129,7 +129,7 @@ const headers = computed(() => {
     {
       title: "Tijdstip",
       key: "created_at",
-      sortable: false,
+      sortable: true,
     },
     {
       title: "Kaarten",
@@ -137,7 +137,7 @@ const headers = computed(() => {
       classes: "d-flex flex-column",
       sortable: false,
     },
-    { title: "Status", key: "status", sortable: false },
+    { title: "Status", key: "status", sortable: true },
 
     ...(hasOpmerkingen.value
       ? [
@@ -204,7 +204,7 @@ async function resend(reservering: Reservering) {
   }
 }
 
-function gotoReservation(pointerEvent, { item }) {
+function gotoReservation(_pointerEvent: any, { item }: { item: { raw: Reservering } }) {
   const reservering = item.raw;
   const router = useRouter();
   router.push({ name: "reserveren-id-details", params: { id: reservering.id } });
