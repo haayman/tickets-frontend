@@ -10,7 +10,7 @@
     <!-- zoek-formulier -->
 
     <div class="m-3 form-inline noprint">
-      <v-text-field v-model="filter" label="zoek" @focus="$event.target.select()" />
+      <v-text-field v-model="filter" label="zoek" clearable @focus="$event.target.select()" />
 
       <div v-if="aantalIngenomen" class="ml-3">
         {{ aantalIngenomen }} van de {{ totaalAantal }} ingenomen
