@@ -1,6 +1,7 @@
 <template>
   <nav>
     <v-app-bar app>
+      <v-app-bar-nav-icon v-if="user" @click="drawer = !drawer" />
       <nuxt-link :to="{ name: 'index' }" style="height: 100%">
         <img :src="config.public.logo" style="height: 100%" />
       </nuxt-link>
@@ -15,6 +16,17 @@
 
       <v-btn v-else :to="{ name: 'login' }">leden login</v-btn>
     </v-app-bar>
+
+    <v-navigation-drawer v-if="user" v-model="drawer" app>
+      <v-list>
+        <v-list-item v-for="link in links" :key="link.title" :to="{ path: link.link }">
+          <v-list-item-title>{{ link.title }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-title>log uit {{ userName }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </nav>
 </template>
 
@@ -26,6 +38,8 @@ const { user, isAdministrator, logout } = useAuth();
 const userName = computed(() => {
   return user.value?.name || "";
 });
+
+const drawer = ref(false);
 
 const links = computed(() => {
   const links = [
