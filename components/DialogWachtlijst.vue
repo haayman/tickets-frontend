@@ -27,9 +27,7 @@
         <p>
           Als onvoldoende mensen annuleren, kun je naar de voorstelling komen en hopen dat er iemand
           niet op komt dagen. De overgebleven plaatsen worden dan vergeven aan de mensen in de
-          wachtlijst, in de volgorde waarin ze in de lijst staan. De lijst wordt gesorteerd op het
-          tijdstip waarop de reservering is bevestigd met de bevestigings e-mail die je toegestuurd
-          krijgt.
+          wachtlijst, in de volgorde waarin ze in de lijst staan. 
         </p>
       </v-card-text>
 
