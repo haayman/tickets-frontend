@@ -20,7 +20,7 @@
           title="Open in nieuw window"
           @click.stop=""
         >
-          <v-icon>mdi-link</v-icon>
+          <v-icon>mdi-open-in-new</v-icon>
         </a>
       </v-col>
     </v-row>
