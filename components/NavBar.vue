@@ -1,7 +1,7 @@
 <template>
   <nav>
     <v-app-bar app>
-      <v-app-bar-nav-icon v-if="user" @click="drawer = !drawer" />
+      <v-app-bar-nav-icon v-if="user && $vuetify.display.mobile" @click="drawer = !drawer" />
       <nuxt-link :to="{ name: 'index' }" style="height: 100%">
         <img :src="config.public.logo" style="height: 100%" />
       </nuxt-link>
@@ -17,7 +17,7 @@
       <v-btn v-else :to="{ name: 'login' }">leden login</v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer v-if="user" v-model="drawer" app>
+    <v-navigation-drawer v-if="user && $vuetify.display.mobile" v-model="drawer" app>
       <v-list>
         <v-list-item v-for="link in links" :key="link.title" :to="{ path: link.link }">
           <v-list-item-title>{{ link.title }}</v-list-item-title>
