@@ -1,10 +1,10 @@
 <template>
   <tr>
-    <td width="10%">
+    <td width="13%">
       <v-text-field v-model.number="uitvoering.aantal_plaatsen" type="number" />
     </td>
 
-    <td width="30%">
+    <td width="25%">
       <input-date
         v-model="uitvoering.aanvang"
         type="datetime-local"
@@ -13,7 +13,7 @@
       />
     </td>
 
-    <td width="30%">
+    <td width="25%">
       <input-date
         v-model="uitvoering.deur_open"
         type="datetime-local"
@@ -22,12 +22,14 @@
       />
     </td>
 
-    <td width="25%"><v-text-field v-model="uitvoering.extra_text" class="form-control" /></td>
+    <td><v-text-field v-model="uitvoering.extra_text" class="form-control" /></td>
 
     <td>
-      <v-btn v-if="deletable" color="warning" @click.prevent="remove"> Verwijderen </v-btn>
+      <v-btn v-if="deletable" color="warning" @click.prevent="remove">
+        <v-icon icon="mdi-delete" />
+      </v-btn>
 
-      <v-btn v-else color="primary" @click.prevent="save"> Toevoegen </v-btn>
+      <v-btn v-else color="primary" @click.prevent="save"> <v-icon icon="mdi-plus" /> </v-btn>
     </td>
   </tr>
 </template>

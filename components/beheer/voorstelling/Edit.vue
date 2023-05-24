@@ -54,7 +54,9 @@
                     <v-select v-model="prijs.role" :items="roles"> </v-select>
                   </td>
                   <td>
-                    <v-btn color="warning" @click.prevent="deletePrijs(prijs)"> Verwijderen </v-btn>
+                    <v-btn color="warning" @click.prevent="deletePrijs(prijs)">
+                      <v-icon icon="mdi-delete" />
+                    </v-btn>
                   </td>
                 </tr>
                 <tr>
@@ -74,7 +76,9 @@
                     <v-select v-model="prijs.role" :items="roles"> </v-select>
                   </td>
                   <td>
-                    <v-btn color="primary" @click.prevent="addPrijs()"> Toevoegen </v-btn>
+                    <v-btn color="primary" @click.prevent="addPrijs()">
+                      <v-icon icon="mdi-plus" />
+                    </v-btn>
                   </td>
                 </tr>
               </tbody>
