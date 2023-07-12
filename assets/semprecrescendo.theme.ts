@@ -1,18 +1,18 @@
 export const theme = {
-  defaultTheme: "dark",
+  defaultTheme: "light",
   themes: {
     light: {
       colors: {
-        primary: "#ffb400",
+        primary: "#4169e3",
       },
     },
     dark: {
       colors: {
-        background: "#1e1e1e",
+        background: "#222222",
         surface: "#3e3e3e",
-        primary: "#ffb400",
+        primary: "#F47E2C",
         secondary: "#272727",
-        anchor: "#ffb400",
+        anchor: "#F47E2C",
       },
     },
   },

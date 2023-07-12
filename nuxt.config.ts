@@ -7,7 +7,7 @@ const config = defineNuxtConfig({
   app: {
     // pageTransition: { name: "page", mode: "out-in" },
     head: {
-//      titleTemplate: "%s - " + process.env.APP_TITLE,
+      //      titleTemplate: "%s - " + process.env.APP_TITLE,
       title: process.env.APP_TITLE || "",
       meta: [
         { charset: "utf-8" },
@@ -20,6 +20,12 @@ const config = defineNuxtConfig({
       ],
       link: [
         { rel: "icon", type: "image/x-icon", href: process.env.APP_FAVICON || "/favicon.ico" },
+        {
+          // TODO: uit .env ofzo halen
+          rel: "stylesheet",
+          type: "text/css",
+          href: "//fonts.googleapis.com/css?family=Open+Sans%3A400italic%2C400%2C600italic%2C600%2C700italic%2C700&ver=1.0.0",
+        },
       ],
     },
 

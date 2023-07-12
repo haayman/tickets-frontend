@@ -14,8 +14,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     public: { client },
   } = useRuntimeConfig();
 
-  const { themes } = await import(`~/assets/${client}.theme.ts`);
-  console.log({ themes });
+  const { theme } = await import(`~/assets/${client}.theme.ts`);
+  console.log({ theme });
   await import(`~/assets/scss/${client}.scss`);
 
   const vuetify = createVuetify({
@@ -28,10 +28,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       fallback: "en",
       messages: { nl, en },
     },
-    theme: {
-      defaultTheme: "dark",
-      themes,
-    },
+    theme,
   });
 
   nuxtApp.vueApp.use(vuetify);

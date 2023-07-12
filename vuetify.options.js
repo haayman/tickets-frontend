@@ -4,7 +4,7 @@
 export default function () {
   return {
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: "#f0940a",
