@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="iframe">
     <slot />
   </v-app>
 </template>
