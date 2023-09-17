@@ -1,8 +1,12 @@
 <template>
   <v-container>
+    <div class="m-3 form-inline noprint">
+      <v-text-field v-model="filter" label="zoek" clearable @focus="$event.target.select()" />
+    </div>
+
     <div class="loglist">
       <v-row
-        v-for="log in logs"
+        v-for="log in filtered"
         :key="log.id"
         :style="log.reservering ? 'cursor: pointer' : ''"
         @click="goto(log)"
@@ -36,7 +40,7 @@ import InfiniteLoading from "v3-infinite-loading";
 import { ILog, Log } from "~~/models";
 import "v3-infinite-loading/lib/style.css";
 
-const route = useRoute();
+const filter = ref("");
 const router = useRouter();
 const logs = ref<Log[]>([]);
 const { get } = useAPI();
@@ -49,6 +53,17 @@ const page = ref<number>(1);
 //     params: { page: value },
 //   });
 // });
+
+const filtered = computed(() => {
+  if (!filter.value) return logs.value;
+  const regex = new RegExp(filter.value, "i");
+  return logs.value.filter((log) => {
+    const emailMatches = log.reservering?.email.match(regex);
+    const nameMatches = log.reservering?.naam.match(regex);
+    // console.log(log.reservering, emailMatches, nameMatches);
+    return emailMatches || nameMatches;
+  });
+});
 
 const load = async ($state) => {
   try {
