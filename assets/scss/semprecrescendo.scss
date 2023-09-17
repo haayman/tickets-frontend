@@ -1,3 +1,9 @@
+:root {
+  --loglist-even: white;
+  --loglist-odd: #eee;
+  --loglist-hover: #ddd;
+}
+
 h1,
 h2,
 h3,
@@ -53,7 +59,6 @@ a:active {
 .iframe .rounded-lg,
 .iframe .v-card {
   border-radius: 0px !important;
-
 }
 
 .iframe .v-table {

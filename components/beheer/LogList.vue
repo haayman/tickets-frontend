@@ -1,31 +1,33 @@
 <template>
-  <div class="container">
-    <v-row
-      v-for="log in logs"
-      :key="log.id"
-      :style="log.reservering ? 'cursor: pointer' : ''"
-      @click="goto(log)"
-    >
-      <v-col md="2">{{ formatDate(log.created_at, "dd-MM-yyyy H:mm") }}</v-col>
-      <v-col v-if="log.reservering" md="4">
-        {{ log.reservering.naam }} {{ log.reservering.email }}
-      </v-col>
-      <v-col v-else md="4">(geannuleerd)</v-col>
-      <v-col md="4">{{ log.message }}</v-col>
-      <v-col md="1">
-        <a
-          v-if="log.reservering"
-          :href="href(log)"
-          target="_blank"
-          title="Open in nieuw window"
-          @click.stop=""
-        >
-          <v-icon>mdi-open-in-new</v-icon>
-        </a>
-      </v-col>
-    </v-row>
-    <InfiniteLoading @infinite="load" />
-  </div>
+  <v-container>
+    <div class="loglist">
+      <v-row
+        v-for="log in logs"
+        :key="log.id"
+        :style="log.reservering ? 'cursor: pointer' : ''"
+        @click="goto(log)"
+      >
+        <v-col md="2">{{ formatDate(log.created_at, "dd-MM-yyyy H:mm") }}</v-col>
+        <v-col v-if="log.reservering" md="4">
+          {{ log.reservering.naam }} {{ log.reservering.email }}
+        </v-col>
+        <v-col v-else md="4">(geannuleerd)</v-col>
+        <v-col md="4">{{ log.message }}</v-col>
+        <v-col md="1">
+          <a
+            v-if="log.reservering"
+            :href="href(log)"
+            target="_blank"
+            title="Open in nieuw window"
+            @click.stop=""
+          >
+            <v-icon>mdi-open-in-new</v-icon>
+          </a>
+        </v-col>
+      </v-row>
+      <InfiniteLoading @infinite="load" />
+    </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -92,19 +94,25 @@ function goto(row: Log) {
 }
 </script>
 
-<style scoped>
-.v-row:nth-of-type(even) .v-col {
-  background-color: #424242;
-}
-.v-row:nth-of-type(odd) .v-col {
-  background: #383838;
-}
-
-.v-row:hover .v-col {
-  background: rgb(105, 105, 105);
+<style lang="scss">
+:root {
+  --loglist-even: #424242;
+  --loglist-odd: #383838;
+  --loglist-hover: rgb(105, 105, 105);
 }
 
-.v-row a {
+.loglist .v-row:nth-of-type(even) .v-col {
+  background-color: var(--loglist-even);
+}
+.loglist .v-row:nth-of-type(odd) .v-col {
+  background: var(--loglist-odd);
+}
+
+.loglist .v-row:hover .v-col {
+  background: var(--loglist-hover);
+}
+
+.loglist .v-row a {
   text-decoration: none;
 }
 </style>
