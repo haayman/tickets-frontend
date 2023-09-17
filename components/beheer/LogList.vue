@@ -29,7 +29,9 @@
           </a>
         </v-col>
       </v-row>
-      <InfiniteLoading @infinite="load" />
+      <InfiniteLoading @infinite="load">
+        <template #complete> <div class="complete">Geen resultaten meer</div> </template>.
+      </InfiniteLoading>
     </div>
   </v-container>
 </template>
@@ -129,5 +131,15 @@ function goto(row: Log) {
 
 .loglist .v-row a {
   text-decoration: none;
+}
+
+.complete {
+  margin-top: 2em;
+  font-style: italic;
+
+  hr {
+    border-top-style: dashed;
+    width: 50%;
+  }
 }
 </style>
