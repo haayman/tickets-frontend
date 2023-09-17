@@ -12,9 +12,11 @@
         @click="goto(log)"
       >
         <v-col md="2">{{ formatDate(log.created_at, "dd-MM-yyyy H:mm") }}</v-col>
-        <v-col v-if="log.reservering" md="4">
-          {{ log.reservering.naam }} {{ log.reservering.email }}
-        </v-col>
+        <v-col
+          v-if="log.reservering"
+          md="4"
+          v-html="emphasizeFilter(`${log.reservering.naam} ${log.reservering.email}`)"
+        ></v-col>
         <v-col v-else md="4">(geannuleerd)</v-col>
         <v-col md="4">{{ log.message }}</v-col>
         <v-col md="1">
@@ -66,6 +68,20 @@ const filtered = computed(() => {
     return emailMatches || nameMatches;
   });
 });
+
+function decodeHtml(html: string) {
+  const text = document.createElement("textarea");
+  text.innerHTML = html;
+  return text.value;
+}
+
+function emphasizeFilter(string: string) {
+  const decoded = decodeHtml(string);
+  if (!filter.value) return decoded;
+  const regex = new RegExp(filter.value, "ig");
+  const emphasized = string.replace(regex, "<b>$&</b>");
+  return emphasized;
+}
 
 const load = async ($state) => {
   try {
@@ -131,6 +147,10 @@ function goto(row: Log) {
 
 .loglist .v-row a {
   text-decoration: none;
+}
+
+.loglist b {
+  font-weight: 600;
 }
 
 .complete {
