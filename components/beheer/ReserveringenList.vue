@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <v-data-table
+    <VDataTableVirtual
       :headers="headers"
       class="reserveringen-list"
       :items="reserveringen"
@@ -55,12 +55,24 @@
         </span>
       </template>
 
+      <template #item.email="{ item }">
+        <div class="email">{{ addBreaks(item.raw.email) }}</div>
+      </template>
+
+      <template #item.naam="{ item }">
+        <div class="naam">{{ addBreaks(item.raw.naam) }}</div>
+      </template>
+
       <template #item.tickets="{ item }">
         <td class="d-flex flex-column">
           <span v-for="ticket in item.raw.tickets" :key="ticket.id" class="mr-3">
             {{ ticket.aantal ? ticket.toString() : "" }}
           </span>
         </td>
+      </template>
+
+      <template #item.opmerking_gebruiker="{ item }">
+        <div class="opmerking">{{ item.raw.opmerking_gebruiker }}</div>
       </template>
 
       <template #item.uitvoering="{ item }">
@@ -70,7 +82,7 @@
       <template #item.created_at="{ item }">
         {{ formatDate(item.raw.created_at) }}
       </template>
-    </v-data-table>
+    </VDataTableVirtual>
   </v-card>
 </template>
 
@@ -165,6 +177,12 @@ function formatUitvoering(uitvoering: Uitvoering) {
   return formatDate(uitvoering.aanvang, "eeee");
 }
 
+// voeg een ZERO-WIDTH-SPACE karakter toe aan elk non-word character
+function addBreaks(string: string) {
+  // return string;
+  return string.replace(/([^\w])/g, "$&\u200B");
+}
+
 function remove(reservering: Reservering) {
   try {
     if (confirm("Weet je zeker dat je deze reservering wilt verwijderen")) {
@@ -215,8 +233,17 @@ function gotoReservation(_pointerEvent: any, { item }: { item: { raw: Reserverin
 .reserveringen-list {
   cursor: pointer;
 
-  & tr {
+  tr {
     background-color: #eee;
+  }
+
+  .email,
+  .naam {
+    max-width: 15em;
+  }
+
+  .opmerking {
+    min-width: 50em;
   }
 }
 .v-data-table-footer {
