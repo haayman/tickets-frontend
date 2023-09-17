@@ -241,10 +241,6 @@ function gotoReservation(_pointerEvent: any, { item }: { item: { raw: Reserverin
   .naam {
     max-width: 15em;
   }
-
-  .opmerking {
-    min-width: 50em;
-  }
 }
 .v-data-table-footer {
   display: none !important;
