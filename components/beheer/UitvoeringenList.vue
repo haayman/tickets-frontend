@@ -76,6 +76,6 @@ tr {
 }
 
 .table-active {
-  background-color: #444;
+  background-color: var(--loglist-hover);
 }
 </style>
