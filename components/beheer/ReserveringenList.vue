@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <VDataTableVirtual
+    <v-data-table
       :headers="headers"
       class="reserveringen-list"
       :items="reserveringen"
@@ -82,7 +82,7 @@
       <template #item.created_at="{ item }">
         {{ formatDate(item.raw.created_at) }}
       </template>
-    </VDataTableVirtual>
+    </v-data-table>
   </v-card>
 </template>
 
