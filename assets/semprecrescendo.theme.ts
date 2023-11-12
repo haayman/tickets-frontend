@@ -1,9 +1,10 @@
 export const theme = {
-  defaultTheme: "dark",
+  defaultTheme: "light",
   themes: {
     light: {
       colors: {
         primary: "#4169e3",
+        surface: "#f7f7f7",
       },
     },
     dark: {

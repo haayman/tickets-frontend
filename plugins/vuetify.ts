@@ -1,7 +1,7 @@
 import "@mdi/font/css/materialdesignicons.css";
 // import "vuetify/styles";
 import { createVuetify } from "vuetify";
-import { VDataTable } from "vuetify/labs/VDataTable";
+import { VDataTable, VDataTableVirtual } from "vuetify/labs/VDataTable";
 import { md3 } from "vuetify/blueprints";
 import { nl, en } from "vuetify/locale";
 import * as components from "vuetify/components";
@@ -14,12 +14,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     public: { client },
   } = useRuntimeConfig();
 
-  const { themes } = await import(`~/assets/${client}.theme.ts`);
-  console.log({ themes });
+  const { theme } = await import(`~/assets/${client}.theme.ts`);
+  console.log({ theme });
   await import(`~/assets/scss/${client}.scss`);
 
   const vuetify = createVuetify({
-    components: { ...components, VDataTable },
+    components: { ...components, VDataTable, VDataTableVirtual },
     directives,
     blueprint: md3,
     ssr: true,
@@ -28,10 +28,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       fallback: "en",
       messages: { nl, en },
     },
-    theme: {
-      defaultTheme: "dark",
-      themes,
-    },
+    theme,
   });
 
   nuxtApp.vueApp.use(vuetify);

@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="voorstelling">
+  <div v-if="voorstelling">
     <v-table>
       <tr class="row">
         <td>Locatie</td>
@@ -64,7 +64,7 @@
         >Reserveren</v-btn
       >
     </div>
-  </v-card>
+  </div>
 </template>
 <script setup lang="ts">
 import { IVoorstelling, Voorstelling } from "~~/models";
