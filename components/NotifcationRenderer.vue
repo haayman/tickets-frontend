@@ -18,13 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import { EventBusListener } from "@vueuse/core";
-import { NotificationContent, NotificationData } from "~~/types/notfication";
+import type { EventBusListener } from "@vueuse/core";
+import type { NotificationContent, NotificationData } from "~~/types/notfication";
 
 const DEFAULT_TIMEOUT = 5000;
 const DEFAULT_TYPE: NotificationData["type"] = "info";
 
-const bus = useNotifyBus;
+const bus = useEventBus<NotificationContent>(NOTIFY_EVENT_BUS_KEY);
 let listener: EventBusListener;
 
 const visible = ref(false);

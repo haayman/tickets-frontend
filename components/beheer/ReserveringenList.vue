@@ -31,56 +31,56 @@
     >
       <template #item.actions="{ item }">
         <span>
-          <v-icon v-if="item.raw.ingenomen" small>mdi-check </v-icon>
+          <v-icon v-if="item.ingenomen" small>mdi-check </v-icon>
 
           <v-icon
             v-if="isAdministrator"
             title="ticket opnieuw versturen"
-            @click.stop="resend(item.raw)"
+            @click.stop="resend(item)"
           >
             mdi-ticket-outline
           </v-icon>
 
           <v-icon
-            v-if="isAdministrator && item.raw.openstaandBedrag > 0"
+            v-if="isAdministrator && item.openstaandBedrag > 0"
             title="betalingsverzoek versturen"
-            @click.stop="reminder(item.raw)"
+            @click.stop="reminder(item)"
           >
             mdi-credit-card
           </v-icon>
 
-          <v-icon v-if="isAdministrator" title="verwijderen" @click.stop="remove(item.raw)">
+          <v-icon v-if="isAdministrator" title="verwijderen" @click.stop="remove(item)">
             mdi-delete
           </v-icon>
         </span>
       </template>
 
       <template #item.email="{ item }">
-        <div class="email">{{ addBreaks(item.raw.email) }}</div>
+        <div class="email">{{ addBreaks(item.email) }}</div>
       </template>
 
       <template #item.naam="{ item }">
-        <div class="naam">{{ addBreaks(item.raw.naam) }}</div>
+        <div class="naam">{{ addBreaks(item.naam) }}</div>
       </template>
 
       <template #item.tickets="{ item }">
         <td class="d-flex flex-column">
-          <span v-for="ticket in item.raw.tickets" :key="ticket.id" class="mr-3">
+          <span v-for="ticket in item.tickets" :key="ticket.id" class="mr-3">
             {{ ticket.aantal ? ticket.toString() : "" }}
           </span>
         </td>
       </template>
 
       <template #item.opmerking_gebruiker="{ item }">
-        <div class="opmerking">{{ item.raw.opmerking_gebruiker }}</div>
+        <div class="opmerking">{{ item.opmerking_gebruiker }}</div>
       </template>
 
       <template #item.uitvoering="{ item }">
-        {{ item.raw.uitvoering ? formatUitvoering(item.raw.uitvoering) : "" }}
+        {{ item.uitvoering ? formatUitvoering(item.uitvoering) : "" }}
       </template>
 
       <template #item.created_at="{ item }">
-        {{ formatDate(item.raw.created_at) }}
+        {{ formatDate(item.created_at) }}
       </template>
     </v-data-table>
   </v-card>
@@ -222,8 +222,8 @@ async function resend(reservering: Reservering) {
   }
 }
 
-function gotoReservation(_pointerEvent: any, { item }: { item: { raw: Reservering } }) {
-  const reservering = item.raw;
+function gotoReservation(_pointerEvent: any, { item }: { item: Reservering }) {
+  const reservering = item;
   const router = useRouter();
   router.push({ name: "reserveren-id-details", params: { id: reservering.id } });
 }
@@ -232,10 +232,6 @@ function gotoReservation(_pointerEvent: any, { item }: { item: { raw: Reserverin
 <style lang="scss">
 .reserveringen-list {
   cursor: pointer;
-
-  tr {
-    background-color: #eee;
-  }
 
   .email,
   .naam {

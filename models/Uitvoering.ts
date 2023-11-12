@@ -2,7 +2,8 @@
 import { format } from "date-fns";
 // eslint-disable-next-line import/no-duplicates
 import nl from "date-fns/locale/nl";
-import { IVoorstelling, Voorstelling } from "./Voorstelling";
+import { Voorstelling } from "./Voorstelling";
+import type { IVoorstelling } from "./Voorstelling";
 
 export type IUitvoering = {
   id?: number;

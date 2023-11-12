@@ -23,7 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { IVoorstelling, Uitvoering, Voorstelling } from "~~/models";
+import { Uitvoering, Voorstelling } from "~~/models";
+import type { IVoorstelling } from "~~/models";
 
 const props = defineProps<{
   voorstelling: Voorstelling;

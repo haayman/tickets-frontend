@@ -15,7 +15,7 @@ import { Voorstelling } from "~~/models";
 const router = useRouter();
 
 defineProps<{
-  voorstellingen: Voorstelling[];
+  voorstellingen: (Voorstelling & { id: string })[];
 }>();
 
 function toVoorstelling(id: number) {

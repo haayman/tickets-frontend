@@ -32,8 +32,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
-import { IUitvoering, Uitvoering } from "@/models/Uitvoering";
-import { IReservering, Reservering } from "@/models/Reservering";
+import type { IUitvoering } from "@/models/Uitvoering";
+import { Uitvoering } from "@/models/Uitvoering";
+import type { IReservering } from "@/models/Reservering";
+import { Reservering } from "@/models/Reservering";
 
 const uitvoeringId = ref<number | null>(null);
 const loading = ref(false);

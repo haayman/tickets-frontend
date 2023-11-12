@@ -41,7 +41,7 @@
 <script setup lang="ts">
 // @ts-ignore
 import InfiniteLoading from "v3-infinite-loading";
-import { ILog, Log } from "~~/models";
+import { type ILog, Log } from "~~/models";
 import "v3-infinite-loading/lib/style.css";
 
 const filter = ref("");
@@ -83,7 +83,7 @@ function emphasizeFilter(string: string) {
   return emphasized;
 }
 
-const load = async ($state) => {
+const load = async ($state: any) => {
   try {
     const data = await get<ILog[]>("/log", {
       params: {

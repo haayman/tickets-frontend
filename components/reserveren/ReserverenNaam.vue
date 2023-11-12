@@ -26,7 +26,7 @@
 </template>
 <script setup lang="ts">
 import { Reservering } from "~~/models";
-import { Rule } from "~~/types/rule";
+import type { Rule } from "~~/types/rule";
 
 const props = defineProps<{
   reservering: Reservering;

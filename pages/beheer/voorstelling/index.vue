@@ -13,20 +13,20 @@
         disable-pagination
       >
         <template #item.description="{ item }">
-          <div v-html="item.raw.description"></div>
+          <div v-html="item.description"></div>
         </template>
         <template #item.actions="{ item }">
-          <nuxt-link :to="{ name: 'beheer-voorstelling-id', params: { id: item.raw.id } }">
+          <nuxt-link :to="{ name: 'beheer-voorstelling-id', params: { id: item.id } }">
             <v-icon size="small" class="me-2">mdi-pencil</v-icon>
           </nuxt-link>
 
-          <a href="#delete" @click.prevent="remove(item.raw)">
+          <a href="#delete" @click.prevent="remove(item)">
             <v-icon size="small" class="me-2">mdi-delete</v-icon>
           </a>
         </template>
 
         <template #item.thumbnail="{ item }">
-          <img v-if="item.raw.thumbnail" class="thumbnail" :src="item.raw.thumbnail" />
+          <img v-if="item.thumbnail" class="thumbnail" :src="item.thumbnail" />
         </template>
       </v-data-table>
 
