@@ -1,4 +1,4 @@
-export const themes = {
+export const theme = {
   defaultTheme: "dark",
   themes: {
     light: {
