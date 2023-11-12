@@ -1,5 +1,5 @@
 import { useStorage, StorageSerializers } from "@vueuse/core";
-import { LoginBody, LoginResponse, ProfileResponse } from "~/types/auth";
+import type { LoginBody, LoginResponse, ProfileResponse } from "~/types/auth";
 import { User } from "~~/models";
 
 /**
@@ -8,7 +8,7 @@ import { User } from "~~/models";
 export function useAuth() {
   const config = useRuntimeConfig();
 
-  const { routes, base } = config.api;
+  const { routes, base } = config.public.api;
 
   const userStorage = useStorage<User>("user", null, undefined, {
     serializer: StorageSerializers.object,

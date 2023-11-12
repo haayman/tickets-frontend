@@ -9,16 +9,16 @@
         :loading="pending"
         :headers="headers"
         :items="users"
-	:items-per-page="0"
+        :items-per-page="0"
         disable-pagination
         hide-default-footer
       >
         <template #item.actions="{ item }">
-          <nuxt-link :to="{ name: 'beheer-gebruiker-id', params: { id: item.raw.id } }">
+          <nuxt-link :to="{ name: 'beheer-gebruiker-id', params: { id: item.id } }">
             <v-icon size="small" class="me-2">mdi-pencil</v-icon>
           </nuxt-link>
 
-          <a href="#delete" @click.prevent="removeUser(item.raw)">
+          <a href="#delete" @click.prevent="removeUser(item)">
             <v-icon size="small" class="me-2">mdi-delete</v-icon>
           </a>
         </template>

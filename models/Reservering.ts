@@ -1,7 +1,7 @@
-import { Ticket, ITicket } from "./Ticket";
-import { Uitvoering, IUitvoering } from "./Uitvoering";
-import { Payment, IPayment } from "./Payment";
-import { Log, ILog } from "./Log";
+import { Ticket, type ITicket } from "./Ticket";
+import { Uitvoering, type IUitvoering } from "./Uitvoering";
+import { Payment, type IPayment } from "./Payment";
+import { Log, type ILog } from "./Log";
 
 export type IReservering = {
   id: string;

@@ -123,6 +123,9 @@ const config = defineNuxtConfig({
   },
 
   vite: {
+    optimizeDeps: {
+      exclude: ["vuetify"],
+    },
     ssr: {
       noExternal: ["vuetify"],
     },

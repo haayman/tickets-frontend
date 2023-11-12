@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { useStorage } from "@vueuse/core";
-import { IUitvoering, Uitvoering } from "~/models/Uitvoering";
+import { type IUitvoering, Uitvoering } from "~/models/Uitvoering";
 
 definePageMeta({
   middleware: "admin",
@@ -49,7 +49,7 @@ const defaultMessage = `Hallo <%=naam%>,
 Je kunt hier je bestelling <a href="<%=reservering.getEditLink()%>">wijzigen</a>
 `;
 
-const uitvoeringen = ref<Uitvoering[]>([]);
+const uitvoeringen = ref<(Uitvoering & { id: string })[]>([]);
 const uitvoeringIds = ref<number[]>([]);
 const subject = useStorage("customMailSubject", "");
 const content = useStorage("customMailContent", defaultMessage);
@@ -61,7 +61,7 @@ const valid = computed(() => subject.value && content.value && uitvoeringIds.val
 
 onMounted(async () => {
   const data = await get<IUitvoering[]>("/uitvoering");
-  uitvoeringen.value = data.map((u) => new Uitvoering(u));
+  uitvoeringen.value = data.map((u) => new Uitvoering(u) as Uitvoering & { id: string });
 });
 
 async function submit() {

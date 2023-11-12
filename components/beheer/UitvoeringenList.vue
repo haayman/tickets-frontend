@@ -38,7 +38,7 @@
 import { Uitvoering } from "~~/models";
 
 const props = defineProps<{
-  uitvoeringen: Uitvoering[];
+  uitvoeringen: (Uitvoering & { id: string })[];
   uitvoeringId?: number | null;
 }>();
 const totaalGereserveerd = computed(() =>

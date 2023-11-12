@@ -124,7 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { IReservering, Reservering } from "../models/Reservering";
+import { Reservering } from "../models/Reservering";
+import type { IReservering } from "../models/Reservering";
 
 withDefaults(
   defineProps<{
