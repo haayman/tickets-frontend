@@ -58,6 +58,7 @@ const config = defineNuxtConfig({
    */
   modules: [
     "@vueuse/nuxt",
+    "nuxt-vitest",
     // // Doc: https://axios.nuxtjs.org/usage
     // "@nuxtjs/axios",
     // // Doc: https://github.com/nuxt-community/dotenv-module
@@ -138,11 +139,11 @@ const config = defineNuxtConfig({
      ** SSR debuging
      * https://medium.com/js-dojo/debugging-nuxt-js-with-vs-code-60a1a9e75cf6
      */
-    extend(config, ctx) {
-      if (ctx.isDev) {
-        config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
-      }
-    },
+    // extend(config, ctx) {
+    //   if (ctx.isDev) {
+    //     config.devtool = ctx.isClient ? "source-map" : "inline-source-map";
+    //   }
+    // },
   },
 });
 
