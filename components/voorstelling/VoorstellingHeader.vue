@@ -14,8 +14,8 @@
             ></p>
 
             <template v-if="voorstelling.locatie">
-              <br />
-              <p v-html="voorstelling.locatie"></p>
+              <h3 class="mt-3">Locatie</h3>
+              <p class="mt-3" style="white-space: pre-wrap" v-html="voorstelling.locatie"></p>
             </template>
 
             <template v-if="voorstelling.opmerkingen">
@@ -23,8 +23,7 @@
               <p class="mt-3" style="white-space: pre-wrap" v-html="voorstelling.opmerkingen"></p>
             </template>
 
-            <p v-if="voorstelling.url">
-              <br />
+            <p v-if="voorstelling.url" class="mt-3">
               <a :href="voorstelling.url" target="_blank">&raquo; Meer informatie</a>
             </p>
           </v-col>

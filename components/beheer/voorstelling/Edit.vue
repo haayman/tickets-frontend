@@ -11,7 +11,7 @@
           <v-text-field v-model="voorstelling.title" required label="Titel" />
           <v-textarea v-model="voorstelling.description" required label="Omschrijving" />
           <v-text-field v-model="voorstelling.url" label="URL" type="url" />
-          <v-text-field v-model="voorstelling.locatie" label="Locatie" />
+          <v-textarea v-model="voorstelling.locatie" label="Locatie" />
           <v-textarea v-model="voorstelling.opmerkingen" label="Opmerkingen" />
           <v-text-field v-model="voorstelling.poster" label="Poster" type="url" />
           <img v-if="voorstelling.poster" :src="voorstelling.poster" class="mh-300 mt-2" />
