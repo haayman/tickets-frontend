@@ -9,7 +9,7 @@
           </v-alert>
           <v-switch v-model="voorstelling.active" label="Actief" />
           <v-text-field v-model="voorstelling.title" required label="Titel" />
-          <v-text-field v-model="voorstelling.description" required label="Omschrijving" />
+          <v-textarea v-model="voorstelling.description" required label="Omschrijving" />
           <v-text-field v-model="voorstelling.url" label="URL" type="url" />
           <v-text-field v-model="voorstelling.locatie" label="Locatie" />
           <v-textarea v-model="voorstelling.opmerkingen" label="Opmerkingen" />

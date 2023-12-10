@@ -13,17 +13,24 @@
               v-html="voorstelling.description"
             ></p>
 
-            <p v-if="voorstelling.locatie" v-html="voorstelling.locatie"></p>
+            <template v-if="voorstelling.locatie">
+              <br />
+              <p v-html="voorstelling.locatie"></p>
+            </template>
+
+            <template v-if="voorstelling.opmerkingen">
+              <h3 class="mt-3">Opmerkingen</h3>
+              <p class="mt-3" style="white-space: pre-wrap" v-html="voorstelling.opmerkingen"></p>
+            </template>
 
             <p v-if="voorstelling.url">
-              <a :href="voorstelling.url" target="_blank">Meer informatie</a>
+              <br />
+              <a :href="voorstelling.url" target="_blank">&raquo; Meer informatie</a>
             </p>
-
-            <p v-if="voorstelling.opmerkingen" v-html="voorstelling.opmerkingen"></p>
           </v-col>
 
-          <v-col v-if="voorstelling.poster" md="4">
-            <img :src="voorstelling.poster" style="max-height: 400px" />
+          <v-col v-if="voorstelling.poster" md="6">
+            <img :src="voorstelling.poster" style="width: 100%; object-fit: cover" />
           </v-col>
         </v-row>
       </v-container>
