@@ -11,9 +11,8 @@
         </v-col>
         <v-col>
           {{ weekdag(uitvoering.aanvang) }}
-          {{ formatDate(uitvoering.aanvang, "d LLLL") }}
+          {{ formatDate(uitvoering.aanvang, "d LLLL HH:mm") }}
         </v-col>
-        <v-spacer />
         <v-col>
           <uitvoering-status :uitvoering="uitvoering" />
         </v-col>
