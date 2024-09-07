@@ -5,7 +5,7 @@ type RestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 export function useAPI() {
   const { getAuthorizationHeader, logout } = useAuth();
   const config = useRuntimeConfig();
-  const url = "/api";
+  const url = config.public.api.base;
 
   async function fetch<T>(path: string, method: RestMethod, options?: FetchOptions<"json">) {
     try {

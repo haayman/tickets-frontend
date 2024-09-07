@@ -8,7 +8,7 @@ const config = defineNuxtConfig({
     // pageTransition: { name: "page", mode: "out-in" },
     head: {
       //      titleTemplate: "%s - " + process.env.APP_TITLE,
-      title: process.env.APP_TITLE || "",
+      title: process.env.APP_TITLE || "Theater tickets",
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -33,11 +33,8 @@ const config = defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      app: {
-        title: process.env.APP_TITLE || "Theater tickets",
-      },
       api: {
-        base: `${process.env.API_BASE || ""}/api`,
+        base: "/api", // NUXT_PUBLIC_API_BASE
         routes: {
           auth: {
             login: "/auth/login",
