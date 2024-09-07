@@ -98,3 +98,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# symlinks
+public/favicon.png
+public/logo.png
