@@ -1,4 +1,4 @@
-import { $fetch, FetchOptions } from "ofetch";
+import { $fetch, type FetchOptions } from "ofetch";
 
 type RestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 

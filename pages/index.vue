@@ -1,4 +1,3 @@
-<template></template>
 <script setup lang="ts">
 const { isAuthenticated } = useAuth();
 

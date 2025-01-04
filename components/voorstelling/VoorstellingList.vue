@@ -22,8 +22,8 @@ function toVoorstelling(id: number) {
   router.push({ name: "voorstelling-id", params: { id } });
 }
 </script>
-<type lang="scss">
+<style lang="scss">
 .voorstelling-summary {
   cursor: pointer;
 }
-</type>
+</style>
